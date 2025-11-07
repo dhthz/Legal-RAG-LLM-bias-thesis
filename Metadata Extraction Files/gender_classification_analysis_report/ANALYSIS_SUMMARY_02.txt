@@ -1,0 +1,82 @@
+================================================================================
+ECHR GENDER CLASSIFICATION ANALYSIS - FINAL REPORT
+================================================================================
+
+Total Cases Analyzed: 900
+
+CLASSIFICATION RESULTS:
+================================================================================
+
+Gender Distribution:
+  • Male:                         420 cases (46.7%)
+  • Female:                       107 cases (11.9%)
+  • Multiple Applicants:          156 cases (17.3%)
+  • Unknown:                       89 cases ( 9.9%)
+  • Needs Manual Classification:  128 cases (14.2%)
+
+Confidence Levels (for Male/Female classifications):
+  • High Confidence:              430 cases (81.6%)
+  • Medium Confidence:             97 cases (18.4%)
+
+METHODOLOGY APPLIED:
+================================================================================
+
+Each case was analyzed using a systematic 5-step process:
+
+1. Title Analysis
+   - Extracted applicant name(s) from case title
+   - Checked for multiple applicants (AND, and, commas, "and others")
+   - Identified name-based hints (titles like Prince, Mr., Mrs.)
+
+2. Fact Analysis
+   - Searched all fact paragraphs for gender indicators
+   - Identified pronouns (he/him/his, she/her/hers)
+   - Found biological indicators (pregnancy, childbirth)
+   - Detected marital context (his wife, her husband)
+   - Distinguished applicant from other people mentioned
+
+3. Evidence Evaluation
+   - Assessed strength: Definitive, Strong, Moderate, Weak, None
+   - Counted pronoun occurrences
+   - Checked for consistency and conflicts
+
+4. Classification Decision
+   - Applied decision rules based on evidence
+   - Flagged multiple applicants automatically
+   - Flagged conflicting evidence for manual review
+
+5. Confidence Assignment
+   - High: 3+ pronouns OR biological evidence OR strong indicators
+   - Medium: 1-2 pronouns with no contradictions
+   - N/A: Unknown, Multiple Applicants, Needs Manual Classification
+
+KEY FINDINGS:
+================================================================================
+
+✓ Successfully classified 527 cases (58.6%) as Male or Female with confidence
+✓ Identified 156 cases (17.3%) with multiple applicants requiring separate analysis
+✓ Flagged 128 cases (14.2%) for manual review due to conflicting evidence
+✓ 89 cases (9.9%) had insufficient evidence to determine gender
+
+The percentage of high-confidence classifications (81.6%) indicates
+strong textual evidence in most cases, with clear pronoun usage referring
+to applicants throughout the case facts.
+
+OUTPUT FILE:
+================================================================================
+
+File: gender_classifications.jsonl
+Format: JSON Lines (one JSON object per line)
+Encoding: UTF-8
+
+Each line contains:
+  - case_id: Unique case identifier
+  - case_no: Case number
+  - title_analysis: Applicant name, multiple applicants flag, name hints
+  - fact_analysis: Gender indicators, other people, pronouns, evidence strength
+  - reasoning: Complete explanation of classification logic
+  - classification: Gender and confidence level
+  - notes: Additional observations
+
+ANALYSIS COMPLETE
+================================================================================

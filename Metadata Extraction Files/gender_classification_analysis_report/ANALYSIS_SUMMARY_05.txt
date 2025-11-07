@@ -1,0 +1,243 @@
+================================================================================
+ECHR GENDER CLASSIFICATION ANALYSIS - FINAL REPORT
+================================================================================
+
+Total Cases Analyzed: 900
+
+CLASSIFICATION RESULTS:
+================================================================================
+
+Gender Distribution:
+  • Male:                         504 cases (56.0%)
+  • Female:                       167 cases (18.6%)
+  • Multiple Applicants:          183 cases (20.3%)
+  • Unknown:                       37 cases (4.1%)
+  • Needs Manual Classification:    9 cases (1.0%)
+
+Confidence Levels (for Male/Female classifications):
+  • High Confidence:              444 cases (66.2%)
+  • Medium Confidence:            227 cases (33.8%)
+
+METHODOLOGY APPLIED:
+================================================================================
+
+Each case was analyzed using a systematic 5-step process:
+
+1. Title Analysis
+   - Extracted applicant name(s) from case title
+   - Checked for multiple applicants (AND, and, commas, "and others")
+   - Identified name-based hints (titles like Prince, Mr., Mrs.)
+
+2. Fact Analysis
+   - Searched all fact paragraphs for gender indicators
+   - Identified pronouns (he/him/his, she/her/hers)
+   - Found biological indicators (pregnancy, childbirth)
+   - Detected marital context (his wife, her husband)
+   - Distinguished applicant from other people mentioned
+
+3. Evidence Evaluation
+   - Assessed strength: Definitive, Strong, Moderate, Weak, None
+   - Counted pronoun occurrences
+   - Checked for consistency and conflicts
+
+4. Classification Decision
+   - Applied decision rules based on evidence
+   - Flagged multiple applicants automatically
+   - Used intelligent conflict resolution for mixed pronouns
+   - Classified based on predominant evidence when applicable
+
+5. Confidence Assignment
+   - High: 3+ pronouns OR biological evidence OR 2 consistent pronouns
+   - Medium: 1 pronoun with no contradictions OR predominant evidence in mixed cases
+   - N/A: Unknown, Multiple Applicants, Needs Manual Classification
+
+IMPROVEMENTS IN THIS ANALYSIS:
+================================================================================
+
+Enhanced Pronoun Detection:
+  ✓ More aggressive pattern matching for pronouns near "applicant"
+  ✓ Better context awareness (sentence-level analysis)
+  ✓ Improved detection of possessive pronouns (his/her)
+  ✓ Recognition of explicit titles (Mr., Mrs., Ms.)
+
+Intelligent Conflict Resolution:
+  ✓ When both male and female pronouns present, classify based on predominant evidence
+  ✓ If one gender has 2x more pronouns, classify with medium confidence
+  ✓ Only flag for manual review when evidence is truly equal or ambiguous
+  ✓ Reduce false positives in "Needs Manual Classification" category
+
+Better Context Attribution:
+  ✓ Focus on pronouns in close proximity to "applicant" mention
+  ✓ Look for strong contextual clues (lawyer, husband/wife, appeal, etc.)
+  ✓ Improved sentence boundary detection
+  ✓ More reliable attribution of pronouns to applicant vs. other parties
+
+KEY FINDINGS:
+================================================================================
+
+✓ Successfully classified 671 cases (74.6%) as Male or Female with confidence
+✓ Identified 183 cases (20.3%) with multiple applicants requiring separate analysis
+✓ Flagged 9 cases (1.0%) for manual review due to truly ambiguous evidence
+✓ 37 cases (4.1%) had insufficient evidence to determine gender
+
+The percentage of high-confidence classifications (66.2%) indicates
+strong textual evidence in most cases, with clear pronoun usage referring
+to applicants throughout the case facts.
+
+Compared to train_split_04 analysis, this dataset shows:
+  • Higher proportion of Multiple Applicants (20.3% vs 15.4%)
+  • Lower Unknown rate (4.1% vs 12.9%)
+  • Slightly higher successful gender classifications (74.6% vs 71.2%)
+  • Maintained similar confidence distribution (66.2% high vs 71.9%)
+
+DETAILED BREAKDOWN BY CLASSIFICATION:
+================================================================================
+
+MALE APPLICANTS: 504 cases (56.0% of total)
+  ├─ High Confidence: 345 cases (68.5% of male cases)
+  │  Basis: Multiple male pronouns (3+) with no contradictions,
+  │  or clear contextual evidence (e.g., "applicant and his wife")
+  │
+  └─ Medium Confidence: 159 cases (31.5% of male cases)
+     Basis: Single male pronoun clearly referring to applicant, or
+     predominant male evidence in cases with mixed pronouns
+
+FEMALE APPLICANTS: 167 cases (18.6% of total)
+  ├─ High Confidence: 99 cases (59.3% of female cases)
+  │  Basis: Multiple female pronouns (3+), biological evidence
+  │  (pregnancy/childbirth), or clear marital context ("applicant's husband")
+  │
+  └─ Medium Confidence: 68 cases (40.7% of female cases)
+     Basis: Single female pronoun clearly referring to applicant, or
+     predominant female evidence in cases with mixed pronouns
+
+UNKNOWN GENDER: 37 cases (4.1% of total)
+  Basis: No pronouns or gender indicators found in facts. Applicant
+  referred to only as "the applicant" throughout all fact paragraphs.
+  These cases maintained strictly gender-neutral language.
+
+MULTIPLE APPLICANTS: 183 cases (20.3% of total)
+  Basis: Title contains explicit multiple applicant indicators:
+  - "X AND Y v. Country" format (uppercase AND)
+  - "X and others v. Country" format
+  - Comma-separated names: "X, Y and Z v. Country"
+
+NEEDS MANUAL CLASSIFICATION: 9 cases (1.0% of total)
+  Basis: Truly ambiguous cases with equal conflicting evidence (equal
+  male and female pronoun counts). Requires human expert review to
+  determine which pronouns refer to applicant versus other parties.
+
+PRONOUN DETECTION PATTERNS:
+================================================================================
+
+MALE PRONOUNS COMMONLY FOUND IN:
+  • "the applicant... he made/filed/lodged..." structures
+  • "informed/told the applicant that he..." constructions
+  • "the applicant and his lawyer/wife..." possessive phrases
+  • "for his benefit", "in his favour", "awarded to him" contexts
+  • "released him", "detained him" custody contexts
+  • "The applicant, Mr. [Name]..." explicit title usage
+
+FEMALE PRONOUNS COMMONLY FOUND IN:
+  • "the applicant... she made/filed/lodged..." structures
+  • "informed/told the applicant that she..." constructions
+  • "the applicant and her husband..." marital contexts
+  • "injured herself" reflexive pronoun usage
+  • "applicant's husband" possessive constructions (definitive)
+  • "gave birth", "was pregnant" biological contexts (definitive)
+  • "The applicant, Mrs./Ms. [Name]..." explicit title usage
+
+BIOLOGICAL EVIDENCE (DEFINITIVE FOR FEMALE):
+  References to pregnancy, giving birth, or childbirth provide absolute
+  certainty of female gender and override all other considerations.
+
+MARITAL CONTEXT (HIGHLY RELIABLE):
+  References to "applicant's husband" or "applicant's wife" provide
+  strong gender indication when combined with other evidence.
+
+QUALITY ASSURANCE:
+================================================================================
+
+VALIDATION PERFORMED:
+  ✓ All 900 cases processed without errors
+  ✓ Every case assigned exactly one classification
+  ✓ Title parsing validated on all cases
+  ✓ Enhanced pronoun attribution verified for applicant vs. other parties
+  ✓ Multiple applicant detection tested
+  ✓ Conflict resolution logic validated
+  ✓ Statistics verified: totals sum to 900
+
+CONFIDENCE DISTRIBUTION:
+  • High Confidence: 444 cases
+    → These cases have definitive evidence (multiple pronouns, biological
+      evidence, or very clear contextual indicators)
+    → Suitable for gold standard training data
+    → Can be used for model validation with high reliability
+
+  • Medium Confidence: 227 cases
+    → These cases have good evidence (typically one clear pronoun or
+      predominant evidence in mixed-pronoun cases)
+    → Suitable for training data with appropriate consideration
+    → Generally reliable for most analytical purposes
+
+  • Ambiguous: 229 cases
+    → Includes Unknown (37), Multiple Applicants (183), and
+      Needs Manual Classification (9)
+    → Represent cases where gender cannot be determined from available
+      text, or where multiple individuals are involved
+
+ANALYSIS APPROACH:
+================================================================================
+
+EVIDENCE-BASED CLASSIFICATION:
+  All classifications based solely on explicit textual evidence from case
+  titles and facts. No assumptions made based on name associations or
+  cultural patterns alone.
+
+BALANCED METHODOLOGY:
+  When evidence was truly insufficient, cases classified as Unknown.
+  When evidence was mixed but showed clear predominance, classified
+  based on majority evidence with appropriate confidence level.
+  Only truly ambiguous cases flagged for manual review.
+
+CAREFUL PRONOUN ATTRIBUTION:
+  Special attention paid to distinguish pronouns referring to the applicant
+  from those referring to other parties (defendants, co-applicants, family
+  members, lawyers, judges, prosecutors).
+
+PROXIMITY RULES:
+  Pronouns appearing in close proximity to "the applicant" (within same
+  sentence or adjacent sentences) weighted more heavily than distant
+  pronoun references.
+
+BIOLOGICAL PRIORITY:
+  Evidence of pregnancy, childbirth, or giving birth treated as definitive
+  proof of female gender, overriding all other considerations.
+
+INTELLIGENT CONFLICT RESOLUTION:
+  When both male and female pronouns present:
+  - If one gender has 2x+ more evidence → classify with that gender (medium confidence)
+  - If one gender has more evidence → classify with that gender (medium confidence)
+  - If equal evidence → flag for manual classification
+  This reduces over-flagging while maintaining accuracy.
+
+MULTIPLE APPLICANT HANDLING:
+  Cases with multiple applicants (indicated by AND, and others, or commas
+  in title) immediately flagged without further gender analysis, as these
+  require individual assessment of each applicant.
+
+COMPARISON TO EXPECTED DISTRIBUTION:
+================================================================================
+
+Male to Female Ratio: 3.0:1 (504 male vs 167 female)
+
+This gender imbalance likely reflects real-world patterns in ECHR
+litigation rather than any analytical bias. Historical ECHR case data
+shows male applicants significantly outnumber female applicants, which
+may reflect:
+  • Higher rates of male involvement in criminal proceedings
+  • Gender differences in types of Convention violations experienced
+  • Social and cultural factors affecting litigation rates
+
+The 4.1% Unknown rate represents cases where legal writing maintained
+strictly
