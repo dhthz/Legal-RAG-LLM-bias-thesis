@@ -3,3 +3,7 @@
 /thesis_venv
 /.claude
 /validation_reports
+*.md
+*.index
+*.pyc
+/faiss_indices
