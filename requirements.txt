@@ -1,0 +1,10 @@
+# LLM and API dependencies
+openai>=1.0.0
+httpx>=0.24.0
+python-dotenv>=1.0.0
+
+# Existing project dependencies (from your test.py)
+sentence-transformers
+faiss-cpu
+numpy
+torch

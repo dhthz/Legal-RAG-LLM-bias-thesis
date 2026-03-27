@@ -6,4 +6,7 @@
 *.md
 *.index
 *.pyc
-/faiss_indices
+/faiss_indices 
+.env
+/logs
+/mds
