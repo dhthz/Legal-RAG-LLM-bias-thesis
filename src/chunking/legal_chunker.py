@@ -1,13 +1,3 @@
-"""
-Legal Case Chunking Module
-==========================
-
-Intelligent chunking strategy optimized for legal case facts with:
-- Semantic context preservation
-- Paragraph boundary respect
-- Overlap for continuity
-- Mistral 7B context window optimization
-"""
 
 import json
 from typing import List, Dict, Optional
@@ -17,7 +7,6 @@ import re
 
 @dataclass
 class ChunkConfig:
-    """Configuration for legal case chunking"""
 
     # Target chunk sizes (in words)
     target_words_per_chunk: int = 150  # ~200 tokens
@@ -40,25 +29,14 @@ class ChunkConfig:
 
 
 class LegalCaseChunker:
-    """
-    Intelligent chunker for ECHR legal cases optimized for:
-    1. Semantic context preservation
-    2. Mistral 7B context window constraints
-    3. Legal narrative flow
-    """
 
     def __init__(self, config: Optional[ChunkConfig] = None):
         self.config = config or ChunkConfig()
 
     def count_words(self, text: str) -> int:
-        """Count words in text"""
         return len(text.split())
 
     def split_into_sentences(self, text: str) -> List[str]:
-        """
-        Split text into sentences while preserving legal citations
-        and numeric references like "Article 3", "15.2%", etc.
-        """
         # Protect legal patterns from sentence splitting
         text = re.sub(r'(Art\.|Article|Section|Paragraph)\s+(\d+)', r'\1_\2', text)
         text = re.sub(r'(\d+)\.\s+', r'\1_PERIOD_ ', text)  # Protect numbered paragraphs
@@ -72,10 +50,6 @@ class LegalCaseChunker:
         return [s.strip() for s in sentences if s.strip()]
 
     def extract_case_intro(self, facts: List[str]) -> str:
-        """
-        Extract key introductory information about the case
-        This helps maintain context across all chunks
-        """
         if not facts:
             return ""
 
@@ -94,16 +68,6 @@ class LegalCaseChunker:
         case: Dict,
         include_intro: bool = True
     ) -> List[Dict]:
-        """
-        Create paragraph-level chunks with overlap and context preservation
-
-        Args:
-            case: Full case dictionary from JSONL
-            include_intro: Whether to prepend case intro to each chunk
-
-        Returns:
-            List of chunk dictionaries with metadata
-        """
         facts = case.get('facts', [])
         if not facts:
             return []
@@ -210,10 +174,6 @@ class LegalCaseChunker:
         return chunks
 
     def create_multi_paragraph_chunks(self, case: Dict) -> List[Dict]:
-        """
-        Alternative strategy: Combine multiple consecutive paragraphs
-        Good for cases with many short paragraphs
-        """
         facts = case.get('facts', [])
         if not facts:
             return []
@@ -285,17 +245,6 @@ class LegalCaseChunker:
         output_path: str,
         strategy: str = 'paragraph'  # 'paragraph' or 'multi_paragraph'
     ) -> Dict:
-        """
-        Process entire dataset and create chunks
-
-        Args:
-            dataset_path: Path to JSONL dataset
-            output_path: Where to save chunked dataset
-            strategy: 'paragraph' or 'multi_paragraph'
-
-        Returns:
-            Statistics dictionary
-        """
         print(f"Processing dataset: {dataset_path}")
         print(f"Chunking strategy: {strategy}")
         print(f"Config: {self.config.to_dict()}")

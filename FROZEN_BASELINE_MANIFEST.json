@@ -1,0 +1,60 @@
+{
+  "environment": {
+    "python_version": "3.12.3",
+    "cuda_version": "13.1",
+    "gpu_driver_version": "591.86"
+  },
+  "embedding_model": {
+    "name": "nomic-ai/nomic-embed-text-v1",
+    "device": "cuda",
+    "batch_size": 32,
+    "embedding_dimension": 768,
+    "normalization_type": "L2"
+  },
+  "chunking_config": {
+    "target_words_per_chunk": 150,
+    "min_words_per_chunk": 100,
+    "max_words_per_chunk": 250,
+    "overlap_sentences": 1,
+    "preserve_paragraph_boundaries": true,
+    "keep_case_intro": true,
+    "max_chunks_per_retrieval": 25,
+    "final_chunks_after_rrf": 15
+  },
+  "faiss_index": {
+    "file": "faiss_indices/paragraph_chunks_l2.index",
+    "index_type": "IndexFlatL2",
+    "distance_metric": "L2",
+    "embedding_dimension": 768,
+    "file_size_mb": 639,
+    "sha256_checksum": "be4179e70c5eff21e5bdc5e2685703c5fc88f8f728eae9af39cb53ccff8d0bfe"
+  },
+  "llm": {
+    "base_url": "http://localhost:11434/v1",
+    "api_key": "ollama",
+    "model": "mistral",
+    "ollama_tag": "mistral:latest",
+    "model_type": "Mistral 7B Instruct",
+    "context_window_tokens": 8192
+  },
+  "paths": {
+    "index_path": "faiss_indices/paragraph_chunks_l2.index",
+    "metadata_path": "faiss_indices/paragraph_chunks_metadata_enriched.json",
+    "log_path": "logs/pipeline_interactions.jsonl"
+  },
+  "generation_params": {
+    "temperature": 0.1,
+    "max_tokens": 500,
+    "top_k_chunks": 25,
+    "top_k_cases": 3
+  },
+  "prompt_template": {
+    "system_prompt": "You are a legal research assistant for the European Court of Human Rights (ECtHR). A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated. The retrieved cases may not be an exact match — look for factual and legal similarities.",
+    "user_prompt_suffix": "Based only on the retrieved cases above, identify the most relevant cases, explain the factual similarities, and state what articles were violated."
+  },
+  "aggregation": {
+    "function": "mean_similarity",
+    "ranking_by": "mean_similarity (descending)",
+    "final_cases_returned": 3
+  }
+}

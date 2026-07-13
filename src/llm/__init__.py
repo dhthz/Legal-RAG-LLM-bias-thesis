@@ -1,8 +1,3 @@
-"""
-LLM Module
-
-Provides LLM client, configuration, and prompt templates for the RAG pipeline.
-"""
 
 from .client import MistralClient
 from .config import PipelineConfig

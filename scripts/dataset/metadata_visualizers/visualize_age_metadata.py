@@ -19,7 +19,6 @@ OUTPUT_DIR = Path("visualizations")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 def load_data():
-    """Load unified metadata with age information"""
     print("Loading data from train_with_metadata.jsonl...")
 
     data = []
@@ -32,10 +31,6 @@ def load_data():
     return data
 
 def plot_age_distribution(data):
-    """
-    Plot age distribution with histogram and KDE overlay
-    Shows overall age distribution and age group breakdown
-    """
     print("\n1. Generating age distribution plots...")
 
     # Extract ages
@@ -152,9 +147,6 @@ def plot_age_distribution(data):
     plt.close()
 
 def plot_age_by_article(data):
-    """
-    Plot age distribution by violated article using ANOVA and boxplots
-    """
     print("\n2. Generating age by article analysis...")
 
     # Extract age data by article
@@ -243,9 +235,6 @@ def plot_age_by_article(data):
     return f_stat, p_value, top_article_names, age_groups
 
 def plot_age_by_gender(data):
-    """
-    Plot age distribution by gender with t-tests
-    """
     print("\n3. Generating age by gender cross-tabulation...")
 
     # Extract age and gender data
@@ -423,9 +412,6 @@ def plot_age_by_gender(data):
     return t_stat, p_value, cohens_d
 
 def plot_temporal_trends(data):
-    """
-    Plot age trends over time
-    """
     print("\n4. Generating temporal trends...")
 
     # Extract judgment years and ages
@@ -523,9 +509,6 @@ def plot_temporal_trends(data):
     plt.close()
 
 def plot_age_availability(data):
-    """
-    Analyze missing data patterns and age availability
-    """
     print("\n5. Generating age availability analysis...")
 
     total_cases = len(data)
@@ -665,9 +648,6 @@ def plot_age_availability(data):
     plt.close()
 
 def plot_bias_indicators(data):
-    """
-    Analyze potential bias indicators in age metadata
-    """
     print("\n6. Generating bias indicators...")
 
     # Extract ages
@@ -838,9 +818,6 @@ def plot_bias_indicators(data):
     plt.close()
 
 def generate_statistical_report(data):
-    """
-    Generate comprehensive statistical report
-    """
     print("\n7. Generating statistical report...")
 
     # Extract all ages
@@ -995,7 +972,6 @@ END OF REPORT
     print(f"   ✅ Saved: {output_path}")
 
 def main():
-    """Main execution"""
     print("=" * 70)
     print("AGE METADATA VISUALIZATION")
     print("=" * 70)

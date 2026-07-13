@@ -7,7 +7,6 @@ from pathlib import Path
 
 
 class AgeExtractor:
-    """Extract age information from case facts."""
 
     def __init__(self):
         # Compile regex patterns for better performance
@@ -26,10 +25,6 @@ class AgeExtractor:
         ]
 
     def extract_birth_year(self, facts, case_id):
-        """
-        Extract birth year from facts.
-        Returns: int or None
-        """
         # Check first 10 facts (usually biographical info is early)
         for fact in facts[:10]:
             # Skip very long facts (likely procedural)
@@ -193,7 +188,6 @@ def process_dataset(input_file, output_file):
 
 
 def print_statistics(stats):
-    """Print comprehensive statistics."""
 
     print("\n" + "=" * 80)
     print("AGE EXTRACTION STATISTICS")
@@ -227,7 +221,6 @@ def print_statistics(stats):
 
 
 def generate_summary_report(output_file, stats):
-    """Generate a text summary report."""
 
     report_file = output_file.replace('.jsonl', '_report.txt')
 
@@ -272,7 +265,6 @@ def generate_summary_report(output_file, stats):
 
 
 def main():
-    """Main execution."""
 
     # File paths - relative to script location
     script_dir = os.path.dirname(os.path.abspath(__file__))

@@ -5,7 +5,6 @@ from pathlib import Path
 
 
 def load_sentiment_data(dataset_path):
-    """Load all sentiment metadata from dataset"""
     print(f"Loading sentiment data from {dataset_path}...")
 
     cases = []
@@ -31,7 +30,6 @@ def load_sentiment_data(dataset_path):
 
 
 def compute_basic_statistics(sentiment_data):
-    """Compute basic statistical measures for all sentiment metrics"""
 
     metrics = [
         'word_count', 'emotional_word_count', 'nrc_fear', 'nrc_anger',
@@ -61,7 +59,6 @@ def compute_basic_statistics(sentiment_data):
 
 
 def analyze_by_article(sentiment_data):
-    """Analyze sentiment patterns by violated article"""
 
     article_sentiment = defaultdict(list)
 
@@ -92,7 +89,6 @@ def analyze_by_article(sentiment_data):
 
 
 def identify_outliers(sentiment_data):
-    """Identify cases with extreme emotional content"""
 
     # Sort by emotional intensity
     sorted_by_intensity = sorted(sentiment_data, key=lambda x: x['nrc_emotional_intensity'], reverse=True)
@@ -118,7 +114,6 @@ def identify_outliers(sentiment_data):
 
 
 def compute_correlations(sentiment_data):
-    """Compute correlations between sentiment metrics"""
 
     # Extract key metrics
     emotional_intensity = [s['nrc_emotional_intensity'] for s in sentiment_data]
@@ -357,7 +352,6 @@ def generate_report(stats, article_stats, outliers, correlations, output_path):
 
 
 def main():
-    """Run sentiment analysis"""
 
     dataset_path = "dataset/train_with_metadata.jsonl"
     output_path = "SENTIMENT_ANALYSIS_REPORT.txt"

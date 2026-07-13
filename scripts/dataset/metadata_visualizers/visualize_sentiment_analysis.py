@@ -1,13 +1,3 @@
-"""
-Sentiment Metadata Visualization & Statistical Analysis
-========================================================
-Techniques used:
-- Distribution plots (histograms, KDE)
-- Correlation heatmaps (Pearson correlation)
-- Article-specific boxplots (ANOVA)
-- Statistical tests (t-tests, chi-square)
-- PCA for dimensionality reduction
-"""
 
 import json
 import numpy as np
@@ -27,7 +17,6 @@ plt.rcParams['figure.figsize'] = (12, 8)
 
 
 class SentimentVisualizer:
-    """Creates visualizations for sentiment metadata analysis"""
 
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
@@ -36,7 +25,6 @@ class SentimentVisualizer:
         self.load_data()
 
     def load_data(self):
-        """Load sentiment data from dataset"""
         print(f"Loading data from {self.dataset_path}...")
 
         with open(self.dataset_path, 'r', encoding='utf-8') as f:
@@ -56,7 +44,6 @@ class SentimentVisualizer:
         print(f"Loaded {len(self.sentiment_data)} cases with sentiment metadata\n")
 
     def plot_distributions(self):
-        """Plot distributions of key sentiment metrics"""
         print("Creating distribution plots...")
 
         fig, axes = plt.subplots(3, 3, figsize=(15, 12))
@@ -113,7 +100,6 @@ class SentimentVisualizer:
         plt.close()
 
     def plot_correlation_heatmap(self):
-        """Plot correlation heatmap using Pearson correlation"""
         print("Creating correlation heatmap...")
 
         # Extract key metrics
@@ -175,7 +161,6 @@ class SentimentVisualizer:
                     print(f"     {metrics[i]} ↔ {metrics[j]}: r = {r:.3f}")
 
     def plot_article_comparison(self):
-        """Compare sentiment across different violated articles using ANOVA"""
         print("Creating article comparison plots...")
 
         # Group by article
@@ -254,7 +239,6 @@ class SentimentVisualizer:
             print(f"     {metric_label:25} F={f_stat:6.2f}, p={p_value:.4f} {sig}")
 
     def plot_emotion_composition(self):
-        """Plot emotion composition across dataset"""
         print("Creating emotion composition plot...")
 
         emotions = ['nrc_fear', 'nrc_anger', 'nrc_sadness', 'nrc_disgust']
@@ -300,7 +284,6 @@ class SentimentVisualizer:
         plt.close()
 
     def plot_bias_indicators(self):
-        """Plot potential bias indicators for RAG evaluation"""
         print("Creating bias indicator plots...")
 
         fig, axes = plt.subplots(2, 2, figsize=(16, 12))
@@ -399,7 +382,6 @@ class SentimentVisualizer:
         plt.close()
 
     def generate_statistical_report(self):
-        """Generate statistical test results"""
         print("\nGenerating statistical analysis report...")
 
         report = []
@@ -468,7 +450,6 @@ class SentimentVisualizer:
 
 
 def main():
-    """Run complete visualization pipeline"""
 
     print("=" * 80)
     print(" " * 20 + "SENTIMENT METADATA VISUALIZATION")

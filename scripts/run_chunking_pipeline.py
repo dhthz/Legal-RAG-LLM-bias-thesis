@@ -1,13 +1,3 @@
-"""
-Complete Chunking Pipeline Runner
-=================================
-This script runs the complete pipeline:
-1. Chunk the dataset
-2. Create embeddings
-3. Build FAISS index
-4. Test retrieval
-5. Generate analysis report
-"""
 
 import sys
 import os
@@ -20,7 +10,6 @@ from pathlib import Path
 
 
 def analyze_original_dataset(dataset_path: str):
-    """Analyze the original dataset to inform chunking decisions"""
     print("\n" + "=" * 60)
     print("ANALYZING ORIGINAL DATASET")
     print("=" * 60)
@@ -86,7 +75,6 @@ def analyze_original_dataset(dataset_path: str):
 
 
 def run_complete_pipeline():
-    """Run the complete chunking and embedding pipeline"""
 
     print("\n" + "=" * 80)
     print(" " * 20 + "LEGAL CASE CHUNKING & EMBEDDING PIPELINE")

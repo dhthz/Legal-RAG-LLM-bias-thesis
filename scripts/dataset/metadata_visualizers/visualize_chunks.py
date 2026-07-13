@@ -5,7 +5,6 @@ from collections import Counter
 
 
 def visualize_chunking_results(chunked_file: str, output_dir: str = "visualizations"):
-    """Create visualizations of chunking results"""
 
     import os
     os.makedirs(output_dir, exist_ok=True)
@@ -147,7 +146,6 @@ def visualize_chunking_results(chunked_file: str, output_dir: str = "visualizati
 
 
 def compare_case_before_after(case_id: str, original_file: str, chunked_file: str):
-    """Compare a specific case before and after chunking"""
 
     print(f"\n" + "=" * 60)
     print(f"CASE COMPARISON: {case_id}")

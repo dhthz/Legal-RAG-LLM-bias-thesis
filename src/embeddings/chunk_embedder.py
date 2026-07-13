@@ -1,12 +1,3 @@
-"""
-Chunk Embedding Module
-======================
-
-Creates embeddings for chunked legal cases optimized for:
-- Paragraph-level retrieval
-- Mistral 7B context window
-- Bias analysis at different granularities
-"""
 
 import json
 import os
@@ -20,9 +11,6 @@ from pathlib import Path
 
 
 class ChunkEmbedder:
-    """
-    Creates and manages embeddings for chunked legal cases
-    """
 
     def __init__(
         self,
@@ -30,14 +18,6 @@ class ChunkEmbedder:
         device: str = "cuda",
         batch_size: int = 32
     ):
-        """
-        Initialize embedder
-
-        Args:
-            model_name: Sentence transformer model to use
-            device: 'cuda' or 'cpu'
-            batch_size: Batch size for encoding
-        """
         self.model_name = model_name
         self.device = device
         self.batch_size = batch_size
@@ -56,15 +36,6 @@ class ChunkEmbedder:
         print(f"Embedding dimension: {self.embedding_dim}")
 
     def load_chunks(self, chunk_file: str) -> tuple[List[str], List[Dict]]:
-        """
-        Load chunks from JSONL file
-
-        Args:
-            chunk_file: Path to chunked dataset JSONL
-
-        Returns:
-            Tuple of (chunk_texts, chunk_metadata)
-        """
         print(f"Loading chunks from: {chunk_file}")
 
         chunk_texts = []
@@ -87,16 +58,6 @@ class ChunkEmbedder:
         chunk_texts: List[str],
         normalize: bool = True
     ) -> np.ndarray:
-        """
-        Create embeddings for all chunks
-
-        Args:
-            chunk_texts: List of chunk text strings
-            normalize: Whether to normalize embeddings (recommended for L2/cosine)
-
-        Returns:
-            Numpy array of embeddings
-        """
         print(f"\nCreating embeddings for {len(chunk_texts)} chunks...")
 
         embeddings = self.model.encode(
@@ -115,16 +76,6 @@ class ChunkEmbedder:
         embeddings: np.ndarray,
         index_type: str = "L2"
     ) -> faiss.Index:
-        """
-        Build FAISS index from embeddings
-
-        Args:
-            embeddings: Numpy array of embeddings
-            index_type: 'L2' or 'IP' (inner product)
-
-        Returns:
-            FAISS index
-        """
         print(f"\nBuilding FAISS {index_type} index...")
 
         if index_type == "L2":
@@ -146,15 +97,6 @@ class ChunkEmbedder:
         index_path: str,
         metadata_path: str
     ):
-        """
-        Save FAISS index and metadata to disk
-
-        Args:
-            index: FAISS index
-            metadata: List of metadata dictionaries
-            index_path: Where to save index
-            metadata_path: Where to save metadata JSON
-        """
         # Create directories if needed
         Path(index_path).parent.mkdir(parents=True, exist_ok=True)
         Path(metadata_path).parent.mkdir(parents=True, exist_ok=True)
@@ -182,17 +124,6 @@ class ChunkEmbedder:
         output_dir: str,
         index_name: str = "paragraph_chunks"
     ) -> Dict:
-        """
-        Complete pipeline: load chunks -> embed -> build index -> save
-
-        Args:
-            chunk_file: Path to chunked JSONL file
-            output_dir: Directory to save index and metadata
-            index_name: Base name for output files
-
-        Returns:
-            Statistics dictionary
-        """
         # Load chunks
         chunk_texts, chunk_metadata = self.load_chunks(chunk_file)
 
@@ -239,19 +170,8 @@ class ChunkEmbedder:
 
 
 class ChunkRetriever:
-    """
-    Retrieve relevant chunks and aggregate to case level
-    """
 
     def __init__(self, index_path: str, metadata_path: str, model_name: str = "nomic-ai/nomic-embed-text-v1"):
-        """
-        Initialize retriever
-
-        Args:
-            index_path: Path to FAISS index
-            metadata_path: Path to metadata JSON
-            model_name: Model used for embeddings
-        """
         self.index = faiss.read_index(index_path)
         print(f"Loaded index with {self.index.ntotal} chunks")
 
@@ -263,16 +183,6 @@ class ChunkRetriever:
         self.model = SentenceTransformer(model_name, trust_remote_code=True, device='cuda')
 
     def retrieve_chunks(self, query: str, top_k: int = 25) -> List[Dict]:
-        """
-        Retrieve most similar chunks
-
-        Args:
-            query: Query text
-            top_k: Number of chunks to retrieve
-
-        Returns:
-            List of chunk dictionaries with similarity scores
-        """
         # Encode query
         query_embedding = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
 
@@ -292,17 +202,6 @@ class ChunkRetriever:
         return results
 
     def aggregate_chunks_to_cases(self, chunks: List[Dict], top_k_cases: int = 5) -> List[Dict]:
-        """
-        Aggregate retrieved chunks to case level
-        Keep the most relevant chunks per case
-
-        Args:
-            chunks: List of retrieved chunks
-            top_k_cases: Number of unique cases to return
-
-        Returns:
-            List of cases with their most relevant chunks
-        """
         from collections import defaultdict
 
         # Group chunks by case_id

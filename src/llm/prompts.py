@@ -1,6 +1,3 @@
-"""
-Prompt generation template for LLM
-"""
 
 from typing import List, Dict
 

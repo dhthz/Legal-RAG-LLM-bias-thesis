@@ -1,4 +1,3 @@
-"""Client for interacting with Mistral via OpenAI-compatible API."""
 from typing import List, Dict, Any
 import httpx
 from openai import OpenAI
@@ -7,7 +6,7 @@ from .config import PipelineConfig
 class MistralClient:
     
     def __init__(self):
-        self.config = PipelineConfig.load_from_env()
+        self.config = PipelineConfig.load_from_manifest()
         self.client = OpenAI(
             base_url=self.config.base_url,
             api_key=self.config.api_key,

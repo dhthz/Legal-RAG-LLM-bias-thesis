@@ -1,12 +1,3 @@
-"""
-Merge Extracted Metadata into Chunk Metadata
-=============================================
-
-This script merges your extracted metadata (gender, age, sentiment)
-into the chunk metadata JSON file without re-embedding.
-
-Run this AFTER the chunking pipeline completes.
-"""
 
 import json
 from pathlib import Path
@@ -15,7 +6,6 @@ from collections import defaultdict
 
 
 class MetadataMerger:
-    """Merges case-level metadata into chunk-level metadata"""
 
     def __init__(self):
         self.gender_data = {}
@@ -23,7 +13,6 @@ class MetadataMerger:
         self.sentiment_data = {}
 
     def load_gender_data(self, gender_file: str):
-        """Load gender classification results"""
         print(f"Loading gender data from: {gender_file}")
 
         with open(gender_file, 'r', encoding='utf-8') as f:
@@ -38,7 +27,6 @@ class MetadataMerger:
         print(f"Loaded gender data for {len(self.gender_data)} cases")
 
     def load_age_data(self, age_file: str):
-        """Load age extraction results"""
         print(f"Loading age data from: {age_file}")
 
         with open(age_file, 'r', encoding='utf-8') as f:
@@ -54,7 +42,6 @@ class MetadataMerger:
         print(f"Loaded age data for {len(self.age_data)} cases")
 
     def load_sentiment_data(self, sentiment_file: str):
-        """Load sentiment analysis results"""
         print(f"Loading sentiment data from: {sentiment_file}")
 
         # Check if CSV or JSONL
@@ -92,16 +79,6 @@ class MetadataMerger:
         chunk_metadata_file: str,
         output_file: str
     ) -> Dict:
-        """
-        Merge all metadata into chunk metadata file
-
-        Args:
-            chunk_metadata_file: Path to paragraph_chunks_metadata.json
-            output_file: Where to save enriched metadata
-
-        Returns:
-            Statistics dictionary
-        """
         print(f"\nLoading chunk metadata from: {chunk_metadata_file}")
 
         with open(chunk_metadata_file, 'r', encoding='utf-8') as f:
@@ -193,7 +170,6 @@ class MetadataMerger:
         return stats
 
     def verify_enriched_chunks(self, enriched_file: str, sample_size: int = 5):
-        """Verify the enriched metadata by showing samples"""
         print(f"\n" + "=" * 60)
         print(f"VERIFYING ENRICHED CHUNKS (showing {sample_size} samples)")
         print("=" * 60)
@@ -223,7 +199,6 @@ class MetadataMerger:
 
 
 def main():
-    """Main execution function"""
 
     print("=" * 60)
     print("METADATA MERGER FOR CHUNK ENRICHMENT")

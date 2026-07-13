@@ -19,7 +19,6 @@ OUTPUT_DIR = Path("visualizations")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
 def load_data():
-    """Load basic dataset"""
     print("Loading data from train.jsonl...")
 
     data = []
@@ -32,9 +31,6 @@ def load_data():
     return data
 
 def plot_article_distribution(data):
-    """
-    Plot distribution of violated articles
-    """
     print("\n1. Generating violated articles distribution...")
 
     # Count violated articles
@@ -159,9 +155,6 @@ def plot_article_distribution(data):
     plt.close()
 
 def plot_temporal_trends(data):
-    """
-    Plot temporal trends of judgments over time
-    """
     print("\n2. Generating temporal trends...")
 
     # Extract judgment dates
@@ -278,9 +271,6 @@ def plot_temporal_trends(data):
     plt.close()
 
 def plot_defendant_countries(data):
-    """
-    Plot distribution of defendant countries
-    """
     print("\n3. Generating defendant countries distribution...")
 
     # Count defendants
@@ -431,9 +421,6 @@ def plot_defendant_countries(data):
     plt.close()
 
 def plot_case_outcomes(data):
-    """
-    Plot case outcomes (violated vs non-violated)
-    """
     print("\n4. Generating case outcomes analysis...")
 
     # Count outcomes
@@ -556,9 +543,6 @@ def plot_case_outcomes(data):
     plt.close()
 
 def plot_article_cooccurrence(data):
-    """
-    Plot article co-occurrence patterns
-    """
     print("\n5. Generating article co-occurrence analysis...")
 
     # Build co-occurrence matrix for top 15 articles
@@ -653,9 +637,6 @@ def plot_article_cooccurrence(data):
     plt.close()
 
 def generate_dataset_report(data):
-    """
-    Generate comprehensive dataset report
-    """
     print("\n6. Generating dataset overview report...")
 
     # Collect statistics
@@ -777,7 +758,6 @@ END OF REPORT
     print(f"   ✅ Saved: {output_path}")
 
 def main():
-    """Main execution"""
     print("=" * 70)
     print("DATASET OVERVIEW VISUALIZATION")
     print("=" * 70)

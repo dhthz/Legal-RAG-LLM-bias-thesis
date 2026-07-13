@@ -16,7 +16,6 @@ plt.rcParams['savefig.dpi'] = 300
 
 
 class GenderVisualizer:
-    """Creates visualizations for gender metadata analysis"""
 
     def __init__(self, dataset_path):
         self.dataset_path = dataset_path
@@ -24,7 +23,6 @@ class GenderVisualizer:
         self.load_data()
 
     def load_data(self):
-        """Load gender classification data from dataset"""
         print(f"Loading data from {self.dataset_path}...")
 
         with open(self.dataset_path, 'r', encoding='utf-8') as f:
@@ -45,7 +43,6 @@ class GenderVisualizer:
         print(f"Loaded {len(self.cases)} cases with gender classification\n")
 
     def plot_gender_distribution(self):
-        """Plot overall gender distribution"""
         print("Creating gender distribution plot...")
 
         gender_counts = Counter(c['gender'] for c in self.cases)
@@ -87,7 +84,6 @@ class GenderVisualizer:
         plt.close()
 
     def plot_confidence_analysis(self):
-        """Analyze confidence levels by gender"""
         print("Creating confidence analysis plot...")
 
         # Group by gender and confidence
@@ -150,7 +146,6 @@ class GenderVisualizer:
         plt.close()
 
     def plot_gender_by_article(self):
-        """Analyze gender distribution by violated article using Chi-square tests"""
         print("Creating gender by article analysis...")
 
         # Group by article
@@ -240,7 +235,6 @@ class GenderVisualizer:
             print(f"     Article {article:10} Male: {observed_male/total:.1%} vs {overall_male_pct:.1%} baseline, χ²={chi2:.2f}, p={p_value:.4f} {sig}")
 
     def plot_temporal_trends(self):
-        """Analyze gender representation over time"""
         print("Creating temporal trend analysis...")
 
         # Parse dates and group by year
@@ -302,7 +296,6 @@ class GenderVisualizer:
         plt.close()
 
     def plot_bias_indicators(self):
-        """Plot potential bias indicators for RAG evaluation"""
         print("Creating bias indicator plots...")
 
         gender_counts = Counter(c['gender'] for c in self.cases)
@@ -405,7 +398,6 @@ class GenderVisualizer:
         plt.close()
 
     def generate_statistical_report(self):
-        """Generate statistical test results"""
         print("\nGenerating statistical analysis report...")
 
         report = []
@@ -466,7 +458,6 @@ class GenderVisualizer:
 
 
 def main():
-    """Run complete gender visualization pipeline"""
 
     print("=" * 80)
     print(" " * 20 + "GENDER METADATA VISUALIZATION")

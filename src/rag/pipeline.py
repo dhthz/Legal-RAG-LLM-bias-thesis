@@ -1,4 +1,3 @@
-""" LLM RAG pipeline""" 
 
 import json
 import logging
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 class RAGPipeline():
     
     def __init__(self):
-        self.config = PipelineConfig.load_from_env()
+        self.config = PipelineConfig.load_from_manifest()
         
         self.retriever = ChunkRetriever(
             index_path = self.config.index_path,

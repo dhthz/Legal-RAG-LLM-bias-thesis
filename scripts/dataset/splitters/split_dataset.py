@@ -6,14 +6,6 @@ import os
 from pathlib import Path
 
 def split_jsonl(input_file, output_dir, num_splits=10):
-    """
-    Split a JSONL file into multiple smaller files.
-
-    Args:
-        input_file: Path to the input JSONL file
-        output_dir: Directory to save the split files
-        num_splits: Number of files to split into
-    """
     # Read all lines
     with open(input_file, 'r', encoding='utf-8') as f:
         lines = f.readlines()

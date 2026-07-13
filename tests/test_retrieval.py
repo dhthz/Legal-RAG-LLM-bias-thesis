@@ -1,18 +1,3 @@
-"""
-Interactive Retrieval Testing Script
-====================================
-
-Test the chunk retrieval system interactively.
-
-Usage:
-    $ python -i scripts/test_retrieval.py
-
-Then in Python shell:
-    >>> query("Article 8 violation involving family life")
-    >>> case_detail(0)
-    >>> show_chunk(0, 0)
-    >>> compare_queries(["detention", "torture"])
-"""
 
 import sys
 import os
@@ -42,20 +27,20 @@ if Path(METADATA_PATH_ENRICHED).exists():
 elif Path(METADATA_PATH_BASIC).exists():
     METADATA_PATH = METADATA_PATH_BASIC
     print("⚠️  Using BASIC metadata (age/sentiment/gender NOT available)")
-    print("   Run: python scripts/merge_unified_metadata_to_chunks.py to enrich")
+    print("   Run: python scripts/dataset/mergers/merge_metadata_to_chunks.py to enrich")
 else:
     print(f"❌ Error: No metadata found!")
     print(f"   Tried: {METADATA_PATH_ENRICHED}")
     print(f"   Tried: {METADATA_PATH_BASIC}")
     print("   Run the chunking pipeline first:")
-    print("   $ python scripts/run_chunking_pipeline.py")
+    print("   $ python scripts/test/RAG/run_chunking_pipeline.py")
     sys.exit(1)
 
 # Check if index exists
 if not Path(INDEX_PATH).exists():
     print(f"❌ Error: Index not found at {INDEX_PATH}")
     print("   Run the chunking pipeline first:")
-    print("   $ python scripts/run_chunking_pipeline.py")
+    print("   $ python scripts/test/RAG/run_chunking_pipeline.py")
     sys.exit(1)
 
 # ======================
@@ -89,23 +74,6 @@ def query(
     chunks_per_case: int = 3,
     show_preview: bool = True
 ) -> List[dict]:
-    """
-    Perform a retrieval query
-
-    Args:
-        q: Query text
-        top_k: Number of chunks to retrieve
-        top_cases: Number of cases to aggregate to
-        chunks_per_case: Number of chunks to display per case
-        show_preview: Whether to print results preview
-
-    Returns:
-        List of case dictionaries with chunks
-
-    Example:
-        >>> query("Article 8 violation")
-        >>> query("detention without trial", top_cases=3)
-    """
     global _last_query, _last_chunks, _last_cases
 
     print(f"\n{'=' * 70}")
@@ -179,15 +147,6 @@ def query(
 
 
 def case_detail(case_idx: int):
-    """
-    Show detailed information about a specific case
-
-    Args:
-        case_idx: Index of case in last query results (0-based)
-
-    Example:
-        >>> case_detail(0)  # Show details for top case
-    """
     if _last_cases is None:
         print("❌ No query results. Run query() first.")
         return
@@ -223,17 +182,6 @@ def case_detail(case_idx: int):
 
 
 def show_chunk(case_idx: int, chunk_idx: int):
-    """
-    Display full text of a specific chunk
-
-    Args:
-        case_idx: Index of case (0-based)
-        chunk_idx: Index of chunk within that case (0-based)
-
-    Example:
-        >>> show_chunk(0, 0)  # Show first chunk of top case
-        >>> show_chunk(1, 2)  # Show third chunk of second case
-    """
     if _last_cases is None:
         print("❌ No query results. Run query() first.")
         return
@@ -306,12 +254,6 @@ def show_chunk(case_idx: int, chunk_idx: int):
 
 
 def stats():
-    """
-    Show retrieval system statistics
-
-    Example:
-        >>> stats()
-    """
     print(f"\n{'=' * 70}")
     print("RETRIEVAL SYSTEM STATISTICS")
     print(f"{'=' * 70}")
@@ -338,17 +280,6 @@ def stats():
 
 
 def compare_queries(queries: List[str], top_k: int = 25, top_cases: int = 3):
-    """
-    Compare multiple queries side-by-side
-
-    Args:
-        queries: List of query strings to compare
-        top_k: Chunks to retrieve per query
-        top_cases: Cases to show per query
-
-    Example:
-        >>> compare_queries(["detention", "torture", "family life"])
-    """
     print(f"\n{'=' * 70}")
     print(f"COMPARING {len(queries)} QUERIES")
     print(f"{'=' * 70}\n")
@@ -379,17 +310,6 @@ def compare_queries(queries: List[str], top_k: int = 25, top_cases: int = 3):
 
 
 def test_context_window(q: str, max_cases: int = 5, chunks_per_case: int = 3):
-    """
-    Test how much context would be sent to Mistral 7B
-
-    Args:
-        q: Query text
-        max_cases: Maximum cases to include
-        chunks_per_case: Chunks per case
-
-    Example:
-        >>> test_context_window("detention without trial")
-    """
     print(f"\n{'=' * 70}")
     print("MISTRAL 7B CONTEXT WINDOW TEST")
     print(f"{'=' * 70}")
@@ -437,12 +357,6 @@ def test_context_window(q: str, max_cases: int = 5, chunks_per_case: int = 3):
 
 
 def example_queries():
-    """
-    Show example queries you can try
-
-    Example:
-        >>> example_queries()
-    """
     examples = [
         # Detention/Article 5 cases
         "On 2 March 1994 Mr Dicle and Mr Doğan were taken into police custody on the orders of the public prosecutor at the Ankara National Security Court. On 4 March 1994 Mrs Zana suffered the same fate. A few days later the public prosecutor at the Ankara National Security Court ordered the detention of those three applicants in police custody to be extended until 16 March 1994. While in custody, the applicants made no statements to the police. On 16 March 1994 they were brought before a judge of the Ankara National Security Court and placed in detention pending trial.",
@@ -512,12 +426,6 @@ def example_queries():
 
 
 def help():
-    """
-    Show available functions and usage
-
-    Example:
-        >>> help()
-    """
     print(f"\n{'=' * 70}")
     print("AVAILABLE FUNCTIONS")
     print(f"{'=' * 70}\n")

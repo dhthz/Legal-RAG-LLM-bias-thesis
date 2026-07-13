@@ -6,13 +6,6 @@ import os
 from collections import Counter
 
 def validate_split(original_file, split_dir):
-    """
-    Validate that split files match the original file exactly.
-
-    Args:
-        original_file: Path to the original JSONL file
-        split_dir: Directory containing the split files
-    """
     print("Reading original file...")
     original_case_ids = []
     with open(original_file, 'r', encoding='utf-8') as f:
