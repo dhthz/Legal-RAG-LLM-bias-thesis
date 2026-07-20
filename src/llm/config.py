@@ -23,7 +23,7 @@ class PipelineConfig:
     metadata_path: str = "faiss_indices/paragraph_chunks_metadata_enriched.json"
 
     # Log path
-    log_path: str = "logs/pipeline_interactions.jsonl"
+    log_path: str = "logs/LLM/pipeline_interactions.jsonl"
 
     @classmethod
     def load_from_manifest(cls, manifest_path: Path = MANIFEST_PATH):

@@ -1,0 +1,6027 @@
+{
+  "timestamp": "2026-07-15T14:25:27.486142",
+  "config": {
+    "index_path": "faiss_indices/paragraph_chunks_l2.index",
+    "metadata_path": "faiss_indices/paragraph_chunks_metadata_enriched.json",
+    "prod_top_k_chunks": 25,
+    "prod_top_k_cases": 3,
+    "eval_top_k_chunks": 100,
+    "recall_ks": [
+      1,
+      5,
+      10
+    ],
+    "mrr_cutoff": 10,
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 42,
+    "aggregation": "mean_similarity, tie-break case_id",
+    "query_file": "dataset/eval/retrieval_eval_queries.jsonl",
+    "query_file_sha256": "837d0e4fbf2b065eddd91a909c5654d2144e0d72630362cf44a928dc19f2e6ba",
+    "n_queries": 100,
+    "eval_runtime_seconds": 24.3
+  },
+  "metrics": {
+    "recall@1": {
+      "value": 0.9,
+      "hits": 90,
+      "n": 100,
+      "wilson_95ci": [
+        0.8256326956323347,
+        0.9447714583868639
+      ]
+    },
+    "recall@5": {
+      "value": 1.0,
+      "hits": 100,
+      "n": 100,
+      "wilson_95ci": [
+        0.9630051925239981,
+        0.9999999999999999
+      ]
+    },
+    "recall@10": {
+      "value": 1.0,
+      "hits": 100,
+      "n": 100,
+      "wilson_95ci": [
+        0.9630051925239981,
+        0.9999999999999999
+      ]
+    },
+    "mrr@10": {
+      "value": 0.9406666666666667,
+      "bootstrap_95ci": [
+        0.9026666666666666,
+        0.9733333333333334
+      ]
+    },
+    "prod_recall@1": {
+      "value": 0.9,
+      "hits": 90,
+      "n": 100,
+      "wilson_95ci": [
+        0.8256326956323347,
+        0.9447714583868639
+      ]
+    },
+    "prod_recall@3": {
+      "value": 0.98,
+      "hits": 98,
+      "n": 100,
+      "wilson_95ci": [
+        0.9299868370580063,
+        0.9944981477650318
+      ]
+    },
+    "mean_top5_chunk_similarity": 0.9612287876605988,
+    "mean_gt_top_chunk_similarity": 0.9696218520402908,
+    "queries_with_gt_in_chunk_pool": 100
+  },
+  "per_query": [
+    {
+      "query_id": "q001",
+      "source_case_id": "001-157520",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9815165162086487,
+      "gt_top_chunk_similarity": 0.98609459400177,
+      "gt_chunks_in_pool": 11,
+      "top_10_cases": [
+        {
+          "case_id": "001-157520",
+          "avg_similarity": 0.9762221466411244,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-60557",
+          "avg_similarity": 0.9089685082435608,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-105215",
+          "avg_similarity": 0.9084404468536377,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-67514",
+          "avg_similarity": 0.905332260661655,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-95286",
+          "avg_similarity": 0.904306024312973,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-89646",
+          "avg_similarity": 0.9033650358517965,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-94198",
+          "avg_similarity": 0.9030553698539734,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-97866",
+          "avg_similarity": 0.9028752446174622,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-159198",
+          "avg_similarity": 0.9020711183547974,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-99834",
+          "avg_similarity": 0.9017435386776924,
+          "num_chunks": 8
+        }
+      ]
+    },
+    {
+      "query_id": "q002",
+      "source_case_id": "001-146386",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9858320951461792,
+      "gt_top_chunk_similarity": 0.9911116361618042,
+      "gt_chunks_in_pool": 10,
+      "top_10_cases": [
+        {
+          "case_id": "001-146386",
+          "avg_similarity": 0.9790775060653687,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-97924",
+          "avg_similarity": 0.9552581310272217,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-96693",
+          "avg_similarity": 0.9459642052650452,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-87350",
+          "avg_similarity": 0.9440578818321228,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-105217",
+          "avg_similarity": 0.9440380334854126,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-76114",
+          "avg_similarity": 0.9440165758132935,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-77778",
+          "avg_similarity": 0.9439342021942139,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157695",
+          "avg_similarity": 0.943917191028595,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-104704",
+          "avg_similarity": 0.9430248141288757,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-127813",
+          "avg_similarity": 0.9410797357559204,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q003",
+      "source_case_id": "001-145223",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9696089863777161,
+      "gt_top_chunk_similarity": 0.9727757573127747,
+      "gt_chunks_in_pool": 45,
+      "top_10_cases": [
+        {
+          "case_id": "001-145223",
+          "avg_similarity": 0.9495184063911438,
+          "num_chunks": 45
+        },
+        {
+          "case_id": "001-121774",
+          "avg_similarity": 0.9245041310787201,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-109191",
+          "avg_similarity": 0.9237801920283925,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-86729",
+          "avg_similarity": 0.9220999654601602,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-68713",
+          "avg_similarity": 0.9211535553137461,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-108431",
+          "avg_similarity": 0.9185158252716065,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-76507",
+          "avg_similarity": 0.918384313583374,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-110382",
+          "avg_similarity": 0.9175824820995331,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-120951",
+          "avg_similarity": 0.9104068477948507,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-101471",
+          "avg_similarity": 0.9091389179229736,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q004",
+      "source_case_id": "001-158709",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.97691251039505,
+      "gt_top_chunk_similarity": 0.9805479049682617,
+      "gt_chunks_in_pool": 12,
+      "top_10_cases": [
+        {
+          "case_id": "001-158709",
+          "avg_similarity": 0.9664148638645808,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-81008",
+          "avg_similarity": 0.9196586608886719,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-159194",
+          "avg_similarity": 0.918407142162323,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-61480",
+          "avg_similarity": 0.9171646162867546,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-73312",
+          "avg_similarity": 0.9160959720611572,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-77082",
+          "avg_similarity": 0.9152394930521647,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-107558",
+          "avg_similarity": 0.9145863056182861,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-70851",
+          "avg_similarity": 0.9145134091377258,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-85019",
+          "avg_similarity": 0.9129412114620209,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-60732",
+          "avg_similarity": 0.9127350350220998,
+          "num_chunks": 6
+        }
+      ]
+    },
+    {
+      "query_id": "q005",
+      "source_case_id": "001-148625",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9716259002685547,
+      "gt_top_chunk_similarity": 0.9763172268867493,
+      "gt_chunks_in_pool": 13,
+      "top_10_cases": [
+        {
+          "case_id": "001-148625",
+          "avg_similarity": 0.9632077079552871,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-147038",
+          "avg_similarity": 0.9599897861480713,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-98327",
+          "avg_similarity": 0.9597470164299011,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95093",
+          "avg_similarity": 0.9549687027931213,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-145350",
+          "avg_similarity": 0.9546544253826141,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-93882",
+          "avg_similarity": 0.9546247720718384,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141625",
+          "avg_similarity": 0.9544670581817627,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100941",
+          "avg_similarity": 0.9541150331497192,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-119044",
+          "avg_similarity": 0.9524958729743958,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-114090",
+          "avg_similarity": 0.9524626731872559,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q006",
+      "source_case_id": "001-148184",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.957994532585144,
+      "gt_top_chunk_similarity": 0.9882294535636902,
+      "gt_chunks_in_pool": 8,
+      "top_10_cases": [
+        {
+          "case_id": "001-148184",
+          "avg_similarity": 0.9458231925964355,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-79071",
+          "avg_similarity": 0.9062181785702705,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-151000",
+          "avg_similarity": 0.902096176147461,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-61920",
+          "avg_similarity": 0.9015411734580994,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-93235",
+          "avg_similarity": 0.9005157252152761,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-150997",
+          "avg_similarity": 0.9004453950458102,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-144114",
+          "avg_similarity": 0.8998726407686869,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-123422",
+          "avg_similarity": 0.8987930417060852,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-79560",
+          "avg_similarity": 0.8983161846796671,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-60628",
+          "avg_similarity": 0.8979849293828011,
+          "num_chunks": 8
+        }
+      ]
+    },
+    {
+      "query_id": "q007",
+      "source_case_id": "001-147885",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9824976563453675,
+      "gt_top_chunk_similarity": 0.9845491647720337,
+      "gt_chunks_in_pool": 11,
+      "top_10_cases": [
+        {
+          "case_id": "001-147885",
+          "avg_similarity": 0.9635320630940524,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-144937",
+          "avg_similarity": 0.9153409004211426,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145364",
+          "avg_similarity": 0.9081835475834933,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-105653",
+          "avg_similarity": 0.9077140092849731,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-99871",
+          "avg_similarity": 0.9073786735534668,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-108963",
+          "avg_similarity": 0.9062222838401794,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-78395",
+          "avg_similarity": 0.904534786939621,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-157279",
+          "avg_similarity": 0.903989166021347,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-116827",
+          "avg_similarity": 0.9037457406520844,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-159060",
+          "avg_similarity": 0.9013789296150208,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q008",
+      "source_case_id": "001-146769",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9589812755584717,
+      "gt_top_chunk_similarity": 0.9674180150032043,
+      "gt_chunks_in_pool": 66,
+      "top_10_cases": [
+        {
+          "case_id": "001-146769",
+          "avg_similarity": 0.9384005187135754,
+          "num_chunks": 66
+        },
+        {
+          "case_id": "001-80395",
+          "avg_similarity": 0.9274064670590794,
+          "num_chunks": 34
+        }
+      ]
+    },
+    {
+      "query_id": "q009",
+      "source_case_id": "001-158489",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9494079947471619,
+      "gt_top_chunk_similarity": 0.953050971031189,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-158489",
+          "avg_similarity": 0.9357524599347796,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-144144",
+          "avg_similarity": 0.925269365310669,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-158143",
+          "avg_similarity": 0.922319769859314,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-81401",
+          "avg_similarity": 0.9222322255373001,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-87078",
+          "avg_similarity": 0.9190836250782013,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-81091",
+          "avg_similarity": 0.9188593626022339,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104567",
+          "avg_similarity": 0.9184815406799316,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-87076",
+          "avg_similarity": 0.9174215495586395,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-89849",
+          "avg_similarity": 0.9173368513584137,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-101594",
+          "avg_similarity": 0.9160726070404053,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q010",
+      "source_case_id": "001-146353",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9373344302177429,
+      "gt_top_chunk_similarity": 0.9447087645530701,
+      "gt_chunks_in_pool": 18,
+      "top_10_cases": [
+        {
+          "case_id": "001-146353",
+          "avg_similarity": 0.914300948381424,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-59713",
+          "avg_similarity": 0.8985266631299799,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-76137",
+          "avg_similarity": 0.8942015469074249,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-95333",
+          "avg_similarity": 0.8935322463512421,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-100042",
+          "avg_similarity": 0.8908177018165588,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-112282",
+          "avg_similarity": 0.8902533650398254,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-88809",
+          "avg_similarity": 0.8886582016944885,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-80308",
+          "avg_similarity": 0.8852290213108063,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-68398",
+          "avg_similarity": 0.8848246137301127,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-100307",
+          "avg_similarity": 0.8846641182899475,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q011",
+      "source_case_id": "001-157701",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9826984405517578,
+      "gt_top_chunk_similarity": 0.9941980242729187,
+      "gt_chunks_in_pool": 8,
+      "top_10_cases": [
+        {
+          "case_id": "001-157701",
+          "avg_similarity": 0.9763893708586693,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-121563",
+          "avg_similarity": 0.9441923962699043,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-91704",
+          "avg_similarity": 0.9400815367698669,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150300",
+          "avg_similarity": 0.9368029534816742,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-150314",
+          "avg_similarity": 0.9366886615753174,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-115383",
+          "avg_similarity": 0.9363699555397034,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.936320424079895,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147442",
+          "avg_similarity": 0.9345208257436752,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-104983",
+          "avg_similarity": 0.9344015717506409,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-96484",
+          "avg_similarity": 0.9339902997016907,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q012",
+      "source_case_id": "001-158491",
+      "eval_rank": 2,
+      "prod_rank": null,
+      "mean_top5_chunk_similarity": 0.960743761062622,
+      "gt_top_chunk_similarity": 0.9607877731323242,
+      "gt_chunks_in_pool": 18,
+      "top_10_cases": [
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.9556022882461548,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-158491",
+          "avg_similarity": 0.9499697420332167,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-98450",
+          "avg_similarity": 0.9488241076469421,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-157373",
+          "avg_similarity": 0.9464962482452393,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90060",
+          "avg_similarity": 0.9463050365447998,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-86224",
+          "avg_similarity": 0.945676326751709,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157283",
+          "avg_similarity": 0.945124089717865,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-115383",
+          "avg_similarity": 0.9450823002391391,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-104983",
+          "avg_similarity": 0.9447785913944244,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-100964",
+          "avg_similarity": 0.9447463750839233,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q013",
+      "source_case_id": "001-155371",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9533926486968994,
+      "gt_top_chunk_similarity": 0.958035409450531,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-155371",
+          "avg_similarity": 0.9275915141289051,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-94987",
+          "avg_similarity": 0.9135316908359528,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-96953",
+          "avg_similarity": 0.9060529967149099,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-79486",
+          "avg_similarity": 0.9006728529930115,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-96165",
+          "avg_similarity": 0.8963292241096497,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-138566",
+          "avg_similarity": 0.89619610526345,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-71341",
+          "avg_similarity": 0.8933250904083252,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-79602",
+          "avg_similarity": 0.893158346414566,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-71212",
+          "avg_similarity": 0.892418846487999,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-105499",
+          "avg_similarity": 0.8921224474906921,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q014",
+      "source_case_id": "001-145790",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9426867365837097,
+      "gt_top_chunk_similarity": 0.9508141279220581,
+      "gt_chunks_in_pool": 16,
+      "top_10_cases": [
+        {
+          "case_id": "001-145790",
+          "avg_similarity": 0.9215736426413059,
+          "num_chunks": 16
+        },
+        {
+          "case_id": "001-138597",
+          "avg_similarity": 0.8606419563293457,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-107514",
+          "avg_similarity": 0.8581327199935913,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-93959",
+          "avg_similarity": 0.8580996096134186,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-70875",
+          "avg_similarity": 0.8564906716346741,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-77251",
+          "avg_similarity": 0.8560833280736749,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-122892",
+          "avg_similarity": 0.8557962477207184,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-77653",
+          "avg_similarity": 0.8552899360656738,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-106773",
+          "avg_similarity": 0.8530825674533844,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-60001",
+          "avg_similarity": 0.8510961333910624,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q015",
+      "source_case_id": "001-156270",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.962788987159729,
+      "gt_top_chunk_similarity": 0.9667340517044067,
+      "gt_chunks_in_pool": 43,
+      "top_10_cases": [
+        {
+          "case_id": "001-156270",
+          "avg_similarity": 0.9427186680394549,
+          "num_chunks": 43
+        },
+        {
+          "case_id": "001-100690",
+          "avg_similarity": 0.9103987812995911,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-142306",
+          "avg_similarity": 0.9095264673233032,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-99102",
+          "avg_similarity": 0.9092844426631927,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-139999",
+          "avg_similarity": 0.9068612098693848,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-120062",
+          "avg_similarity": 0.9053425043821335,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-113384",
+          "avg_similarity": 0.9048555095990499,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-105221",
+          "avg_similarity": 0.9038117974996567,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-101187",
+          "avg_similarity": 0.902338981628418,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-94406",
+          "avg_similarity": 0.9020868539810181,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q016",
+      "source_case_id": "001-153022",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9659980058670044,
+      "gt_top_chunk_similarity": 0.9711222052574158,
+      "gt_chunks_in_pool": 30,
+      "top_10_cases": [
+        {
+          "case_id": "001-153022",
+          "avg_similarity": 0.9496271491050721,
+          "num_chunks": 30
+        },
+        {
+          "case_id": "001-98932",
+          "avg_similarity": 0.9158136248588562,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110904",
+          "avg_similarity": 0.9154340624809265,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-86859",
+          "avg_similarity": 0.9149096608161926,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-153919",
+          "avg_similarity": 0.9128992358843485,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-83879",
+          "avg_similarity": 0.9092844426631927,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-93671",
+          "avg_similarity": 0.9084044694900513,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-146379",
+          "avg_similarity": 0.9081489443778992,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-86038",
+          "avg_similarity": 0.9072481393814087,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-114516",
+          "avg_similarity": 0.9063196629285812,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q017",
+      "source_case_id": "001-145466",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9755445003509522,
+      "gt_top_chunk_similarity": 0.9853333234786987,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-145466",
+          "avg_similarity": 0.9755445003509522,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-70956",
+          "avg_similarity": 0.8376366708959851,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-159070",
+          "avg_similarity": 0.8245604742657054,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-90039",
+          "avg_similarity": 0.8115219821532568,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-60935",
+          "avg_similarity": 0.8007116615772247,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-61853",
+          "avg_similarity": 0.7977407162006085,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-120967",
+          "avg_similarity": 0.7968991994857788,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-142085",
+          "avg_similarity": 0.7960376739501953,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60522",
+          "avg_similarity": 0.7911467817094591,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-69891",
+          "avg_similarity": 0.7898462017377218,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q018",
+      "source_case_id": "001-145211",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9578622817993164,
+      "gt_top_chunk_similarity": 0.9625957608222961,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-145211",
+          "avg_similarity": 0.9261426287037986,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-89273",
+          "avg_similarity": 0.8659124970436096,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-97372",
+          "avg_similarity": 0.8651537895202637,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89077",
+          "avg_similarity": 0.8651477098464966,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91284",
+          "avg_similarity": 0.8639717102050781,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88728",
+          "avg_similarity": 0.8637586683034897,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-71444",
+          "avg_similarity": 0.8598612348238627,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-97230",
+          "avg_similarity": 0.8586726188659668,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-91885",
+          "avg_similarity": 0.8581218719482422,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88577",
+          "avg_similarity": 0.857852429151535,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q019",
+      "source_case_id": "001-145788",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9751287579536438,
+      "gt_top_chunk_similarity": 0.9774930477142334,
+      "gt_chunks_in_pool": 20,
+      "top_10_cases": [
+        {
+          "case_id": "001-145788",
+          "avg_similarity": 0.9657815158367157,
+          "num_chunks": 20
+        },
+        {
+          "case_id": "001-128056",
+          "avg_similarity": 0.9497168737909069,
+          "num_chunks": 23
+        },
+        {
+          "case_id": "001-112540",
+          "avg_similarity": 0.9445198774337769,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-113718",
+          "avg_similarity": 0.9413318634033203,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152601",
+          "avg_similarity": 0.9405620098114014,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-113720",
+          "avg_similarity": 0.9402258396148682,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-127816",
+          "avg_similarity": 0.9393395015171596,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-147333",
+          "avg_similarity": 0.9391518831253052,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157708",
+          "avg_similarity": 0.9391331672668457,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-153905",
+          "avg_similarity": 0.937853217124939,
+          "num_chunks": 6
+        }
+      ]
+    },
+    {
+      "query_id": "q020",
+      "source_case_id": "001-147887",
+      "eval_rank": 5,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.9476906895637512,
+      "gt_top_chunk_similarity": 0.9510316848754883,
+      "gt_chunks_in_pool": 17,
+      "top_10_cases": [
+        {
+          "case_id": "001-153926",
+          "avg_similarity": 0.9397986233234406,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-142074",
+          "avg_similarity": 0.9358542561531067,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-140749",
+          "avg_similarity": 0.9329409003257751,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-112210",
+          "avg_similarity": 0.9305188655853271,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-147887",
+          "avg_similarity": 0.9303845167160034,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-120960",
+          "avg_similarity": 0.9303242166837057,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-108400",
+          "avg_similarity": 0.9283678531646729,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-116186",
+          "avg_similarity": 0.9274648427963257,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-159788",
+          "avg_similarity": 0.9274206399917603,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-158156",
+          "avg_similarity": 0.9270609617233276,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q021",
+      "source_case_id": "001-148078",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9734238982200623,
+      "gt_top_chunk_similarity": 0.9761105179786682,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-148078",
+          "avg_similarity": 0.9569102823734283,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-97625",
+          "avg_similarity": 0.8980366256501939,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-59714",
+          "avg_similarity": 0.8970413853724798,
+          "num_chunks": 24
+        },
+        {
+          "case_id": "001-110803",
+          "avg_similarity": 0.8938454240560532,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-139903",
+          "avg_similarity": 0.891822894414266,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-103363",
+          "avg_similarity": 0.8904282450675964,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-99907",
+          "avg_similarity": 0.8886643052101135,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60605",
+          "avg_similarity": 0.8880676825841268,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-156262",
+          "avg_similarity": 0.8873995860417684,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-99909",
+          "avg_similarity": 0.8859248757362366,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q022",
+      "source_case_id": "001-154728",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9519457817077637,
+      "gt_top_chunk_similarity": 0.9554144144058228,
+      "gt_chunks_in_pool": 70,
+      "top_10_cases": [
+        {
+          "case_id": "001-154728",
+          "avg_similarity": 0.9284040459564754,
+          "num_chunks": 70
+        },
+        {
+          "case_id": "001-140030",
+          "avg_similarity": 0.9176446464326646,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-150310",
+          "avg_similarity": 0.9163929596543312,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-81645",
+          "avg_similarity": 0.9148104389508566,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-68625",
+          "avg_similarity": 0.9129528999328613,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150318",
+          "avg_similarity": 0.9107872247695923,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-84684",
+          "avg_similarity": 0.9085513949394226,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-84046",
+          "avg_similarity": 0.9043816328048706,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89277",
+          "avg_similarity": 0.9041271209716797,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141200",
+          "avg_similarity": 0.9040651023387909,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q023",
+      "source_case_id": "001-156249",
+      "eval_rank": 2,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9689467310905456,
+      "gt_top_chunk_similarity": 0.9725303649902344,
+      "gt_chunks_in_pool": 20,
+      "top_10_cases": [
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.9455264210700989,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156249",
+          "avg_similarity": 0.9420341342687607,
+          "num_chunks": 20
+        },
+        {
+          "case_id": "001-159921",
+          "avg_similarity": 0.9332895676294962,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-148180",
+          "avg_similarity": 0.9323226639202663,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-158500",
+          "avg_similarity": 0.9299877285957336,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152781",
+          "avg_similarity": 0.9298017024993896,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100110",
+          "avg_similarity": 0.9280661344528198,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-114522",
+          "avg_similarity": 0.9270851214726766,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-86030",
+          "avg_similarity": 0.926237165927887,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-157539",
+          "avg_similarity": 0.9257544159889222,
+          "num_chunks": 5
+        }
+      ]
+    },
+    {
+      "query_id": "q024",
+      "source_case_id": "001-145215",
+      "eval_rank": 5,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9499093890190125,
+      "gt_top_chunk_similarity": 0.9556893110275269,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-78815",
+          "avg_similarity": 0.9426612854003906,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-75248",
+          "avg_similarity": 0.9401962161064148,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72716",
+          "avg_similarity": 0.9391536712646484,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72976",
+          "avg_similarity": 0.9378346800804138,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-145215",
+          "avg_similarity": 0.9372894082750592,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-72974",
+          "avg_similarity": 0.9361096620559692,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72717",
+          "avg_similarity": 0.9358746409416199,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-75239",
+          "avg_similarity": 0.9357203245162964,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-75265",
+          "avg_similarity": 0.9352343082427979,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-76124",
+          "avg_similarity": 0.9351299405097961,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q025",
+      "source_case_id": "001-155815",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9634980678558349,
+      "gt_top_chunk_similarity": 0.966428279876709,
+      "gt_chunks_in_pool": 69,
+      "top_10_cases": [
+        {
+          "case_id": "001-155815",
+          "avg_similarity": 0.9317650682684304,
+          "num_chunks": 69
+        },
+        {
+          "case_id": "001-87464",
+          "avg_similarity": 0.923484742641449,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95195",
+          "avg_similarity": 0.9132978916168213,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-79044",
+          "avg_similarity": 0.909340500831604,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95924",
+          "avg_similarity": 0.908970296382904,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-95816",
+          "avg_similarity": 0.9064866304397583,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-88725",
+          "avg_similarity": 0.9045107364654541,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88343",
+          "avg_similarity": 0.9030282497406006,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-79040",
+          "avg_similarity": 0.9015944600105286,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88583",
+          "avg_similarity": 0.8999698758125305,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q026",
+      "source_case_id": "001-147442",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9703918337821961,
+      "gt_top_chunk_similarity": 0.9769943952560425,
+      "gt_chunks_in_pool": 19,
+      "top_10_cases": [
+        {
+          "case_id": "001-147442",
+          "avg_similarity": 0.9455821545500505,
+          "num_chunks": 19
+        },
+        {
+          "case_id": "001-91704",
+          "avg_similarity": 0.9332212805747986,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100964",
+          "avg_similarity": 0.9330430030822754,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150314",
+          "avg_similarity": 0.932398279507955,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-83150",
+          "avg_similarity": 0.9273408055305481,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91758",
+          "avg_similarity": 0.9258423958505902,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-114074",
+          "avg_similarity": 0.9256684184074402,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90622",
+          "avg_similarity": 0.925550103187561,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-98450",
+          "avg_similarity": 0.9254301687081655,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-98717",
+          "avg_similarity": 0.9245809316635132,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q027",
+      "source_case_id": "001-158468",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9506532907485962,
+      "gt_top_chunk_similarity": 0.9583025574684143,
+      "gt_chunks_in_pool": 18,
+      "top_10_cases": [
+        {
+          "case_id": "001-158468",
+          "avg_similarity": 0.9231496983104281,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-91475",
+          "avg_similarity": 0.8837902545928955,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-158467",
+          "avg_similarity": 0.878333588441213,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-112467",
+          "avg_similarity": 0.8738306760787964,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147014",
+          "avg_similarity": 0.8729746374819014,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-122373",
+          "avg_similarity": 0.8717756509780884,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-105275",
+          "avg_similarity": 0.871639221906662,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-150228",
+          "avg_similarity": 0.8712101519107819,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-113919",
+          "avg_similarity": 0.8708999211137946,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-112432",
+          "avg_similarity": 0.8703811466693878,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q028",
+      "source_case_id": "001-157532",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9485719084739686,
+      "gt_top_chunk_similarity": 0.9583654403686523,
+      "gt_chunks_in_pool": 8,
+      "top_10_cases": [
+        {
+          "case_id": "001-157532",
+          "avg_similarity": 0.9352464154362679,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-77266",
+          "avg_similarity": 0.8858782052993774,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-114259",
+          "avg_similarity": 0.8840551376342773,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-149204",
+          "avg_similarity": 0.8773079713185629,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-160088",
+          "avg_similarity": 0.872897744178772,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72354",
+          "avg_similarity": 0.8726097345352173,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104651",
+          "avg_similarity": 0.8718273639678955,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-160087",
+          "avg_similarity": 0.8707124888896942,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-100954",
+          "avg_similarity": 0.8703216314315796,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-69835",
+          "avg_similarity": 0.8690056502819061,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q029",
+      "source_case_id": "001-158159",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9562801003456116,
+      "gt_top_chunk_similarity": 0.9701569080352783,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-158159",
+          "avg_similarity": 0.9161484058086689,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-102637",
+          "avg_similarity": 0.87885091985975,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-59722",
+          "avg_similarity": 0.8788410425186157,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-77177",
+          "avg_similarity": 0.8775597810745239,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-154399",
+          "avg_similarity": 0.8752330044905344,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-98473",
+          "avg_similarity": 0.8742099404335022,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-59721",
+          "avg_similarity": 0.8710940480232239,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-70364",
+          "avg_similarity": 0.8688114285469055,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-148669",
+          "avg_similarity": 0.868349015712738,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-138919",
+          "avg_similarity": 0.8678037722905477,
+          "num_chunks": 6
+        }
+      ]
+    },
+    {
+      "query_id": "q030",
+      "source_case_id": "001-160313",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.951167631149292,
+      "gt_top_chunk_similarity": 0.9584386348724365,
+      "gt_chunks_in_pool": 33,
+      "top_10_cases": [
+        {
+          "case_id": "001-160313",
+          "avg_similarity": 0.919930611595963,
+          "num_chunks": 33
+        },
+        {
+          "case_id": "001-107448",
+          "avg_similarity": 0.8851606845855713,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156273",
+          "avg_similarity": 0.8820040374994278,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-100197",
+          "avg_similarity": 0.8740835785865784,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-127229",
+          "avg_similarity": 0.8710243701934814,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-71988",
+          "avg_similarity": 0.8668500781059265,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-75533",
+          "avg_similarity": 0.8654995262622833,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-121774",
+          "avg_similarity": 0.8643062114715576,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-142675",
+          "avg_similarity": 0.8631879819764031,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-89813",
+          "avg_similarity": 0.8626818954944611,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q031",
+      "source_case_id": "001-153025",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9510925889015198,
+      "gt_top_chunk_similarity": 0.9527440667152405,
+      "gt_chunks_in_pool": 22,
+      "top_10_cases": [
+        {
+          "case_id": "001-153025",
+          "avg_similarity": 0.9320805479179729,
+          "num_chunks": 22
+        },
+        {
+          "case_id": "001-61562",
+          "avg_similarity": 0.8922351598739624,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-81776",
+          "avg_similarity": 0.8879468441009521,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-97385",
+          "avg_similarity": 0.8871912956237793,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157755",
+          "avg_similarity": 0.8865354061126709,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89106",
+          "avg_similarity": 0.8865054448445638,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-105478",
+          "avg_similarity": 0.886461079120636,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-78369",
+          "avg_similarity": 0.8864424824714661,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100950",
+          "avg_similarity": 0.8861472606658936,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-105847",
+          "avg_similarity": 0.8861245214939117,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q032",
+      "source_case_id": "001-147870",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9660930275917053,
+      "gt_top_chunk_similarity": 0.9709488153457642,
+      "gt_chunks_in_pool": 13,
+      "top_10_cases": [
+        {
+          "case_id": "001-147870",
+          "avg_similarity": 0.9504613968042227,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-147867",
+          "avg_similarity": 0.9480043053627014,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-147868",
+          "avg_similarity": 0.9376867684451017,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-100024",
+          "avg_similarity": 0.9343755520307101,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-100026",
+          "avg_similarity": 0.932211074564192,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-160089",
+          "avg_similarity": 0.9313586354255676,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-113754",
+          "avg_similarity": 0.9306645760169396,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-93184",
+          "avg_similarity": 0.9252055949634976,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-113756",
+          "avg_similarity": 0.9213722745577494,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-160091",
+          "avg_similarity": 0.9159131050109863,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q033",
+      "source_case_id": "001-153481",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9693836808204651,
+      "gt_top_chunk_similarity": 0.9741172790527344,
+      "gt_chunks_in_pool": 32,
+      "top_10_cases": [
+        {
+          "case_id": "001-153481",
+          "avg_similarity": 0.9507584553211927,
+          "num_chunks": 32
+        },
+        {
+          "case_id": "001-67165",
+          "avg_similarity": 0.9183839201927185,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-151039",
+          "avg_similarity": 0.9168334007263184,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104925",
+          "avg_similarity": 0.9094778299331665,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-102904",
+          "avg_similarity": 0.9071789532899857,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-102943",
+          "avg_similarity": 0.9057517409324646,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-155198",
+          "avg_similarity": 0.9055723696947098,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-152655",
+          "avg_similarity": 0.9054746905962626,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-102029",
+          "avg_similarity": 0.9051818907260895,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-150676",
+          "avg_similarity": 0.9017207026481628,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q034",
+      "source_case_id": "001-156263",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.966178035736084,
+      "gt_top_chunk_similarity": 0.97270268201828,
+      "gt_chunks_in_pool": 52,
+      "top_10_cases": [
+        {
+          "case_id": "001-156263",
+          "avg_similarity": 0.9486578232966937,
+          "num_chunks": 52
+        },
+        {
+          "case_id": "001-156264",
+          "avg_similarity": 0.9439578760753978,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-122889",
+          "avg_similarity": 0.9439329524834951,
+          "num_chunks": 30
+        },
+        {
+          "case_id": "001-156262",
+          "avg_similarity": 0.9431690233094352,
+          "num_chunks": 7
+        }
+      ]
+    },
+    {
+      "query_id": "q035",
+      "source_case_id": "001-148658",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9563420057296753,
+      "gt_top_chunk_similarity": 0.966001033782959,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-148658",
+          "avg_similarity": 0.9338366190592448,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-78606",
+          "avg_similarity": 0.8738980293273926,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-117877",
+          "avg_similarity": 0.866381029287974,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-110253",
+          "avg_similarity": 0.8623263835906982,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-155371",
+          "avg_similarity": 0.8619361519813538,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-93448",
+          "avg_similarity": 0.8615758674485343,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-72289",
+          "avg_similarity": 0.8615225851535797,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-100022",
+          "avg_similarity": 0.8602896730105082,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-70562",
+          "avg_similarity": 0.8596210479736328,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-103694",
+          "avg_similarity": 0.8594933152198792,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q036",
+      "source_case_id": "001-159759",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9702057719230652,
+      "gt_top_chunk_similarity": 0.9723213315010071,
+      "gt_chunks_in_pool": 24,
+      "top_10_cases": [
+        {
+          "case_id": "001-159759",
+          "avg_similarity": 0.9558462450901667,
+          "num_chunks": 24
+        },
+        {
+          "case_id": "001-88792",
+          "avg_similarity": 0.9473970532417297,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-138573",
+          "avg_similarity": 0.9468863010406494,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95093",
+          "avg_similarity": 0.9464199940363566,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-98327",
+          "avg_similarity": 0.946387767791748,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-118385",
+          "avg_similarity": 0.9454212586085001,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-107396",
+          "avg_similarity": 0.9445116519927979,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-153904",
+          "avg_similarity": 0.9443922638893127,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-139170",
+          "avg_similarity": 0.9442764520645142,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91008",
+          "avg_similarity": 0.944175124168396,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q037",
+      "source_case_id": "001-144937",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9576473593711853,
+      "gt_top_chunk_similarity": 0.9786414504051208,
+      "gt_chunks_in_pool": 4,
+      "top_10_cases": [
+        {
+          "case_id": "001-144937",
+          "avg_similarity": 0.9619914591312408,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-147885",
+          "avg_similarity": 0.9124545540128436,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-99871",
+          "avg_similarity": 0.9109019041061401,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-76495",
+          "avg_similarity": 0.9108188152313232,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-78217",
+          "avg_similarity": 0.908044695854187,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-72975",
+          "avg_similarity": 0.9073972105979919,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145364",
+          "avg_similarity": 0.9063248435656229,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-96426",
+          "avg_similarity": 0.9057578444480896,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-73116",
+          "avg_similarity": 0.9049496948719025,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-108963",
+          "avg_similarity": 0.9035659432411194,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q038",
+      "source_case_id": "001-159070",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9564822793006897,
+      "gt_top_chunk_similarity": 0.9610830545425415,
+      "gt_chunks_in_pool": 21,
+      "top_10_cases": [
+        {
+          "case_id": "001-159070",
+          "avg_similarity": 0.9060553851581755,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-76317",
+          "avg_similarity": 0.8393831849098206,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90039",
+          "avg_similarity": 0.8365193605422974,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-76319",
+          "avg_similarity": 0.8282938599586487,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-112165",
+          "avg_similarity": 0.8279397487640381,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100469",
+          "avg_similarity": 0.8249069809913635,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-73342",
+          "avg_similarity": 0.8225062886873881,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-145717",
+          "avg_similarity": 0.8208860456943512,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-105378",
+          "avg_similarity": 0.8177308440208435,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-60690",
+          "avg_similarity": 0.8175700902938843,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q039",
+      "source_case_id": "001-159376",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9622003912925721,
+      "gt_top_chunk_similarity": 0.9740139842033386,
+      "gt_chunks_in_pool": 21,
+      "top_10_cases": [
+        {
+          "case_id": "001-159376",
+          "avg_similarity": 0.9371419492222014,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-114515",
+          "avg_similarity": 0.888718843460083,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-111586",
+          "avg_similarity": 0.8886492649714152,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-157536",
+          "avg_similarity": 0.8884819746017456,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-96426",
+          "avg_similarity": 0.8869067430496216,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-139897",
+          "avg_similarity": 0.8834262490272522,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156250",
+          "avg_similarity": 0.8832210600376129,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-150676",
+          "avg_similarity": 0.8827787876129151,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-145571",
+          "avg_similarity": 0.8819675743579865,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-104925",
+          "avg_similarity": 0.881809651851654,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q040",
+      "source_case_id": "001-147035",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9558156609535218,
+      "gt_top_chunk_similarity": 0.9619245529174805,
+      "gt_chunks_in_pool": 6,
+      "top_10_cases": [
+        {
+          "case_id": "001-147035",
+          "avg_similarity": 0.9540455142656962,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-100099",
+          "avg_similarity": 0.9366599321365356,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-140404",
+          "avg_similarity": 0.935500979423523,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90060",
+          "avg_similarity": 0.9353445768356323,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-115866",
+          "avg_similarity": 0.9347547292709351,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-144357",
+          "avg_similarity": 0.9342013729943169,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-95734",
+          "avg_similarity": 0.9340063035488129,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-148624",
+          "avg_similarity": 0.9339390993118286,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-86959",
+          "avg_similarity": 0.9337863922119141,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-91003",
+          "avg_similarity": 0.9335131049156189,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q041",
+      "source_case_id": "001-157969",
+      "eval_rank": 2,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9608000159263611,
+      "gt_top_chunk_similarity": 0.9666352868080139,
+      "gt_chunks_in_pool": 13,
+      "top_10_cases": [
+        {
+          "case_id": "001-157968",
+          "avg_similarity": 0.9484692215919495,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-157969",
+          "avg_similarity": 0.9452630189748911,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-141382",
+          "avg_similarity": 0.9392162561416626,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157970",
+          "avg_similarity": 0.9385472800996568,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-157967",
+          "avg_similarity": 0.9356986113956997,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-93874",
+          "avg_similarity": 0.9334059357643127,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-115866",
+          "avg_similarity": 0.9327009254031711,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-159199",
+          "avg_similarity": 0.9325678944587708,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-150794",
+          "avg_similarity": 0.9323434233665466,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-114489",
+          "avg_similarity": 0.9323257525761922,
+          "num_chunks": 15
+        }
+      ]
+    },
+    {
+      "query_id": "q042",
+      "source_case_id": "001-160095",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9737592220306397,
+      "gt_top_chunk_similarity": 0.9883204698562622,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-160095",
+          "avg_similarity": 0.9737592220306397,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-111272",
+          "avg_similarity": 0.9088611602783203,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-66784",
+          "avg_similarity": 0.9060423374176025,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-61273",
+          "avg_similarity": 0.9052557349205017,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-61700",
+          "avg_similarity": 0.904312014579773,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-61699",
+          "avg_similarity": 0.9028808176517487,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-88975",
+          "avg_similarity": 0.902694046497345,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-102908",
+          "avg_similarity": 0.9015637755393981,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-61274",
+          "avg_similarity": 0.9014142751693726,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89386",
+          "avg_similarity": 0.9010981470346451,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q043",
+      "source_case_id": "001-150653",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9442968964576721,
+      "gt_top_chunk_similarity": 0.9519569277763367,
+      "gt_chunks_in_pool": 21,
+      "top_10_cases": [
+        {
+          "case_id": "001-150653",
+          "avg_similarity": 0.9259497949055263,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-145012",
+          "avg_similarity": 0.9189521074295044,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-109116",
+          "avg_similarity": 0.9184671640396118,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-68711",
+          "avg_similarity": 0.917504072189331,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-79648",
+          "avg_similarity": 0.9165342847506205,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-95093",
+          "avg_similarity": 0.9152301152547201,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-156249",
+          "avg_similarity": 0.9134952872991562,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-100099",
+          "avg_similarity": 0.9128260612487793,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108023",
+          "avg_similarity": 0.9125765264034271,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-150315",
+          "avg_similarity": 0.9115371704101562,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q044",
+      "source_case_id": "001-159791",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9659553527832031,
+      "gt_top_chunk_similarity": 0.9771831631660461,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-159791",
+          "avg_similarity": 0.9503625126985403,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-104724",
+          "avg_similarity": 0.9416062037150065,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-108506",
+          "avg_similarity": 0.9411413371562958,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-100817",
+          "avg_similarity": 0.9400861263275146,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-101596",
+          "avg_similarity": 0.9395496845245361,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141382",
+          "avg_similarity": 0.9395130475362142,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-98338",
+          "avg_similarity": 0.9394639730453491,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-98717",
+          "avg_similarity": 0.9392642080783844,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-100941",
+          "avg_similarity": 0.9387896656990051,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-114489",
+          "avg_similarity": 0.9387840032577515,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q045",
+      "source_case_id": "001-147044",
+      "eval_rank": 3,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.9514816403388977,
+      "gt_top_chunk_similarity": 0.9586912393569946,
+      "gt_chunks_in_pool": 21,
+      "top_10_cases": [
+        {
+          "case_id": "001-148638",
+          "avg_similarity": 0.9346637725830078,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-113720",
+          "avg_similarity": 0.9344018399715424,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-147044",
+          "avg_similarity": 0.9332908874466306,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-153480",
+          "avg_similarity": 0.9302874326705932,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-144149",
+          "avg_similarity": 0.9285406470298767,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-116329",
+          "avg_similarity": 0.9258355498313904,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-113718",
+          "avg_similarity": 0.925814688205719,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145019",
+          "avg_similarity": 0.9255192875862122,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-127816",
+          "avg_similarity": 0.9255113204320272,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-152601",
+          "avg_similarity": 0.9254705111185709,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q046",
+      "source_case_id": "001-147613",
+      "eval_rank": 1,
+      "prod_rank": null,
+      "mean_top5_chunk_similarity": 0.9730637311935425,
+      "gt_top_chunk_similarity": 0.9717796444892883,
+      "gt_chunks_in_pool": 6,
+      "top_10_cases": [
+        {
+          "case_id": "001-147613",
+          "avg_similarity": 0.9637465178966522,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-141191",
+          "avg_similarity": 0.9562578499317169,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-147611",
+          "avg_similarity": 0.9549026787281036,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-141159",
+          "avg_similarity": 0.9486866950988769,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-147614",
+          "avg_similarity": 0.9484026908874512,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-142080",
+          "avg_similarity": 0.9472485979398092,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-142082",
+          "avg_similarity": 0.9471191565195719,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-148291",
+          "avg_similarity": 0.9469430943330129,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-111850",
+          "avg_similarity": 0.9464550216992696,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-144364",
+          "avg_similarity": 0.9451063105038234,
+          "num_chunks": 7
+        }
+      ]
+    },
+    {
+      "query_id": "q047",
+      "source_case_id": "001-158953",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9771090865135192,
+      "gt_top_chunk_similarity": 0.9802900552749634,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-158953",
+          "avg_similarity": 0.9653390977117751,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-157971",
+          "avg_similarity": 0.9633940681815147,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-153937",
+          "avg_similarity": 0.9630704452009762,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-113719",
+          "avg_similarity": 0.9626868188381195,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-157708",
+          "avg_similarity": 0.9625611007213593,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-111428",
+          "avg_similarity": 0.962144672870636,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-147333",
+          "avg_similarity": 0.9590201377868652,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-145583",
+          "avg_similarity": 0.9586758414904276,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-145746",
+          "avg_similarity": 0.9584373633066813,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-142430",
+          "avg_similarity": 0.9576406247085996,
+          "num_chunks": 18
+        }
+      ]
+    },
+    {
+      "query_id": "q048",
+      "source_case_id": "001-150771",
+      "eval_rank": 2,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.9524635672569275,
+      "gt_top_chunk_similarity": 0.9589598178863525,
+      "gt_chunks_in_pool": 68,
+      "top_10_cases": [
+        {
+          "case_id": "001-103256",
+          "avg_similarity": 0.9327544867992401,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-150771",
+          "avg_similarity": 0.9288653687519186,
+          "num_chunks": 68
+        },
+        {
+          "case_id": "001-119954",
+          "avg_similarity": 0.9270389477411906,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-108470",
+          "avg_similarity": 0.9258846441904703,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-139924",
+          "avg_similarity": 0.9232696890830994,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-96703",
+          "avg_similarity": 0.9228429794311523,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104983",
+          "avg_similarity": 0.9218316078186035,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152777",
+          "avg_similarity": 0.9195741176605224,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-147671",
+          "avg_similarity": 0.9194613496462504,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145442",
+          "avg_similarity": 0.9173883646726608,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q049",
+      "source_case_id": "001-160692",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.942687165737152,
+      "gt_top_chunk_similarity": 0.9516870379447937,
+      "gt_chunks_in_pool": 15,
+      "top_10_cases": [
+        {
+          "case_id": "001-160692",
+          "avg_similarity": 0.9177695631980896,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-80308",
+          "avg_similarity": 0.8649227619171143,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-70765",
+          "avg_similarity": 0.8511984348297119,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-138596",
+          "avg_similarity": 0.8452978134155273,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-106918",
+          "avg_similarity": 0.8400689164797465,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-90939",
+          "avg_similarity": 0.839966744184494,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-70445",
+          "avg_similarity": 0.8398441076278687,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-68178",
+          "avg_similarity": 0.8377009034156799,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-92387",
+          "avg_similarity": 0.8338637351989746,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60737",
+          "avg_similarity": 0.8323455452919006,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q050",
+      "source_case_id": "001-145789",
+      "eval_rank": 2,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.963986587524414,
+      "gt_top_chunk_similarity": 0.9796364903450012,
+      "gt_chunks_in_pool": 11,
+      "top_10_cases": [
+        {
+          "case_id": "001-126027",
+          "avg_similarity": 0.9419077217578888,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-145789",
+          "avg_similarity": 0.941177942536094,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-157325",
+          "avg_similarity": 0.9272480805714926,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-70841",
+          "avg_similarity": 0.9257293045520782,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-114966",
+          "avg_similarity": 0.9213573336601257,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-79596",
+          "avg_similarity": 0.9171533137559891,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-110902",
+          "avg_similarity": 0.9156445860862732,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-99992",
+          "avg_similarity": 0.9140596389770508,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-110921",
+          "avg_similarity": 0.9139713048934937,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145018",
+          "avg_similarity": 0.913775160908699,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q051",
+      "source_case_id": "001-152386",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.967305040359497,
+      "gt_top_chunk_similarity": 0.9724254608154297,
+      "gt_chunks_in_pool": 12,
+      "top_10_cases": [
+        {
+          "case_id": "001-152386",
+          "avg_similarity": 0.9519822547833124,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-152385",
+          "avg_similarity": 0.9412679022008722,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-152387",
+          "avg_similarity": 0.9375331178307533,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-127124",
+          "avg_similarity": 0.9365003742277622,
+          "num_chunks": 16
+        },
+        {
+          "case_id": "001-158085",
+          "avg_similarity": 0.9337656736373902,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-150239",
+          "avg_similarity": 0.9328699111938477,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-138887",
+          "avg_similarity": 0.9275479912757874,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-126564",
+          "avg_similarity": 0.9267396748065948,
+          "num_chunks": 20
+        },
+        {
+          "case_id": "001-145573",
+          "avg_similarity": 0.9231210947036743,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-83447",
+          "avg_similarity": 0.9195117950439453,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q052",
+      "source_case_id": "001-145783",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.971722149848938,
+      "gt_top_chunk_similarity": 0.9812374711036682,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-145783",
+          "avg_similarity": 0.9458198079041072,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-111842",
+          "avg_similarity": 0.8960713148117065,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88012",
+          "avg_similarity": 0.8934020102024078,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-103021",
+          "avg_similarity": 0.8903692960739136,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-114778",
+          "avg_similarity": 0.8894070982933044,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-61106",
+          "avg_similarity": 0.8884713649749756,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-82921",
+          "avg_similarity": 0.8884356141090393,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-78410",
+          "avg_similarity": 0.8882209658622742,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-157527",
+          "avg_similarity": 0.8873504847288132,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-141631",
+          "avg_similarity": 0.8870844621407358,
+          "num_chunks": 19
+        }
+      ]
+    },
+    {
+      "query_id": "q053",
+      "source_case_id": "001-151008",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9571072816848755,
+      "gt_top_chunk_similarity": 0.9613383412361145,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-151008",
+          "avg_similarity": 0.932122501043173,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-90702",
+          "avg_similarity": 0.9115053415298462,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157518",
+          "avg_similarity": 0.9032108187675476,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-111386",
+          "avg_similarity": 0.8979343771934509,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110156",
+          "avg_similarity": 0.895845890045166,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-144661",
+          "avg_similarity": 0.8955152034759521,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-121774",
+          "avg_similarity": 0.8931880593299866,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110486",
+          "avg_similarity": 0.8931770026683807,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-108431",
+          "avg_similarity": 0.89087975025177,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147865",
+          "avg_similarity": 0.8900310908045087,
+          "num_chunks": 7
+        }
+      ]
+    },
+    {
+      "query_id": "q054",
+      "source_case_id": "001-150773",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9640673875808716,
+      "gt_top_chunk_similarity": 0.9681101441383362,
+      "gt_chunks_in_pool": 12,
+      "top_10_cases": [
+        {
+          "case_id": "001-150773",
+          "avg_similarity": 0.9489975372950236,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-89388",
+          "avg_similarity": 0.9158253073692322,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150314",
+          "avg_similarity": 0.9156009927392006,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-86903",
+          "avg_similarity": 0.9139521718025208,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91704",
+          "avg_similarity": 0.9138447046279907,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-118385",
+          "avg_similarity": 0.9135703444480896,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-147442",
+          "avg_similarity": 0.9129550457000732,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90622",
+          "avg_similarity": 0.9122152924537659,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141568",
+          "avg_similarity": 0.9117861017584801,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-141914",
+          "avg_similarity": 0.9117217063903809,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q055",
+      "source_case_id": "001-156248",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9500815033912658,
+      "gt_top_chunk_similarity": 0.9608040452003479,
+      "gt_chunks_in_pool": 53,
+      "top_10_cases": [
+        {
+          "case_id": "001-156248",
+          "avg_similarity": 0.9107494590417394,
+          "num_chunks": 53
+        },
+        {
+          "case_id": "001-118385",
+          "avg_similarity": 0.9011141657829285,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156074",
+          "avg_similarity": 0.8994581699371338,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-121610",
+          "avg_similarity": 0.89836585521698,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-93258",
+          "avg_similarity": 0.895538866519928,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150640",
+          "avg_similarity": 0.8952091932296753,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-105402",
+          "avg_similarity": 0.8950103521347046,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-154163",
+          "avg_similarity": 0.8946843147277832,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-98493",
+          "avg_similarity": 0.8946641087532043,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-93882",
+          "avg_similarity": 0.8946365416049957,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q056",
+      "source_case_id": "001-148669",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9396636605262756,
+      "gt_top_chunk_similarity": 0.9463172554969788,
+      "gt_chunks_in_pool": 51,
+      "top_10_cases": [
+        {
+          "case_id": "001-148669",
+          "avg_similarity": 0.9050918069540286,
+          "num_chunks": 51
+        },
+        {
+          "case_id": "001-89854",
+          "avg_similarity": 0.8882445693016052,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-98473",
+          "avg_similarity": 0.8878238201141357,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-98814",
+          "avg_similarity": 0.885613888502121,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-117633",
+          "avg_similarity": 0.8840081095695496,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-114257",
+          "avg_similarity": 0.8838542858759563,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-98140",
+          "avg_similarity": 0.8834922398839679,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-60954",
+          "avg_similarity": 0.8825379610061646,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108429",
+          "avg_similarity": 0.8820279240608215,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-68777",
+          "avg_similarity": 0.8808479309082031,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q057",
+      "source_case_id": "001-159762",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.957333791255951,
+      "gt_top_chunk_similarity": 0.960016131401062,
+      "gt_chunks_in_pool": 97,
+      "top_10_cases": [
+        {
+          "case_id": "001-159762",
+          "avg_similarity": 0.9395706291051255,
+          "num_chunks": 97
+        },
+        {
+          "case_id": "001-157283",
+          "avg_similarity": 0.9194485147794088,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q058",
+      "source_case_id": "001-145341",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9672434091567993,
+      "gt_top_chunk_similarity": 0.9687055945396423,
+      "gt_chunks_in_pool": 28,
+      "top_10_cases": [
+        {
+          "case_id": "001-145341",
+          "avg_similarity": 0.9433832168579102,
+          "num_chunks": 28
+        },
+        {
+          "case_id": "001-121572",
+          "avg_similarity": 0.9185436964035034,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-70841",
+          "avg_similarity": 0.9179193258285523,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-155717",
+          "avg_similarity": 0.9155596494674683,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156263",
+          "avg_similarity": 0.9108470347192552,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-122889",
+          "avg_similarity": 0.9096410075823466,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-139175",
+          "avg_similarity": 0.908338189125061,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-145018",
+          "avg_similarity": 0.9081318037850517,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-113445",
+          "avg_similarity": 0.9076814651489258,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-106668",
+          "avg_similarity": 0.9074207544326782,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q059",
+      "source_case_id": "001-158475",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.952695631980896,
+      "gt_top_chunk_similarity": 0.9576702117919922,
+      "gt_chunks_in_pool": 19,
+      "top_10_cases": [
+        {
+          "case_id": "001-158475",
+          "avg_similarity": 0.9301024142064547,
+          "num_chunks": 19
+        },
+        {
+          "case_id": "001-128037",
+          "avg_similarity": 0.9189735054969788,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-103153",
+          "avg_similarity": 0.9186308979988098,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-140916",
+          "avg_similarity": 0.9172606522386725,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-79436",
+          "avg_similarity": 0.9153672158718109,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-60676",
+          "avg_similarity": 0.910602331161499,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88500",
+          "avg_similarity": 0.9099594950675964,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-120062",
+          "avg_similarity": 0.9090208013852438,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-70729",
+          "avg_similarity": 0.9089301824569702,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-109550",
+          "avg_similarity": 0.9085547626018524,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q060",
+      "source_case_id": "001-153803",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9658135056495667,
+      "gt_top_chunk_similarity": 0.9767157435417175,
+      "gt_chunks_in_pool": 19,
+      "top_10_cases": [
+        {
+          "case_id": "001-153803",
+          "avg_similarity": 0.9230730502228988,
+          "num_chunks": 19
+        },
+        {
+          "case_id": "001-79572",
+          "avg_similarity": 0.8730752468109131,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-113137",
+          "avg_similarity": 0.8727356195449829,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89531",
+          "avg_similarity": 0.869477391242981,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-61441",
+          "avg_similarity": 0.8625003695487976,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60173",
+          "avg_similarity": 0.8589606285095215,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-109034",
+          "avg_similarity": 0.8588183522224426,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108582",
+          "avg_similarity": 0.857885982309069,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-79591",
+          "avg_similarity": 0.8572838306427002,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-77930",
+          "avg_similarity": 0.8570717573165894,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q061",
+      "source_case_id": "001-155196",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9520526170730591,
+      "gt_top_chunk_similarity": 0.9622573852539062,
+      "gt_chunks_in_pool": 41,
+      "top_10_cases": [
+        {
+          "case_id": "001-155196",
+          "avg_similarity": 0.9269361873952354,
+          "num_chunks": 41
+        },
+        {
+          "case_id": "001-101682",
+          "avg_similarity": 0.9157892465591431,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150649",
+          "avg_similarity": 0.9131904721260071,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-158506",
+          "avg_similarity": 0.9100050996331608,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-98401",
+          "avg_similarity": 0.9073686136139764,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-113299",
+          "avg_similarity": 0.9072690367698669,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-110488",
+          "avg_similarity": 0.9070530732472738,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-90356",
+          "avg_similarity": 0.9057095050811768,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-145781",
+          "avg_similarity": 0.9045597314834595,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150315",
+          "avg_similarity": 0.9034171998500824,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q062",
+      "source_case_id": "001-146399",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9437407493591309,
+      "gt_top_chunk_similarity": 0.9591251015663147,
+      "gt_chunks_in_pool": 23,
+      "top_10_cases": [
+        {
+          "case_id": "001-146399",
+          "avg_similarity": 0.9201699313910111,
+          "num_chunks": 23
+        },
+        {
+          "case_id": "001-71036",
+          "avg_similarity": 0.8299610614776611,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-79402",
+          "avg_similarity": 0.8283926248550415,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-60157",
+          "avg_similarity": 0.8242732286453247,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-96741",
+          "avg_similarity": 0.820606654882431,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-120959",
+          "avg_similarity": 0.8203147053718567,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-61164",
+          "avg_similarity": 0.8154500297137669,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-72031",
+          "avg_similarity": 0.8152782917022705,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-159198",
+          "avg_similarity": 0.8145734965801239,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-72584",
+          "avg_similarity": 0.814370893769794,
+          "num_chunks": 18
+        }
+      ]
+    },
+    {
+      "query_id": "q063",
+      "source_case_id": "001-152644",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9501722455024719,
+      "gt_top_chunk_similarity": 0.9726117253303528,
+      "gt_chunks_in_pool": 18,
+      "top_10_cases": [
+        {
+          "case_id": "001-152644",
+          "avg_similarity": 0.9236329628361596,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-108400",
+          "avg_similarity": 0.9117562770843506,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-107558",
+          "avg_similarity": 0.9104776978492737,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100271",
+          "avg_similarity": 0.9066950082778931,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141382",
+          "avg_similarity": 0.9021516442298889,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-109219",
+          "avg_similarity": 0.9013696759939194,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-139498",
+          "avg_similarity": 0.9010247588157654,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-116410",
+          "avg_similarity": 0.9003396383145961,
+          "num_chunks": 41
+        },
+        {
+          "case_id": "001-103037",
+          "avg_similarity": 0.8985186985560826,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-121610",
+          "avg_similarity": 0.896807978550593,
+          "num_chunks": 6
+        }
+      ]
+    },
+    {
+      "query_id": "q064",
+      "source_case_id": "001-145703",
+      "eval_rank": 1,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.966623044013977,
+      "gt_top_chunk_similarity": 0.9707781672477722,
+      "gt_chunks_in_pool": 4,
+      "top_10_cases": [
+        {
+          "case_id": "001-145703",
+          "avg_similarity": 0.9576027244329453,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-145346",
+          "avg_similarity": 0.9509620666503906,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-115875",
+          "avg_similarity": 0.9411252856254577,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-115867",
+          "avg_similarity": 0.9380088647206625,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-116029",
+          "avg_similarity": 0.934423009554545,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-107444",
+          "avg_similarity": 0.9334397060530526,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-145349",
+          "avg_similarity": 0.9323626518249511,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-150638",
+          "avg_similarity": 0.9296060502529144,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-115872",
+          "avg_similarity": 0.9270167201757431,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-90179",
+          "avg_similarity": 0.9242927432060242,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q065",
+      "source_case_id": "001-155974",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9525489449501038,
+      "gt_top_chunk_similarity": 0.9595386981964111,
+      "gt_chunks_in_pool": 32,
+      "top_10_cases": [
+        {
+          "case_id": "001-155974",
+          "avg_similarity": 0.9244471676647663,
+          "num_chunks": 32
+        },
+        {
+          "case_id": "001-61638",
+          "avg_similarity": 0.8542025429861886,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-59622",
+          "avg_similarity": 0.8432227671146393,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-59604",
+          "avg_similarity": 0.8422908931970596,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-110174",
+          "avg_similarity": 0.84218430519104,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72930",
+          "avg_similarity": 0.8412498086690903,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-61075",
+          "avg_similarity": 0.8392218127846718,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-75104",
+          "avg_similarity": 0.8372647166252136,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72936",
+          "avg_similarity": 0.8370857636133829,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-155819",
+          "avg_similarity": 0.8366576284170151,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q066",
+      "source_case_id": "001-149197",
+      "eval_rank": 2,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.9692757606506348,
+      "gt_top_chunk_similarity": 0.9689900875091553,
+      "gt_chunks_in_pool": 17,
+      "top_10_cases": [
+        {
+          "case_id": "001-149208",
+          "avg_similarity": 0.9598292921270642,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-149197",
+          "avg_similarity": 0.9588934638920952,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-149199",
+          "avg_similarity": 0.9572723640335931,
+          "num_chunks": 18
+        },
+        {
+          "case_id": "001-150238",
+          "avg_similarity": 0.9551080018281937,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-89977",
+          "avg_similarity": 0.9537110328674316,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-103323",
+          "avg_similarity": 0.9531230330467224,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-89287",
+          "avg_similarity": 0.9528331160545349,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-149200",
+          "avg_similarity": 0.9510402828454971,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-90165",
+          "avg_similarity": 0.9502488374710083,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152781",
+          "avg_similarity": 0.9492962956428528,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q067",
+      "source_case_id": "001-157392",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.97212153673172,
+      "gt_top_chunk_similarity": 0.9776707887649536,
+      "gt_chunks_in_pool": 11,
+      "top_10_cases": [
+        {
+          "case_id": "001-157392",
+          "avg_similarity": 0.9467155066403475,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-106272",
+          "avg_similarity": 0.922348701953888,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-113937",
+          "avg_similarity": 0.909898008619036,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-145233",
+          "avg_similarity": 0.9055333018302918,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-113936",
+          "avg_similarity": 0.9040779206487868,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-120073",
+          "avg_similarity": 0.9028578549623489,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-145718",
+          "avg_similarity": 0.9010748863220215,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104839",
+          "avg_similarity": 0.9003435969352722,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-88669",
+          "avg_similarity": 0.8984044790267944,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-114051",
+          "avg_similarity": 0.8977031707763672,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q068",
+      "source_case_id": "001-157339",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9519056916236878,
+      "gt_top_chunk_similarity": 0.959559440612793,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-157339",
+          "avg_similarity": 0.9372805271829877,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-80364",
+          "avg_similarity": 0.9233755469322205,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-106274",
+          "avg_similarity": 0.9227520823478699,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-103153",
+          "avg_similarity": 0.9227479696273804,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-81776",
+          "avg_similarity": 0.9205565333366394,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-140774",
+          "avg_similarity": 0.9194696545600891,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-93997",
+          "avg_similarity": 0.9180083274841309,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-94975",
+          "avg_similarity": 0.917201042175293,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-78890",
+          "avg_similarity": 0.9170583486557007,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-73158",
+          "avg_similarity": 0.9169069528579712,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q069",
+      "source_case_id": "001-151000",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9652908086776734,
+      "gt_top_chunk_similarity": 0.9750269055366516,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-151000",
+          "avg_similarity": 0.9456340869267782,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-150668",
+          "avg_similarity": 0.9281450867652893,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-150997",
+          "avg_similarity": 0.928101991613706,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-80211",
+          "avg_similarity": 0.9265608737866083,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-144113",
+          "avg_similarity": 0.9244904145598412,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-148184",
+          "avg_similarity": 0.9225786328315735,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-144112",
+          "avg_similarity": 0.9212009906768799,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-144114",
+          "avg_similarity": 0.9207272171974182,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-144110",
+          "avg_similarity": 0.9199941873550415,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-60891",
+          "avg_similarity": 0.9190518061319987,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q070",
+      "source_case_id": "001-156063",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9611122727394104,
+      "gt_top_chunk_similarity": 0.9816282987594604,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-156063",
+          "avg_similarity": 0.9495744705200195,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-150785",
+          "avg_similarity": 0.9340061247348785,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-110807",
+          "avg_similarity": 0.9263691008090973,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-100387",
+          "avg_similarity": 0.9231444001197815,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-77261",
+          "avg_similarity": 0.9179781675338745,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-85833",
+          "avg_similarity": 0.9179695248603821,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-105008",
+          "avg_similarity": 0.9171625375747681,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-99861",
+          "avg_similarity": 0.9170418977737427,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72580",
+          "avg_similarity": 0.9168468713760376,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-148178",
+          "avg_similarity": 0.9164893627166748,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q071",
+      "source_case_id": "001-147601",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9671115040779114,
+      "gt_top_chunk_similarity": 0.9756735563278198,
+      "gt_chunks_in_pool": 15,
+      "top_10_cases": [
+        {
+          "case_id": "001-147601",
+          "avg_similarity": 0.9566643516222636,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-95801",
+          "avg_similarity": 0.8979901671409607,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-147865",
+          "avg_similarity": 0.8973740935325623,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-128198",
+          "avg_similarity": 0.8899614810943604,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-140006",
+          "avg_similarity": 0.8844109943934849,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-160087",
+          "avg_similarity": 0.8808292746543884,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-142674",
+          "avg_similarity": 0.8799610137939453,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95799",
+          "avg_similarity": 0.8780778348445892,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-94840",
+          "avg_similarity": 0.8756420612335205,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-83443",
+          "avg_similarity": 0.8744011521339417,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q072",
+      "source_case_id": "001-158157",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9610125541687011,
+      "gt_top_chunk_similarity": 0.9690200090408325,
+      "gt_chunks_in_pool": 17,
+      "top_10_cases": [
+        {
+          "case_id": "001-158157",
+          "avg_similarity": 0.9422441335285411,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-105775",
+          "avg_similarity": 0.8886862993240356,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60166",
+          "avg_similarity": 0.8837371468544006,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90111",
+          "avg_similarity": 0.8807884355386099,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-81807",
+          "avg_similarity": 0.8777480125427246,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60775",
+          "avg_similarity": 0.8750222027301788,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-86980",
+          "avg_similarity": 0.8745408415794372,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-115165",
+          "avg_similarity": 0.8732959032058716,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-59604",
+          "avg_similarity": 0.8710077007611593,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-87608",
+          "avg_similarity": 0.8706987857818603,
+          "num_chunks": 10
+        }
+      ]
+    },
+    {
+      "query_id": "q073",
+      "source_case_id": "001-145584",
+      "eval_rank": 1,
+      "prod_rank": 2,
+      "mean_top5_chunk_similarity": 0.9682540655136108,
+      "gt_top_chunk_similarity": 0.971487283706665,
+      "gt_chunks_in_pool": 14,
+      "top_10_cases": [
+        {
+          "case_id": "001-145584",
+          "avg_similarity": 0.9570059989179883,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-145019",
+          "avg_similarity": 0.9521360099315643,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-148638",
+          "avg_similarity": 0.948151707649231,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-152601",
+          "avg_similarity": 0.9477417270342509,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-90212",
+          "avg_similarity": 0.9469480141997337,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-153480",
+          "avg_similarity": 0.9468201398849487,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-116330",
+          "avg_similarity": 0.9467043280601501,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-111428",
+          "avg_similarity": 0.9462336897850037,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-113719",
+          "avg_similarity": 0.9459958672523499,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-113720",
+          "avg_similarity": 0.9456149339675903,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q074",
+      "source_case_id": "001-145442",
+      "eval_rank": 1,
+      "prod_rank": 3,
+      "mean_top5_chunk_similarity": 0.9412737727165222,
+      "gt_top_chunk_similarity": 0.9464986324310303,
+      "gt_chunks_in_pool": 25,
+      "top_10_cases": [
+        {
+          "case_id": "001-145442",
+          "avg_similarity": 0.9262883973121643,
+          "num_chunks": 25
+        },
+        {
+          "case_id": "001-115315",
+          "avg_similarity": 0.9255233407020569,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108470",
+          "avg_similarity": 0.9253927965958914,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-103256",
+          "avg_similarity": 0.9245619773864746,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-119954",
+          "avg_similarity": 0.9240752657254537,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-152777",
+          "avg_similarity": 0.9229441455432347,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-147671",
+          "avg_similarity": 0.9226518869400024,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108031",
+          "avg_similarity": 0.9207752346992493,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141191",
+          "avg_similarity": 0.9206674098968506,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-141382",
+          "avg_similarity": 0.920317679643631,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q075",
+      "source_case_id": "001-158090",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.962899100780487,
+      "gt_top_chunk_similarity": 0.9756711721420288,
+      "gt_chunks_in_pool": 13,
+      "top_10_cases": [
+        {
+          "case_id": "001-158090",
+          "avg_similarity": 0.9356699723463792,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-90967",
+          "avg_similarity": 0.8498457670211792,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-81807",
+          "avg_similarity": 0.8473185896873474,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-112206",
+          "avg_similarity": 0.8393063247203827,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-98885",
+          "avg_similarity": 0.8375089764595032,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-101566",
+          "avg_similarity": 0.836767315864563,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-156264",
+          "avg_similarity": 0.8365383247534434,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-90979",
+          "avg_similarity": 0.8361554145812988,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-94162",
+          "avg_similarity": 0.8359292268753051,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-84106",
+          "avg_similarity": 0.8355447252591451,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q076",
+      "source_case_id": "001-147866",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9405661344528198,
+      "gt_top_chunk_similarity": 0.9445278644561768,
+      "gt_chunks_in_pool": 23,
+      "top_10_cases": [
+        {
+          "case_id": "001-147866",
+          "avg_similarity": 0.9154158027275748,
+          "num_chunks": 23
+        },
+        {
+          "case_id": "001-94854",
+          "avg_similarity": 0.9040425941348076,
+          "num_chunks": 24
+        },
+        {
+          "case_id": "001-90340",
+          "avg_similarity": 0.8649915556112925,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-84461",
+          "avg_similarity": 0.863760769367218,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-79301",
+          "avg_similarity": 0.856673888862133,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-82825",
+          "avg_similarity": 0.856046125292778,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-77729",
+          "avg_similarity": 0.8527592122554779,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-94565",
+          "avg_similarity": 0.8483275175094604,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-96018",
+          "avg_similarity": 0.8436955511569977,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-81067",
+          "avg_similarity": 0.8428780237833658,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q077",
+      "source_case_id": "001-158963",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9434546828269958,
+      "gt_top_chunk_similarity": 0.9545466303825378,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-158963",
+          "avg_similarity": 0.9246941896585318,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-100964",
+          "avg_similarity": 0.9245668053627014,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-103260",
+          "avg_similarity": 0.9211739897727966,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150791",
+          "avg_similarity": 0.9177629947662354,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152593",
+          "avg_similarity": 0.9160255193710327,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.9159069061279297,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-77576",
+          "avg_similarity": 0.9155774265527725,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-112013",
+          "avg_similarity": 0.9150643216239082,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-111523",
+          "avg_similarity": 0.9144442677497864,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-146697",
+          "avg_similarity": 0.9136941035588583,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q078",
+      "source_case_id": "001-150240",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9799716591835022,
+      "gt_top_chunk_similarity": 0.9867676496505737,
+      "gt_chunks_in_pool": 4,
+      "top_10_cases": [
+        {
+          "case_id": "001-150240",
+          "avg_similarity": 0.9769721776247025,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-160209",
+          "avg_similarity": 0.9571293592453003,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-70434",
+          "avg_similarity": 0.9338036626577377,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-115006",
+          "avg_similarity": 0.931699812412262,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-70138",
+          "avg_similarity": 0.9282240867614746,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-80535",
+          "avg_similarity": 0.9264996349811554,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-79767",
+          "avg_similarity": 0.9262439012527466,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-70371",
+          "avg_similarity": 0.9261809587478638,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-76295",
+          "avg_similarity": 0.925161600112915,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-61700",
+          "avg_similarity": 0.924190491437912,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q079",
+      "source_case_id": "001-145711",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9557321786880493,
+      "gt_top_chunk_similarity": 0.9693152904510498,
+      "gt_chunks_in_pool": 24,
+      "top_10_cases": [
+        {
+          "case_id": "001-145711",
+          "avg_similarity": 0.9396541888515154,
+          "num_chunks": 24
+        },
+        {
+          "case_id": "001-61584",
+          "avg_similarity": 0.9385923743247986,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91300",
+          "avg_similarity": 0.9383653104305267,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-110947",
+          "avg_similarity": 0.9342254400253296,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-155006",
+          "avg_similarity": 0.930000901222229,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-86231",
+          "avg_similarity": 0.9283557534217834,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-93882",
+          "avg_similarity": 0.9268121719360352,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-69978",
+          "avg_similarity": 0.9260685443878174,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91401",
+          "avg_similarity": 0.9255086183547974,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-107045",
+          "avg_similarity": 0.9245656132698059,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q080",
+      "source_case_id": "001-160089",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9689190506935119,
+      "gt_top_chunk_similarity": 0.9757969975471497,
+      "gt_chunks_in_pool": 16,
+      "top_10_cases": [
+        {
+          "case_id": "001-160089",
+          "avg_similarity": 0.9337783344089985,
+          "num_chunks": 16
+        },
+        {
+          "case_id": "001-86482",
+          "avg_similarity": 0.8972904483477274,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-113754",
+          "avg_similarity": 0.8907616800732083,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-116595",
+          "avg_similarity": 0.8867629766464233,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-150772",
+          "avg_similarity": 0.8867344260215759,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91397",
+          "avg_similarity": 0.8859848380088806,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147867",
+          "avg_similarity": 0.8835412263870239,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-113756",
+          "avg_similarity": 0.8827727635701498,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-158960",
+          "avg_similarity": 0.8824076013905662,
+          "num_chunks": 14
+        },
+        {
+          "case_id": "001-147870",
+          "avg_similarity": 0.8804593682289124,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q081",
+      "source_case_id": "001-146357",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9578722596168519,
+      "gt_top_chunk_similarity": 0.9686728119850159,
+      "gt_chunks_in_pool": 60,
+      "top_10_cases": [
+        {
+          "case_id": "001-146357",
+          "avg_similarity": 0.9075498153765996,
+          "num_chunks": 60
+        },
+        {
+          "case_id": "001-100401",
+          "avg_similarity": 0.8432405889034271,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-79655",
+          "avg_similarity": 0.8417810201644897,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-70883",
+          "avg_similarity": 0.8413655360539755,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-103273",
+          "avg_similarity": 0.8361584544181824,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-90196",
+          "avg_similarity": 0.834235429763794,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-101996",
+          "avg_similarity": 0.8322300910949707,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95764",
+          "avg_similarity": 0.8306217657195197,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-71639",
+          "avg_similarity": 0.8302785158157349,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-76467",
+          "avg_similarity": 0.8302475810050964,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q082",
+      "source_case_id": "001-159915",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9627866268157959,
+      "gt_top_chunk_similarity": 0.9903697371482849,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-159915",
+          "avg_similarity": 0.9627866268157959,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-99719",
+          "avg_similarity": 0.8905404210090637,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-75571",
+          "avg_similarity": 0.8886538147926331,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100657",
+          "avg_similarity": 0.886321485042572,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-96953",
+          "avg_similarity": 0.8862839937210083,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-80729",
+          "avg_similarity": 0.8857828378677368,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157703",
+          "avg_similarity": 0.8850593566894531,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-103709",
+          "avg_similarity": 0.8843587040901184,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-87739",
+          "avg_similarity": 0.8835861384868622,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-72717",
+          "avg_similarity": 0.8831186890602112,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q083",
+      "source_case_id": "001-159916",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9724091529846192,
+      "gt_top_chunk_similarity": 0.9783862829208374,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-159916",
+          "avg_similarity": 0.9628097944789462,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-110499",
+          "avg_similarity": 0.9370356457574027,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-110440",
+          "avg_similarity": 0.9340562621752421,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-159913",
+          "avg_similarity": 0.9330717325210571,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-89123",
+          "avg_similarity": 0.9327135471736684,
+          "num_chunks": 17
+        },
+        {
+          "case_id": "001-114085",
+          "avg_similarity": 0.9316306412220001,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-93419",
+          "avg_similarity": 0.9313055177529653,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-157346",
+          "avg_similarity": 0.9306925535202026,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-147600",
+          "avg_similarity": 0.9302119374275207,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-88583",
+          "avg_similarity": 0.9298023700714111,
+          "num_chunks": 5
+        }
+      ]
+    },
+    {
+      "query_id": "q084",
+      "source_case_id": "001-153760",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9569637656211853,
+      "gt_top_chunk_similarity": 0.9711765646934509,
+      "gt_chunks_in_pool": 12,
+      "top_10_cases": [
+        {
+          "case_id": "001-153760",
+          "avg_similarity": 0.9402449180682501,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-154197",
+          "avg_similarity": 0.9196300762040275,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-72925",
+          "avg_similarity": 0.9157101909319559,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-71551",
+          "avg_similarity": 0.9138074070215225,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-154198",
+          "avg_similarity": 0.9119242876768112,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-148655",
+          "avg_similarity": 0.9110638598601023,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-144344",
+          "avg_similarity": 0.911034916128431,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-72931",
+          "avg_similarity": 0.9086897373199463,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-148175",
+          "avg_similarity": 0.9073259731133779,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-59589",
+          "avg_similarity": 0.9072878360748291,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q085",
+      "source_case_id": "001-157821",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9708923816680908,
+      "gt_top_chunk_similarity": 0.974844753742218,
+      "gt_chunks_in_pool": 100,
+      "top_10_cases": [
+        {
+          "case_id": "001-157821",
+          "avg_similarity": 0.9431343752145768,
+          "num_chunks": 100
+        }
+      ]
+    },
+    {
+      "query_id": "q086",
+      "source_case_id": "001-151037",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9401193261146545,
+      "gt_top_chunk_similarity": 0.9721449613571167,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-151037",
+          "avg_similarity": 0.934101152420044,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-152988",
+          "avg_similarity": 0.8933361768722534,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-92147",
+          "avg_similarity": 0.892863892018795,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-122697",
+          "avg_similarity": 0.8924393812815349,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-98450",
+          "avg_similarity": 0.8912544101476669,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-157283",
+          "avg_similarity": 0.8907849192619324,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-92879",
+          "avg_similarity": 0.8894355297088623,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-85079",
+          "avg_similarity": 0.8886428475379944,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-102473",
+          "avg_similarity": 0.8885713219642639,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90622",
+          "avg_similarity": 0.8883264064788818,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q087",
+      "source_case_id": "001-147024",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.958011794090271,
+      "gt_top_chunk_similarity": 0.9859297275543213,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-147024",
+          "avg_similarity": 0.9543218612670898,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-147025",
+          "avg_similarity": 0.9212551315625509,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-89444",
+          "avg_similarity": 0.9167954921722412,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-83153",
+          "avg_similarity": 0.9118677973747253,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-95686",
+          "avg_similarity": 0.906878650188446,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-84817",
+          "avg_similarity": 0.9028392434120178,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-102429",
+          "avg_similarity": 0.900704562664032,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-109044",
+          "avg_similarity": 0.9000853896141052,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-86941",
+          "avg_similarity": 0.8996148705482483,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-93135",
+          "avg_similarity": 0.8996095657348633,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q088",
+      "source_case_id": "001-152258",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9683076977729798,
+      "gt_top_chunk_similarity": 0.988592267036438,
+      "gt_chunks_in_pool": 9,
+      "top_10_cases": [
+        {
+          "case_id": "001-152258",
+          "avg_similarity": 0.9580033951335483,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-110947",
+          "avg_similarity": 0.937049150466919,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.9356302060186863,
+          "num_chunks": 16
+        },
+        {
+          "case_id": "001-111523",
+          "avg_similarity": 0.9329787492752075,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-94293",
+          "avg_similarity": 0.9325090050697327,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-148180",
+          "avg_similarity": 0.9319307605425516,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-111391",
+          "avg_similarity": 0.9318297505378723,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-156249",
+          "avg_similarity": 0.9318196922540665,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-87211",
+          "avg_similarity": 0.9306110739707947,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147034",
+          "avg_similarity": 0.9306093454360962,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q089",
+      "source_case_id": "001-150785",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.965207827091217,
+      "gt_top_chunk_similarity": 0.9855810403823853,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-150785",
+          "avg_similarity": 0.9564613938331604,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-121564",
+          "avg_similarity": 0.9282715022563934,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-99357",
+          "avg_similarity": 0.9270278811454773,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-108572",
+          "avg_similarity": 0.9267083406448364,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110807",
+          "avg_similarity": 0.9201579093933105,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-156063",
+          "avg_similarity": 0.9201022585233053,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-88480",
+          "avg_similarity": 0.9198896288871765,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-67950",
+          "avg_similarity": 0.9195004105567932,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-96484",
+          "avg_similarity": 0.9185656905174255,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-100387",
+          "avg_similarity": 0.9179496169090271,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q090",
+      "source_case_id": "001-147615",
+      "eval_rank": 3,
+      "prod_rank": 3,
+      "mean_top5_chunk_similarity": 0.974622905254364,
+      "gt_top_chunk_similarity": 0.9811081886291504,
+      "gt_chunks_in_pool": 6,
+      "top_10_cases": [
+        {
+          "case_id": "001-158142",
+          "avg_similarity": 0.9585800468921661,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-158141",
+          "avg_similarity": 0.9583694338798523,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-147615",
+          "avg_similarity": 0.958074818054835,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-147685",
+          "avg_similarity": 0.9527940273284912,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-141191",
+          "avg_similarity": 0.9497445623079935,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-141159",
+          "avg_similarity": 0.945198118686676,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-111850",
+          "avg_similarity": 0.9427180687586466,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-107139",
+          "avg_similarity": 0.9413129091262817,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-147611",
+          "avg_similarity": 0.9395250167165484,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-147614",
+          "avg_similarity": 0.9386299610137939,
+          "num_chunks": 5
+        }
+      ]
+    },
+    {
+      "query_id": "q091",
+      "source_case_id": "001-157698",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9546571493148803,
+      "gt_top_chunk_similarity": 0.959506094455719,
+      "gt_chunks_in_pool": 32,
+      "top_10_cases": [
+        {
+          "case_id": "001-157698",
+          "avg_similarity": 0.9131334591656923,
+          "num_chunks": 32
+        },
+        {
+          "case_id": "001-108409",
+          "avg_similarity": 0.8758747577667236,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-93792",
+          "avg_similarity": 0.8723876078923544,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-73111",
+          "avg_similarity": 0.8697930932044983,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-77698",
+          "avg_similarity": 0.8636474609375,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-61601",
+          "avg_similarity": 0.8631317615509033,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-146393",
+          "avg_similarity": 0.8630391061306,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-72712",
+          "avg_similarity": 0.8622119426727295,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-157538",
+          "avg_similarity": 0.8602495789527893,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-72717",
+          "avg_similarity": 0.8595882654190063,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q092",
+      "source_case_id": "001-148638",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.977439546585083,
+      "gt_top_chunk_similarity": 0.9794256687164307,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-148638",
+          "avg_similarity": 0.9735708355903625,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-152601",
+          "avg_similarity": 0.9643325135111809,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-111180",
+          "avg_similarity": 0.9642203251520792,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-145366",
+          "avg_similarity": 0.9639501452445984,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-144149",
+          "avg_similarity": 0.9627257585525513,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-90212",
+          "avg_similarity": 0.9625122427940369,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-147333",
+          "avg_similarity": 0.9608464620330117,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-127816",
+          "avg_similarity": 0.9608160495758057,
+          "num_chunks": 10
+        },
+        {
+          "case_id": "001-116330",
+          "avg_similarity": 0.9605616331100464,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-150713",
+          "avg_similarity": 0.9603140950202942,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q093",
+      "source_case_id": "001-160212",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9578017950057983,
+      "gt_top_chunk_similarity": 0.9714094400405884,
+      "gt_chunks_in_pool": 52,
+      "top_10_cases": [
+        {
+          "case_id": "001-160212",
+          "avg_similarity": 0.9269169855576295,
+          "num_chunks": 52
+        },
+        {
+          "case_id": "001-100197",
+          "avg_similarity": 0.9041672199964523,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-89813",
+          "avg_similarity": 0.9032840728759766,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-60808",
+          "avg_similarity": 0.8972980141639709,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-81618",
+          "avg_similarity": 0.8939082622528076,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110246",
+          "avg_similarity": 0.8933095633983612,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-68398",
+          "avg_similarity": 0.8929299712181091,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-105624",
+          "avg_similarity": 0.8896457701921463,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-109815",
+          "avg_similarity": 0.8892549276351929,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-81195",
+          "avg_similarity": 0.8887481689453125,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q094",
+      "source_case_id": "001-158036",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9773508667945862,
+      "gt_top_chunk_similarity": 0.9804165363311768,
+      "gt_chunks_in_pool": 11,
+      "top_10_cases": [
+        {
+          "case_id": "001-158036",
+          "avg_similarity": 0.9607418071139943,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-140000",
+          "avg_similarity": 0.9544024467468262,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-152381",
+          "avg_similarity": 0.9539932608604431,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-156274",
+          "avg_similarity": 0.9451553821563721,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-116974",
+          "avg_similarity": 0.9352957308292389,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-155187",
+          "avg_similarity": 0.931380033493042,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-154155",
+          "avg_similarity": 0.9308313589829665,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-158085",
+          "avg_similarity": 0.9287012081879836,
+          "num_chunks": 13
+        },
+        {
+          "case_id": "001-158037",
+          "avg_similarity": 0.9246281584103903,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-116975",
+          "avg_similarity": 0.9195355325937271,
+          "num_chunks": 4
+        }
+      ]
+    },
+    {
+      "query_id": "q095",
+      "source_case_id": "001-157518",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9540534257888794,
+      "gt_top_chunk_similarity": 0.9585872888565063,
+      "gt_chunks_in_pool": 21,
+      "top_10_cases": [
+        {
+          "case_id": "001-157518",
+          "avg_similarity": 0.9276948599588304,
+          "num_chunks": 21
+        },
+        {
+          "case_id": "001-111386",
+          "avg_similarity": 0.9130266904830933,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60337",
+          "avg_similarity": 0.9046632647514343,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-60974",
+          "avg_similarity": 0.8945559859275818,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-110186",
+          "avg_similarity": 0.8935605645179748,
+          "num_chunks": 15
+        },
+        {
+          "case_id": "001-150217",
+          "avg_similarity": 0.8934034407138824,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-140752",
+          "avg_similarity": 0.8933932781219482,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-105269",
+          "avg_similarity": 0.8913347919782003,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-120034",
+          "avg_similarity": 0.8912334442138672,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-76074",
+          "avg_similarity": 0.8910245895385742,
+          "num_chunks": 1
+        }
+      ]
+    },
+    {
+      "query_id": "q096",
+      "source_case_id": "001-145581",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9734212994575501,
+      "gt_top_chunk_similarity": 0.9782267212867737,
+      "gt_chunks_in_pool": 26,
+      "top_10_cases": [
+        {
+          "case_id": "001-145581",
+          "avg_similarity": 0.9474236644231356,
+          "num_chunks": 26
+        },
+        {
+          "case_id": "001-95738",
+          "avg_similarity": 0.9358845353126526,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-106454",
+          "avg_similarity": 0.9356569051742554,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-153351",
+          "avg_similarity": 0.9352670311927795,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-139170",
+          "avg_similarity": 0.9340615421533585,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-159767",
+          "avg_similarity": 0.9323950409889221,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-91368",
+          "avg_similarity": 0.9322599172592163,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-154022",
+          "avg_similarity": 0.9304755840982709,
+          "num_chunks": 7
+        },
+        {
+          "case_id": "001-95347",
+          "avg_similarity": 0.9300955533981323,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-101321",
+          "avg_similarity": 0.9300335049629211,
+          "num_chunks": 2
+        }
+      ]
+    },
+    {
+      "query_id": "q097",
+      "source_case_id": "001-156503",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.970853614807129,
+      "gt_top_chunk_similarity": 0.98494553565979,
+      "gt_chunks_in_pool": 6,
+      "top_10_cases": [
+        {
+          "case_id": "001-156503",
+          "avg_similarity": 0.9648566742738088,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-159797",
+          "avg_similarity": 0.8692746758460999,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-104955",
+          "avg_similarity": 0.8584352135658264,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-152255",
+          "avg_similarity": 0.8552185893058777,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-90631",
+          "avg_similarity": 0.8520446419715881,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-126914",
+          "avg_similarity": 0.8518919348716736,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-154160",
+          "avg_similarity": 0.850930780172348,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-100269",
+          "avg_similarity": 0.8509117066860199,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-108017",
+          "avg_similarity": 0.8509023388226827,
+          "num_chunks": 9
+        },
+        {
+          "case_id": "001-152725",
+          "avg_similarity": 0.850766815922477,
+          "num_chunks": 11
+        }
+      ]
+    },
+    {
+      "query_id": "q098",
+      "source_case_id": "001-159207",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9684599161148071,
+      "gt_top_chunk_similarity": 0.974234938621521,
+      "gt_chunks_in_pool": 19,
+      "top_10_cases": [
+        {
+          "case_id": "001-159207",
+          "avg_similarity": 0.9434776651231866,
+          "num_chunks": 19
+        },
+        {
+          "case_id": "001-108400",
+          "avg_similarity": 0.9219519793987274,
+          "num_chunks": 12
+        },
+        {
+          "case_id": "001-111837",
+          "avg_similarity": 0.9162434935569763,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-148225",
+          "avg_similarity": 0.9161874353885651,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-156251",
+          "avg_similarity": 0.9148869663476944,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-140404",
+          "avg_similarity": 0.9141582051912943,
+          "num_chunks": 3
+        },
+        {
+          "case_id": "001-109082",
+          "avg_similarity": 0.9138768911361694,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-108478",
+          "avg_similarity": 0.9134732186794281,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-139932",
+          "avg_similarity": 0.9130442630160939,
+          "num_chunks": 11
+        },
+        {
+          "case_id": "001-116332",
+          "avg_similarity": 0.9119492053985596,
+          "num_chunks": 5
+        }
+      ]
+    },
+    {
+      "query_id": "q099",
+      "source_case_id": "001-147268",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9623292207717895,
+      "gt_top_chunk_similarity": 0.9844462871551514,
+      "gt_chunks_in_pool": 5,
+      "top_10_cases": [
+        {
+          "case_id": "001-147268",
+          "avg_similarity": 0.9555950403213501,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-107225",
+          "avg_similarity": 0.9381064772605896,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-120952",
+          "avg_similarity": 0.937970757484436,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-147886",
+          "avg_similarity": 0.9333439469337463,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-118647",
+          "avg_similarity": 0.9324514865875244,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-157700",
+          "avg_similarity": 0.932227611541748,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-140924",
+          "avg_similarity": 0.931919276714325,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-94404",
+          "avg_similarity": 0.9298608601093292,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-138895",
+          "avg_similarity": 0.9295911669731141,
+          "num_chunks": 5
+        },
+        {
+          "case_id": "001-142404",
+          "avg_similarity": 0.9292473395665487,
+          "num_chunks": 3
+        }
+      ]
+    },
+    {
+      "query_id": "q100",
+      "source_case_id": "001-155187",
+      "eval_rank": 1,
+      "prod_rank": 1,
+      "mean_top5_chunk_similarity": 0.9341670513153076,
+      "gt_top_chunk_similarity": 0.9433301687240601,
+      "gt_chunks_in_pool": 16,
+      "top_10_cases": [
+        {
+          "case_id": "001-155187",
+          "avg_similarity": 0.9091512709856033,
+          "num_chunks": 16
+        },
+        {
+          "case_id": "001-153476",
+          "avg_similarity": 0.8892080411314964,
+          "num_chunks": 8
+        },
+        {
+          "case_id": "001-138887",
+          "avg_similarity": 0.8869306246439616,
+          "num_chunks": 6
+        },
+        {
+          "case_id": "001-81696",
+          "avg_similarity": 0.8845710754394531,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-82552",
+          "avg_similarity": 0.8844570517539978,
+          "num_chunks": 4
+        },
+        {
+          "case_id": "001-127617",
+          "avg_similarity": 0.8843717575073242,
+          "num_chunks": 2
+        },
+        {
+          "case_id": "001-98415",
+          "avg_similarity": 0.8831799626350403,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-81503",
+          "avg_similarity": 0.8826600909233093,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-147015",
+          "avg_similarity": 0.8825199007987976,
+          "num_chunks": 1
+        },
+        {
+          "case_id": "001-83447",
+          "avg_similarity": 0.882480651140213,
+          "num_chunks": 2
+        }
+      ]
+    }
+  ]
+}

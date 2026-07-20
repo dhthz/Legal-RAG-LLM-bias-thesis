@@ -12,66 +12,31 @@ class MetadataMerger:
         self.age_data = {}
         self.sentiment_data = {}
 
-    def load_gender_data(self, gender_file: str):
-        print(f"Loading gender data from: {gender_file}")
+    def load_metadata(self, metadata_file: str):
+        print(f"Loading case metadata from: {metadata_file}")
 
-        with open(gender_file, 'r', encoding='utf-8') as f:
+        with open(metadata_file, 'r', encoding='utf-8') as f:
             for line in f:
                 entry = json.loads(line)
                 case_id = entry['case_id']
+
+                classification = entry.get('classification', {})
                 self.gender_data[case_id] = {
-                    'gender': entry.get('gender', 'unknown'),
-                    'gender_confidence': entry.get('confidence', 'unknown'),
+                    'gender': classification.get('gender', 'unknown'),
+                    'gender_confidence': classification.get('confidence', 'unknown'),
                 }
+
+                age_info = entry.get('age_info', {})
+                self.age_data[case_id] = {
+                    'age_at_judgment': age_info.get('age_at_judgment'),
+                    'birth_year': age_info.get('birth_year'),
+                    'has_age_info': bool(age_info),
+                }
+
+                self.sentiment_data[case_id] = entry.get('sentiment_info', {})
 
         print(f"Loaded gender data for {len(self.gender_data)} cases")
-
-    def load_age_data(self, age_file: str):
-        print(f"Loading age data from: {age_file}")
-
-        with open(age_file, 'r', encoding='utf-8') as f:
-            for line in f:
-                entry = json.loads(line)
-                case_id = entry['case_id']
-                self.age_data[case_id] = {
-                    'age_at_judgment': entry.get('age_at_judgment'),
-                    'birth_year': entry.get('birth_year'),
-                    'has_age_info': entry.get('has_age_info', False),
-                }
-
         print(f"Loaded age data for {len(self.age_data)} cases")
-
-    def load_sentiment_data(self, sentiment_file: str):
-        print(f"Loading sentiment data from: {sentiment_file}")
-
-        # Check if CSV or JSONL
-        if sentiment_file.endswith('.csv'):
-            import csv
-            with open(sentiment_file, 'r', encoding='utf-8') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    case_id = row['case_id']
-                    self.sentiment_data[case_id] = {
-                        'nrc_fear': float(row.get('nrc_fear', 0)),
-                        'nrc_anger': float(row.get('nrc_anger', 0)),
-                        'nrc_sadness': float(row.get('nrc_sadness', 0)),
-                        'nrc_disgust': float(row.get('nrc_disgust', 0)),
-                        'nrc_emotional_intensity': float(row.get('nrc_emotional_intensity', 0)),
-                        'passive_voice_ratio': float(row.get('passive_voice_ratio', 0)),
-                        'first_person_pronouns': int(row.get('first_person_pronouns', 0)),
-                        'third_person_pronouns': int(row.get('third_person_pronouns', 0)),
-                        'perpetrator_mentions': int(row.get('perpetrator_mentions', 0)),
-                        'victim_language_count': int(row.get('victim_language_count', 0)),
-                    }
-        else:
-            # JSONL format
-            with open(sentiment_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    entry = json.loads(line)
-                    case_id = entry['case_id']
-                    sentiment_info = entry.get('sentiment_info', {})
-                    self.sentiment_data[case_id] = sentiment_info
-
         print(f"Loaded sentiment data for {len(self.sentiment_data)} cases")
 
     def merge_into_chunks(
@@ -204,17 +169,14 @@ def main():
     print("METADATA MERGER FOR CHUNK ENRICHMENT")
     print("=" * 60)
 
-    # File paths - UPDATE THESE TO YOUR ACTUAL FILE PATHS
-    GENDER_FILE = "Metadata Extraction Files/gender_classification_results.jsonl"
-    AGE_FILE = "Metadata Extraction Files/age_extraction_summary.jsonl"  # or your actual age file
-    SENTIMENT_FILE = "Metadata Extraction Files/sentiment_analysis_JSONL_results/sentiment_extractions.jsonl"
+    METADATA_FILE = "dataset/train_with_metadata.jsonl"
 
     CHUNK_METADATA = "faiss_indices/paragraph_chunks_metadata.json"
     OUTPUT_FILE = "faiss_indices/paragraph_chunks_metadata_enriched.json"
 
     # Check if files exist
     missing_files = []
-    for file_path in [GENDER_FILE, AGE_FILE, SENTIMENT_FILE, CHUNK_METADATA]:
+    for file_path in [METADATA_FILE, CHUNK_METADATA]:
         if not Path(file_path).exists():
             missing_files.append(file_path)
 
@@ -228,21 +190,8 @@ def main():
     # Initialize merger
     merger = MetadataMerger()
 
-    # Load all metadata sources
-    try:
-        merger.load_gender_data(GENDER_FILE)
-    except Exception as e:
-        print(f"⚠️  Warning: Could not load gender data: {e}")
-
-    try:
-        merger.load_age_data(AGE_FILE)
-    except Exception as e:
-        print(f"⚠️  Warning: Could not load age data: {e}")
-
-    try:
-        merger.load_sentiment_data(SENTIMENT_FILE)
-    except Exception as e:
-        print(f"⚠️  Warning: Could not load sentiment data: {e}")
+    # Load case-level metadata (gender/age/sentiment already merged by case_id)
+    merger.load_metadata(METADATA_FILE)
 
     # Merge into chunks
     stats = merger.merge_into_chunks(CHUNK_METADATA, OUTPUT_FILE)

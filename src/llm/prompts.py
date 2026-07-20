@@ -2,9 +2,10 @@
 from typing import List, Dict
 
 def build_legal_prompt(query: str, cases: List[Dict]) -> List[Dict]:
-    system_prompt = """You are a legal research assistant for the European Court of Human Rights (ECtHR). 
+    system_prompt = """You are a legal research assistant for the European Court of Human Rights (ECtHR).
 A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated.
-The retrieved cases may not be an exact match — look for factual and legal similarities."""
+The retrieved cases may not be an exact match — look for factual and legal similarities.
+Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed above."""
     
     # Build context from cases
     context = ""

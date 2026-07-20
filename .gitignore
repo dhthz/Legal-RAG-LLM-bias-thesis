@@ -1,12 +1,10 @@
 /dataset
-/pseudoMcp
 /thesis_venv
 /.claude
 /validation_reports
 *.md
 *.index
 *.pyc
-/faiss_indices 
+/faiss_indices
 .env
 /logs
-/mds

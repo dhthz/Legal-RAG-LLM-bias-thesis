@@ -27,7 +27,8 @@
     "distance_metric": "L2",
     "embedding_dimension": 768,
     "file_size_mb": 639,
-    "sha256_checksum": "be4179e70c5eff21e5bdc5e2685703c5fc88f8f728eae9af39cb53ccff8d0bfe"
+    "sha256_checksum": "fe0b20f3e08553cfb2b5149b9174162db8ac16b493b042f61cb63c9e0b4ab61a",
+    "total_chunks": 217903
   },
   "llm": {
     "base_url": "http://localhost:11434/v1",
@@ -40,7 +41,7 @@
   "paths": {
     "index_path": "faiss_indices/paragraph_chunks_l2.index",
     "metadata_path": "faiss_indices/paragraph_chunks_metadata_enriched.json",
-    "log_path": "logs/pipeline_interactions.jsonl"
+    "log_path": "logs/LLM/pipeline_interactions.jsonl"
   },
   "generation_params": {
     "temperature": 0.1,
@@ -49,7 +50,7 @@
     "top_k_cases": 3
   },
   "prompt_template": {
-    "system_prompt": "You are a legal research assistant for the European Court of Human Rights (ECtHR). A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated. The retrieved cases may not be an exact match — look for factual and legal similarities.",
+    "system_prompt": "You are a legal research assistant for the European Court of Human Rights (ECtHR). A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated. The retrieved cases may not be an exact match — look for factual and legal similarities. Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed above.",
     "user_prompt_suffix": "Based only on the retrieved cases above, identify the most relevant cases, explain the factual similarities, and state what articles were violated."
   },
   "aggregation": {
