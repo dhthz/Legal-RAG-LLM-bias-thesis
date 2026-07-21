@@ -1,13 +1,14 @@
 
 import json
 import os
-import numpy as np
-from sentence_transformers import SentenceTransformer
-import faiss
-from tqdm import tqdm
-import torch
-from typing import List, Dict, Optional
 from pathlib import Path
+from typing import Dict, List, Optional
+
+import faiss
+import numpy as np
+import torch
+from sentence_transformers import SentenceTransformer
+from tqdm import tqdm
 
 
 class ChunkEmbedder:
@@ -201,7 +202,7 @@ class ChunkRetriever:
 
         return results
 
-    def aggregate_chunks_to_cases(self, chunks: List[Dict], top_k_cases: int = 5) -> List[Dict]:
+    def aggregate_chunks_to_cases(self, chunks: List[Dict], top_k_cases: int = 5, aggr_fn: str = "max") -> List[Dict]:
         from collections import defaultdict
 
         # Group chunks by case_id
@@ -214,11 +215,13 @@ class ChunkRetriever:
         for case_id, chunks_list in case_chunks.items():
             avg_score = np.mean([c['similarity_score'] for c in chunks_list])
             max_score = max([c['similarity_score'] for c in chunks_list])
+            sum_score = sum([c['similarity_score'] for c in chunks_list])
 
             case_scores.append({
                 'case_id': case_id,
                 'avg_similarity': avg_score,
                 'max_similarity': max_score,
+                'sum_similarity': sum_score,
                 'num_chunks': len(chunks_list),
                 'chunks': sorted(chunks_list, key=lambda x: x['similarity_score'], reverse=True),
                 # Case-level metadata from first chunk
@@ -228,8 +231,9 @@ class ChunkRetriever:
                 'violated_articles': chunks_list[0]['violated_articles'],
             })
 
-        # Sort by average similarity
-        case_scores.sort(key=lambda x: x['avg_similarity'], reverse=True)
+        # Sort by similarity key
+        sort_key = {"mean": "avg_similarity", "max": "max_similarity", "sum": "sum_similarity"} [aggr_fn]
+        case_scores.sort(key=lambda x: x[sort_key], reverse=True)
 
         return case_scores[:top_k_cases]
 

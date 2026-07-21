@@ -1,3 +1,4 @@
+import argparse
 import hashlib
 import json
 import math
@@ -17,6 +18,8 @@ RECALL_KS = (1, 5, 10)
 MRR_CUTOFF = 10
 BOOTSTRAP_RESAMPLES = 10000
 BOOTSTRAP_SEED = 42
+
+SIMILARITY_FIELD = {"mean": "avg_similarity", "max": "max_similarity", "sum": "sum_similarity"}
 
 
 # Compute Wilson score confidence interval for binary metrics (recall@k); better than normal approximation for small N or extreme proportions
@@ -49,10 +52,11 @@ def file_sha256(path):
     return h.hexdigest()
 
 
-# Aggregate chunks to cases (by mean similarity), then re-sort deterministically by avg_similarity descending + case_id as tie-break
-def rank_cases(retriever, chunks):
-    cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=len(chunks))
-    cases.sort(key=lambda c: (-c["avg_similarity"], c["case_id"]))
+# Aggregate chunks to cases using the given aggregation function (mean/max/sum), then re-sort deterministically by that same score descending + case_id as tie-break
+def rank_cases(retriever, chunks, aggr_fn="max"):
+    field = SIMILARITY_FIELD[aggr_fn]
+    cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=len(chunks), aggr_fn=aggr_fn)
+    cases.sort(key=lambda c: (-c[field], c["case_id"]))
     return cases
 
 
@@ -65,14 +69,17 @@ def find_rank(case_list, gt_case_id):
 
 
 # Evaluate a single query: retrieve to depth 100, compute eval-depth rank, also compute prod-config rank (top_k_chunks → top_k_cases); collect diagnostics
-def evaluate_query(retriever, query, config):
+def evaluate_query(retriever, query, config, aggr_fn="max", top_k_chunks=None):
+    field = SIMILARITY_FIELD[aggr_fn]
+    if top_k_chunks is None:
+        top_k_chunks = config.top_k_chunks
     chunks = retriever.retrieve_chunks(query["query_text"], top_k=EVAL_TOP_K_CHUNKS)
 
-    eval_cases = rank_cases(retriever, chunks)
+    eval_cases = rank_cases(retriever, chunks, aggr_fn=aggr_fn)
     eval_rank = find_rank(eval_cases, query["source_case_id"])
 
-    prod_chunks = chunks[:config.top_k_chunks]
-    prod_cases = rank_cases(retriever, prod_chunks)[:config.top_k_cases]
+    prod_chunks = chunks[:top_k_chunks]
+    prod_cases = rank_cases(retriever, prod_chunks, aggr_fn=aggr_fn)[:config.top_k_cases]
     prod_rank = find_rank(prod_cases, query["source_case_id"])
 
     top5_sim = float(np.mean([c["similarity_score"] for c in chunks[:5]]))
@@ -88,7 +95,7 @@ def evaluate_query(retriever, query, config):
         "gt_top_chunk_similarity": gt_top_chunk_sim,
         "gt_chunks_in_pool": len(gt_chunk_sims),
         "top_10_cases": [
-            {"case_id": c["case_id"], "avg_similarity": float(c["avg_similarity"]),
+            {"case_id": c["case_id"], field: float(c[field]),
              "num_chunks": c["num_chunks"]}
             for c in eval_cases[:10]
         ],
@@ -97,10 +104,19 @@ def evaluate_query(retriever, query, config):
 
 # Main harness: load config and queries, evaluate all 100 queries, compute metrics (recall@k, MRR, CIs), print table, write traceable JSON output
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--aggr_fn", choices=["mean", "max", "sum"], default="max")
+    parser.add_argument("--top_k_chunks", type=int, default=None)
+    args = parser.parse_args()
+    aggr_fn = args.aggr_fn
+
     config = PipelineConfig.load_from_manifest()
+    top_k_chunks = args.top_k_chunks if args.top_k_chunks is not None else config.top_k_chunks
+
     print(f"Index: {config.index_path}")
     print(f"Metadata: {config.metadata_path}")
-    print(f"Production config: top_k_chunks={config.top_k_chunks}, top_k_cases={config.top_k_cases}")
+    print(f"Production config: top_k_chunks={top_k_chunks}, top_k_cases={config.top_k_cases}")
+    print(f"Aggregation function: {aggr_fn}")
     print(f"Eval retrieval depth: {EVAL_TOP_K_CHUNKS} chunks\n")
 
     retriever = ChunkRetriever(config.index_path, config.metadata_path)
@@ -115,7 +131,7 @@ def main():
     start = time.time()
     per_query = []
     for i, query in enumerate(queries, start=1):
-        result = evaluate_query(retriever, query, config)
+        result = evaluate_query(retriever, query, config, aggr_fn=aggr_fn, top_k_chunks=top_k_chunks)
         per_query.append(result)
         if i % 20 == 0:
             print(f"  {i}/{n} queries evaluated ({time.time() - start:.1f}s)")
@@ -150,7 +166,7 @@ def main():
     metrics["queries_with_gt_in_chunk_pool"] = len(gt_sims)
 
     print("=" * 64)
-    print("RETRIEVAL EVALUATION RESULTS (case-level, mean-sim aggregation)")
+    print(f"RETRIEVAL EVALUATION RESULTS (case-level, {aggr_fn}-sim aggregation)")
     print("=" * 64)
     print(f"{'Metric':<28}{'Value':>8}   95% CI")
     print("-" * 64)
@@ -185,14 +201,14 @@ def main():
         "config": {
             "index_path": config.index_path,
             "metadata_path": config.metadata_path,
-            "prod_top_k_chunks": config.top_k_chunks,
+            "prod_top_k_chunks": top_k_chunks,
             "prod_top_k_cases": config.top_k_cases,
             "eval_top_k_chunks": EVAL_TOP_K_CHUNKS,
             "recall_ks": list(RECALL_KS),
             "mrr_cutoff": MRR_CUTOFF,
             "bootstrap_resamples": BOOTSTRAP_RESAMPLES,
             "bootstrap_seed": BOOTSTRAP_SEED,
-            "aggregation": "mean_similarity, tie-break case_id",
+            "aggregation": f"{aggr_fn}_similarity, tie-break case_id",
             "query_file": QUERY_FILE,
             "query_file_sha256": file_sha256(QUERY_FILE),
             "n_queries": n,
@@ -204,7 +220,7 @@ def main():
 
     output_dir = Path(OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"eval_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    output_path = output_dir / f"eval_{aggr_fn}_k{top_k_chunks}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     print(f"\nFull results saved to {output_path}")

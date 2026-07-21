@@ -54,8 +54,8 @@
     "user_prompt_suffix": "Based only on the retrieved cases above, identify the most relevant cases, explain the factual similarities, and state what articles were violated."
   },
   "aggregation": {
-    "function": "mean_similarity",
-    "ranking_by": "mean_similarity (descending)",
+    "function": "max_similarity",
+    "ranking_by": "max_similarity (descending)",
     "final_cases_returned": 3
   }
 }
