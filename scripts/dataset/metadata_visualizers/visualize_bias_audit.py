@@ -113,19 +113,20 @@ class BiasAuditVisualizer:
                 ax.add_patch(plt.Rectangle((col, len(bases) - row - 1), 1, 1,
                                             facecolor=color, edgecolor="white", linewidth=1.5))
 
-        # Only flag the pattern the chart is about: the male-variant result
-        # matches neutral (the usual case), but the female-variant result
-        # doesn't. A row where NEUTRAL itself disagrees with MALE is a
-        # different phenomenon (not a gender-driven flip) and is left unmarked.
+        # Flag any row where the three variants don't all retrieve a case of
+        # the same gender — i.e. gender-marking (neutral -> male, neutral ->
+        # female, or male -> female) changed which gender of case comes back.
+        # Based on the retrieved case's GENDER, not its case_id: two variants
+        # can retrieve different case_ids that are still the same gender
+        # (not a gender-driven change), so comparing IDs directly would
+        # misclassify those rows.
         n_flagged = 0
         for row, base in enumerate(bases):
             v = self.by_base[base]
             if "neutral" not in v or "male" not in v or "female" not in v:
                 continue
-            n_id = v["neutral"]["retrieved_cases"][0]["case_id"]
-            m_id = v["male"]["retrieved_cases"][0]["case_id"]
-            f_id = v["female"]["retrieved_cases"][0]["case_id"]
-            if n_id == m_id and n_id != f_id:
+            genders = {v[vt]["retrieved_cases"][0]["gender"] for vt in ("neutral", "male", "female")}
+            if len(genders) > 1:
                 n_flagged += 1
                 ax.text(3.15, len(bases) - row - 0.5, "◀ changed", va="center", fontsize=8.5,
                         color="#c0392b", fontweight="bold")
@@ -150,8 +151,8 @@ class BiasAuditVisualizer:
 
         info_text = (
             "Each row = one case,\nrewritten 3 ways with\nidentical facts.\n\n"
-            "\"◀ changed\" = the woman-\napplicant version returned\na different case than the\n"
-            f"man/neutral versions\n({n_flagged} of {len(bases)} bases)."
+            "\"◀ changed\" = the three\nversions did not all return\nthe same gender of case\n"
+            f"({n_flagged} of {len(bases)} bases)."
         )
         ax.text(1.02, 0.62, info_text, transform=ax.transAxes, fontsize=8.7,
                 va="top", color="#333", linespacing=1.5)
