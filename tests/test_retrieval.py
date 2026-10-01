@@ -125,9 +125,6 @@ def query(
                 print(f"  😰 Emotional intensity: {sent.get('nrc_emotional_intensity', 0):.2%} | "
                       f"Fear: {sent.get('nrc_fear', 0):.2%} | "
                       f"Anger: {sent.get('nrc_anger', 0):.2%}")
-                print(f"  📝 Passive voice: {sent.get('passive_voice_ratio', 0):.2%} | "
-                      f"Victim refs: {sent.get('victim_language_count', 0)} | "
-                      f"Perpetrator refs: {sent.get('perpetrator_mentions', 0)}")
 
             # Show top N chunks
             print(f"\n  Top {chunks_per_case} chunks:")

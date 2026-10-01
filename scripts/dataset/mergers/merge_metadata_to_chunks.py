@@ -154,8 +154,6 @@ class MetadataMerger:
                 print(f"  Age: {chunk.get('age_at_judgment', 'MISSING')}")
                 print(f"  NRC Fear: {chunk.get('nrc_fear', 'MISSING')}")
                 print(f"  NRC Emotional Intensity: {chunk.get('nrc_emotional_intensity', 'MISSING')}")
-                print(f"  Passive Voice Ratio: {chunk.get('passive_voice_ratio', 'MISSING')}")
-                print(f"  Perpetrator Mentions: {chunk.get('perpetrator_mentions', 'MISSING')}")
 
                 shown_cases.add(chunk['case_id'])
                 samples_shown += 1

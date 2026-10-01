@@ -9,3 +9,5 @@
 .env
 /logs
 .zed/settings.json
+/archive
+*.pptx
