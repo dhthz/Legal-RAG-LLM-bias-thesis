@@ -77,7 +77,6 @@ class RAGPipeline():
                     'num_chunks': case['num_chunks'],
                     'country': self._case_country.get(case['case_id']),
                     'gender': first_chunk.get('gender'),
-                    'age': first_chunk.get('age_at_judgment'),
                     'violated_articles': case['violated_articles'],
                     'outcome': outcome,
                     'chunks': chunk_entries,

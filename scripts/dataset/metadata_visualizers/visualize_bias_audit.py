@@ -1,3 +1,4 @@
+import argparse
 import json
 from collections import defaultdict
 from pathlib import Path
@@ -14,6 +15,7 @@ plt.rcParams['savefig.dpi'] = 300
 
 OUTPUT_DIR = "docs/bias_audit/visualizations"
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
+TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
 
 # "Needs Manual Classification" dropped from gender charts per owner's call
 # (pending a metadata fix); it is a tiny residual class, not a real comparison group.
@@ -25,24 +27,44 @@ VARIANT_TYPES = ("neutral", "male", "female", "emotional")
 
 class BiasAuditVisualizer:
 
-    def __init__(self, results_dir="logs/bias_audit"):
+    def __init__(self, results_dir="logs/bias_audit", log_path=AUDIT_LOG_PATH, output_dir=OUTPUT_DIR,
+                 repeat_results_dir=None, repeat_log_path=None):
         self.results_dir = Path(results_dir)
+        self.output_dir = output_dir
         self.master = self._load("master_results.json")
         self.paired_variants = self._load("paired_variant_tests.json")
         self.paired_generation = self._load("paired_generation_tests.json")
-        self.by_base = self._load_audit_log_grouped()
-        Path(OUTPUT_DIR).mkdir(parents=True, exist_ok=True)
+        self.case_gender = self._load_case_gender()
+        self.by_base = self._load_audit_log_grouped(log_path)
+        self.repeat_generation = None
+        self.same_query_cited_noise = None
+        if repeat_results_dir and repeat_log_path:
+            with open(Path(repeat_results_dir) / "paired_generation_tests.json", "r", encoding="utf-8") as f:
+                self.repeat_generation = json.load(f)
+            self.same_query_cited_noise = self._cited_noise_between_runs(log_path, repeat_log_path)
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     def _load(self, filename):
         with open(self.results_dir / filename, "r", encoding="utf-8") as f:
             return json.load(f)
 
+    # Gender comes from the current dataset labels by case_id, not from the label stored in the log
     @staticmethod
-    def _load_audit_log_grouped():
+    def _load_case_gender():
+        gender = {}
+        with open(TRAIN_METADATA_PATH, "r", encoding="utf-8") as f:
+            for line in f:
+                rec = json.loads(line)
+                gender[rec["case_id"]] = rec.get("classification", {}).get("gender", "Unknown")
+        return gender
+
+    def _load_audit_log_grouped(self, log_path):
         by_base = defaultdict(dict)
-        with open(AUDIT_LOG_PATH, "r", encoding="utf-8") as f:
+        with open(log_path, "r", encoding="utf-8") as f:
             for line in f:
                 e = json.loads(line)
+                for c in e["retrieved_cases"]:
+                    c["gender"] = self.case_gender.get(c["case_id"], c["gender"])
                 qid = e["query_id"]
                 if "_" not in qid:
                     continue
@@ -50,6 +72,21 @@ class BiasAuditVisualizer:
                 if vtype in VARIANT_TYPES:
                     by_base[base][vtype] = e
         return by_base
+
+    # Share of variant queries whose cited-case set differs between two full runs of the same query (LLM run-to-run noise floor)
+    @staticmethod
+    def _cited_noise_between_runs(log_a, log_b):
+        def load(path):
+            out = {}
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    e = json.loads(line)
+                    if e["query_id"].rsplit("_", 1)[-1] in VARIANT_TYPES:
+                        out[e["query_id"]] = tuple(sorted(e.get("cited_case_ids") or []))
+            return out
+        a, b = load(log_a), load(log_b)
+        shared = [q for q in a if q in b]
+        return sum(a[q] != b[q] for q in shared) / len(shared)
 
     # ---- Finding 1: retrieval matches the query's own applicant gender ----
 
@@ -82,12 +119,12 @@ class BiasAuditVisualizer:
             fontweight="bold", fontsize=14,
         )
         ax.text(0.5, -0.16,
-                f"3.2× difference  •  n=391 retrieved cases  •  p={t['p_raw']:.1e} (Holm-corrected significant)",
+                f"{female_female_pct / male_female_pct:.1f}× difference  •  n={t['n']} retrieved cases  •  p={t['p_raw']:.1e} (Holm-corrected significant)",
                 transform=ax.transAxes, ha="center", fontsize=10, color="#555")
         ax.grid(axis="y", alpha=0.3)
 
         plt.tight_layout()
-        path = f"{OUTPUT_DIR}/01_query_gender_matches_retrieval.png"
+        path = f"{self.output_dir}/01_query_gender_matches_retrieval.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -158,7 +195,7 @@ class BiasAuditVisualizer:
                 va="top", color="#333", linespacing=1.5)
 
         plt.tight_layout()
-        path = f"{OUTPUT_DIR}/02_gender_variant_retrieval_grid.png"
+        path = f"{self.output_dir}/02_gender_variant_retrieval_grid.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -195,11 +232,10 @@ class BiasAuditVisualizer:
             f"changing the applicant's\n"
             f"pronoun changed the top\n"
             f"result.\n\n"
-            f"All {changed} switched toward\n"
-            f"a female-applicant case\n"
-            f"({disc['female_only']} of {changed});\n"
-            f"none switched the other way\n"
-            f"({disc['male_only']} of {changed}).\n\n"
+            f"{disc['female_only']} of {changed} switched toward\n"
+            f"a female-applicant case;\n"
+            f"{disc['male_only']} of {changed} switched away\n"
+            f"from one.\n\n"
             f"Retrieval has no randomness,\n"
             f"so the pronoun is the only\n"
             f"thing that could have\n"
@@ -208,7 +244,7 @@ class BiasAuditVisualizer:
         fig.text(0.82, 0.5, info_text, fontsize=9, va="center", color="#333", linespacing=1.6)
 
         plt.tight_layout(rect=[0, 0, 0.8, 1])
-        path = f"{OUTPUT_DIR}/03_he_she_flip_summary.png"
+        path = f"{self.output_dir}/03_he_she_flip_summary.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -226,6 +262,7 @@ class BiasAuditVisualizer:
             cited_diff = base in r["cited_case_set_differs"]["bases"]
             articles_diff = base in r["reported_articles_differ"]["bases"]
             rows.append((base, cited_diff, articles_diff))
+        excluded = set(r["skipped_retrieval_flip"])
 
         fig, ax = plt.subplots(figsize=(7.8, 0.42 * len(rows) + 1.0))
         col_labels = ["Cited a\ndifferent case", "Reported a\ndifferent article"]
@@ -233,6 +270,10 @@ class BiasAuditVisualizer:
         for row, (base, cited_diff, articles_diff) in enumerate(rows):
             y = len(rows) - row - 1
             for col, changed in enumerate([cited_diff, articles_diff]):
+                if base in excluded:
+                    ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#ecf0f1", edgecolor="white", linewidth=1.5))
+                    ax.text(col + 0.5, y + 0.5, "not tested", ha="center", va="center", fontsize=7.5, color="#95a5a6")
+                    continue
                 color = "#e74c3c" if changed else "#eafaf1"
                 ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor=color, edgecolor="white", linewidth=1.5))
                 if changed:
@@ -259,7 +300,9 @@ class BiasAuditVisualizer:
             f"once neutrally and once with\n"
             f"emotionally charged wording —\n"
             f"the retrieved cases were\n"
-            f"identical both times.\n\n"
+            f"identical both times.\n"
+            f"Grey rows ({len(excluded)}): the cases found\n"
+            f"differed, so not tested.\n\n"
             f"✕ = the AI's answer changed\n"
             f"anyway:\n\n"
             f"• {n_cited}/{n_pairs} bases: discussed\n"
@@ -271,7 +314,7 @@ class BiasAuditVisualizer:
                 va="top", color="#333", linespacing=1.6)
 
         plt.tight_layout(rect=[0, 0, 0.78, 1])
-        path = f"{OUTPUT_DIR}/04_emotional_generation_grid.png"
+        path = f"{self.output_dir}/04_emotional_generation_grid.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -283,16 +326,32 @@ class BiasAuditVisualizer:
 
         hb = self.master["holm_bonferroni"]
         p = hb["p_corrected"]["query_gender"]
+
+        dist = self.master["tests"]["query_gender"]["distributions"]
+        female_pct = dist["Female"].get("Female", 0) / sum(dist["Female"].values())
+        male_pct = dist["Male"].get("Female", 0) / sum(dist["Male"].values())
+
+        flips = self.paired_variants["paired_framing_male_vs_female"]
+        emo = self.paired_generation["paired_generation_neutral_vs_emotional"]["cited_case_set_differs"]
+        emo_rate = emo["n_differ"] / self.paired_generation["paired_generation_neutral_vs_emotional"]["n_pairs"]
+        if self.repeat_generation:
+            emo_b = self.repeat_generation["paired_generation_neutral_vs_emotional"]
+            rate_b = emo_b["cited_case_set_differs"]["n_differ"] / emo_b["n_pairs"]
+            emo_how = (f"Two full runs: {emo_rate:.0%} and {rate_b:.0%}\n"
+                       f"(same question twice already differs\n{self.same_query_cited_noise:.0%} of the time)")
+        else:
+            emo_how = "Single run\nnot yet repeat-tested"
+
         rows = [
             ("Retrieval matches the\napplicant's gender",
-             "Asking about a woman returns\n3.2× more female-applicant cases\nthan asking about a man",
+             f"Asking about a woman returns\n{female_pct / male_pct:.1f}× more female-applicant cases\nthan asking about a man",
              f"Statistical test\np={p:.1e} (corrected)"),
             ("A pronoun alone can change\nthe result",
-             "Rewriting \"he\" as \"she\" (nothing\nelse changed) returned a different\ncase in 7 of 20 identical cases",
+             f"Rewriting \"he\" as \"she\" (nothing\nelse changed) returned a different\ncase in {flips['top1_flips']} of {flips['n_pairs']} identical cases",
              "Deterministic replay\n(retrieval has no randomness)"),
             ("Emotional wording changes the\nAI's answer, not the search",
-             "With the exact same cases found,\na more emotional question made the\nAI cite a different case 27% of the time",
-             "Single run\nnot yet repeat-tested"),
+             f"With the exact same cases found,\na more emotional question made the\nAI cite a different case {emo_rate:.0%} of the time",
+             emo_how),
         ]
 
         fig, ax = plt.subplots(figsize=(12.5, 1.15 * len(rows) + 1.0))
@@ -320,7 +379,7 @@ class BiasAuditVisualizer:
         ax.set_title("Bias Audit — What We Found", fontweight="bold", fontsize=15, pad=8)
 
         plt.tight_layout()
-        path = f"{OUTPUT_DIR}/05_findings_summary_table.png"
+        path = f"{self.output_dir}/05_findings_summary_table.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -331,7 +390,16 @@ def main():
     print(" " * 20 + "BIAS AUDIT VISUALIZATION")
     print("=" * 80)
 
-    viz = BiasAuditVisualizer()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--results-dir", default="logs/bias_audit")
+    parser.add_argument("--log", default=AUDIT_LOG_PATH)
+    parser.add_argument("--out-dir", default=OUTPUT_DIR)
+    parser.add_argument("--repeat-results-dir", default=None, help="Stats folder of a second full run (for the repeat-test row)")
+    parser.add_argument("--repeat-log", default=None, help="Audit log of that second run")
+    args = parser.parse_args()
+
+    viz = BiasAuditVisualizer(results_dir=args.results_dir, log_path=args.log, output_dir=args.out_dir,
+                              repeat_results_dir=args.repeat_results_dir, repeat_log_path=args.repeat_log)
     viz.plot_retrieved_gender_by_query_gender()
     viz.plot_gender_variant_retrieval_grid()
     viz.plot_he_she_flip_summary()
@@ -339,7 +407,7 @@ def main():
     viz.plot_findings_summary_table()
 
     print("\n" + "=" * 80)
-    print(f"Done. Saved 5 plots to {OUTPUT_DIR}/")
+    print(f"Done. Saved 5 plots to {viz.output_dir}/")
     print("=" * 80)
 
 

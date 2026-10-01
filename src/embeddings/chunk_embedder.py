@@ -183,6 +183,10 @@ class ChunkRetriever:
         # Load model for query encoding
         self.model = SentenceTransformer(model_name, trust_remote_code=True, device='cuda')
 
+        # nomic's rotary scaling is stateful: a query embeds differently depending on the longest text seen so far.
+        # One max-length warm-up pins that state, so retrieval no longer depends on query order (see KNOWN_QUIRKS.md).
+        self.model.encode(["legal " * (self.model.max_seq_length + 1000)], normalize_embeddings=True)
+
     def retrieve_chunks(self, query: str, top_k: int = 25) -> List[Dict]:
         # Encode query
         query_embedding = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)

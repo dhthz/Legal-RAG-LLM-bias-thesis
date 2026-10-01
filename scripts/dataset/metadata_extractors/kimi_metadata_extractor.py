@@ -28,16 +28,12 @@ SYSTEM_PROMPT = """You classify the applicant(s) in a European Court of Human Ri
 Return ONLY a JSON object, no prose, with exactly these keys:
 - "gender": one of "Male", "Female", "Multiple Applicants", "Unknown", "Needs Manual Classification"
 - "confidence": one of "High", "Medium", "N/A"
-- "birth_year": integer year of birth if stated or derivable, else null
-- "age_at_judgment": integer age if a direct age is stated in the facts, else null
-- "age_source": "direct" if an explicit age is stated, "calculated" if only a birth year is given, else null
 
 Rules:
 - "Male"/"Female": a single natural-person applicant of that gender. Use "High" when the text is explicit (name, pronouns, "Mr"/"Ms"), "Medium" when inferred from weaker signals.
 - "Multiple Applicants": more than one applicant, or an applicant group/organisation/company. confidence = "N/A".
 - "Unknown": a single applicant whose gender cannot be determined. confidence = "N/A".
 - "Needs Manual Classification": genuinely ambiguous cases needing a human. confidence = "N/A".
-- Only report a direct age in "age_at_judgment" with age_source "direct". If only a birth year appears, set age_at_judgment null and age_source "calculated" (the age will be computed separately). If neither, both null and age_source null.
 - Base everything only on the applicant, not third parties, victims, or officials mentioned."""
 
 
@@ -45,19 +41,6 @@ def build_user_prompt(case):
     facts = case.get("facts", [])
     intro = " ".join(facts[:FACTS_INTRO_COUNT])[:MAX_INTRO_CHARS]
     return f"Case facts (opening):\n{intro}"
-
-
-def calculate_age_at_judgment(birth_year, judgment_date):
-    if birth_year is None or judgment_date is None:
-        return None
-    try:
-        judgment_year = datetime.strptime(judgment_date, "%Y-%m-%d").year
-        age = judgment_year - birth_year
-        if 0 <= age <= 120:
-            return age
-    except (ValueError, TypeError):
-        pass
-    return None
 
 
 def normalize_result(raw, case):
@@ -72,34 +55,8 @@ def normalize_result(raw, case):
     else:
         confidence = "N/A"
 
-    birth_year = raw.get("birth_year")
-    if isinstance(birth_year, int) and not (1850 <= birth_year <= 2020):
-        birth_year = None
-    if not isinstance(birth_year, int):
-        birth_year = None
-
-    direct_age = raw.get("age_at_judgment")
-    if isinstance(direct_age, int) and not (0 <= direct_age <= 120):
-        direct_age = None
-    if not isinstance(direct_age, int):
-        direct_age = None
-
-    calculated_age = calculate_age_at_judgment(birth_year, case.get("judgment_date"))
-    final_age = calculated_age if calculated_age is not None else direct_age
-    if calculated_age is not None:
-        age_source = "calculated"
-    elif direct_age is not None:
-        age_source = "direct"
-    else:
-        age_source = None
-
     return {
         "classification": {"gender": gender, "confidence": confidence},
-        "age_info": {
-            "birth_year": birth_year,
-            "age_at_judgment": final_age,
-            "age_source": age_source,
-        },
     }
 
 
@@ -199,7 +156,6 @@ def main():
             meta = done.get(case["case_id"], {})
             enriched = dict(case)
             enriched["classification"] = meta.get("classification", {"gender": "Needs Manual Classification", "confidence": "N/A"})
-            enriched["age_info"] = meta.get("age_info", {"birth_year": None, "age_at_judgment": None, "age_source": None})
             out.write(json.dumps(enriched, ensure_ascii=False) + "\n")
 
     print_summary(cases, done)
@@ -208,14 +164,11 @@ def main():
 def print_summary(cases, done):
     genders = Counter()
     confidences = Counter()
-    with_age = 0
     for case in cases:
         meta = done.get(case["case_id"], {})
         cls = meta.get("classification", {})
         genders[cls.get("gender", "MISSING")] += 1
         confidences[cls.get("confidence", "MISSING")] += 1
-        if meta.get("age_info", {}).get("age_at_judgment") is not None:
-            with_age += 1
 
     n = len(cases)
     print("\n" + "=" * 60)
@@ -227,10 +180,8 @@ def print_summary(cases, done):
     print("\nConfidence distribution:")
     for conf, c in confidences.most_common():
         print(f"  {conf:<28} {c:>5} ({c/n*100:5.1f}%)")
-    print(f"\nCases with age_at_judgment: {with_age} ({with_age/n*100:.1f}%)")
     print("=" * 60)
-    print("\nNote: gender+age extracted via Kimi K2 API (train used Claude for gender,")
-    print("regex for age) — method differs from train; flag if comparing across splits.")
+    print("\nNote: gender extracted via Kimi K2 API (train used Claude) — method differs from train; flag if comparing across splits.")
 
 
 if __name__ == "__main__":

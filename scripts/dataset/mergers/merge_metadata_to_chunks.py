@@ -9,7 +9,6 @@ class MetadataMerger:
 
     def __init__(self):
         self.gender_data = {}
-        self.age_data = {}
         self.sentiment_data = {}
 
     def load_metadata(self, metadata_file: str):
@@ -26,17 +25,9 @@ class MetadataMerger:
                     'gender_confidence': classification.get('confidence', 'unknown'),
                 }
 
-                age_info = entry.get('age_info', {})
-                self.age_data[case_id] = {
-                    'age_at_judgment': age_info.get('age_at_judgment'),
-                    'birth_year': age_info.get('birth_year'),
-                    'has_age_info': bool(age_info),
-                }
-
                 self.sentiment_data[case_id] = entry.get('sentiment_info', {})
 
         print(f"Loaded gender data for {len(self.gender_data)} cases")
-        print(f"Loaded age data for {len(self.age_data)} cases")
         print(f"Loaded sentiment data for {len(self.sentiment_data)} cases")
 
     def merge_into_chunks(
@@ -55,11 +46,9 @@ class MetadataMerger:
         stats = {
             'total_chunks': len(chunks),
             'chunks_with_gender': 0,
-            'chunks_with_age': 0,
             'chunks_with_sentiment': 0,
             'chunks_fully_enriched': 0,
             'missing_gender': [],
-            'missing_age': [],
             'missing_sentiment': [],
         }
 
@@ -76,14 +65,6 @@ class MetadataMerger:
                 if case_id not in stats['missing_gender']:
                     stats['missing_gender'].append(case_id)
 
-            # Add age data
-            if case_id in self.age_data:
-                chunk.update(self.age_data[case_id])
-                stats['chunks_with_age'] += 1
-            else:
-                if case_id not in stats['missing_age']:
-                    stats['missing_age'].append(case_id)
-
             # Add sentiment data
             if case_id in self.sentiment_data:
                 chunk.update(self.sentiment_data[case_id])
@@ -94,7 +75,6 @@ class MetadataMerger:
 
             # Check if fully enriched
             if (case_id in self.gender_data and
-                case_id in self.age_data and
                 case_id in self.sentiment_data):
                 stats['chunks_fully_enriched'] += 1
 
@@ -108,7 +88,6 @@ class MetadataMerger:
 
         # Calculate percentages
         stats['gender_coverage_%'] = (stats['chunks_with_gender'] / stats['total_chunks']) * 100
-        stats['age_coverage_%'] = (stats['chunks_with_age'] / stats['total_chunks']) * 100
         stats['sentiment_coverage_%'] = (stats['chunks_with_sentiment'] / stats['total_chunks']) * 100
         stats['fully_enriched_%'] = (stats['chunks_fully_enriched'] / stats['total_chunks']) * 100
 
@@ -119,14 +98,11 @@ class MetadataMerger:
         print(f"Total chunks: {stats['total_chunks']:,}")
         print(f"\nCoverage:")
         print(f"  Gender:    {stats['chunks_with_gender']:,} ({stats['gender_coverage_%']:.1f}%)")
-        print(f"  Age:       {stats['chunks_with_age']:,} ({stats['age_coverage_%']:.1f}%)")
         print(f"  Sentiment: {stats['chunks_with_sentiment']:,} ({stats['sentiment_coverage_%']:.1f}%)")
         print(f"  Fully enriched: {stats['chunks_fully_enriched']:,} ({stats['fully_enriched_%']:.1f}%)")
 
         if stats['missing_gender']:
             print(f"\n⚠️  Missing gender for {len(stats['missing_gender'])} cases")
-        if stats['missing_age']:
-            print(f"⚠️  Missing age for {len(stats['missing_age'])} cases")
         if stats['missing_sentiment']:
             print(f"⚠️  Missing sentiment for {len(stats['missing_sentiment'])} cases")
 
@@ -151,7 +127,6 @@ class MetadataMerger:
                 print(f"\nChunk: {chunk['chunk_id']}")
                 print(f"  Case: {chunk['case_id']}")
                 print(f"  Gender: {chunk.get('gender', 'MISSING')}")
-                print(f"  Age: {chunk.get('age_at_judgment', 'MISSING')}")
                 print(f"  NRC Fear: {chunk.get('nrc_fear', 'MISSING')}")
                 print(f"  NRC Emotional Intensity: {chunk.get('nrc_emotional_intensity', 'MISSING')}")
 
@@ -188,7 +163,7 @@ def main():
     # Initialize merger
     merger = MetadataMerger()
 
-    # Load case-level metadata (gender/age/sentiment already merged by case_id)
+    # Load case-level metadata (gender/sentiment already merged by case_id)
     merger.load_metadata(METADATA_FILE)
 
     # Merge into chunks

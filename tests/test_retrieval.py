@@ -112,13 +112,6 @@ def query(
                 cls = first_chunk['classification']
                 print(f"  👤 Gender: {cls.get('gender', 'N/A')} ({cls.get('confidence', 'N/A')})")
 
-            # Age info
-            if 'age_info' in first_chunk:
-                age_info = first_chunk['age_info']
-                if age_info.get('has_age_info') or age_info.get('age_at_judgment'):
-                    age_str = str(age_info.get('age_at_judgment', 'N/A'))
-                    print(f"  🎂 Age at judgment: {age_str}")
-
             # Sentiment info (case-level average)
             if 'sentiment_info' in first_chunk:
                 sent = first_chunk['sentiment_info']
@@ -217,18 +210,6 @@ def show_chunk(case_idx: int, chunk_idx: int):
         print(f"Fear:                {sent.get('nrc_fear', 0):.2%}")
         print(f"Anger:               {sent.get('nrc_anger', 0):.2%}")
         print(f"Sadness:             {sent.get('nrc_sadness', 0):.2%}")
-        print(f"Passive Voice:       {sent.get('passive_voice_ratio', 0):.2%}")
-        print(f"Victim Language:     {sent.get('victim_language_count', 0)}")
-        print(f"Perpetrator Refs:    {sent.get('perpetrator_mentions', 0)}")
-
-    if 'age_info' in chunk:
-        age = chunk['age_info']
-        if age.get('has_age_info'):
-            print(f"\n{'─' * 70}")
-            print("AGE METADATA:")
-            print(f"{'─' * 70}")
-            print(f"Age at judgment:     {age.get('age_at_judgment', 'N/A')}")
-            print(f"Birth year:          {age.get('birth_year', 'N/A')}")
 
     if 'classification' in chunk:
         cls = chunk['classification']

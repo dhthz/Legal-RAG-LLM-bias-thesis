@@ -109,14 +109,12 @@ def main():
         first_chunk = case['chunks'][0]
         country = first_chunk.get('defendants', [None])[0]
         gender = first_chunk.get('classification', {}).get('gender', 'Unknown')
-        age = first_chunk.get('age_info', {}).get('age_at_judgment')
         
         print(f"\n{i}. {case['title']}")
         print(f"   Case ID: {case['case_id']}")
         print(f"   Date: {case['judgment_date']}")
         print(f"   Country: {country}")
         print(f"   Gender: {gender}")
-        print(f"   Age: {age if age else 'N/A'}")
         print(f"   Violated Articles: {', '.join(case['violated_articles'])}")
         print(f"   Similarity Score: {case['avg_similarity']:.4f}")
         print(f"   Chunks Retrieved: {case['num_chunks']}")

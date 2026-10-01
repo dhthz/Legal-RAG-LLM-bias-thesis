@@ -1,5 +1,8 @@
+import argparse
 import json
 import math
+import os
+from datetime import datetime
 from collections import Counter, defaultdict
 
 import numpy as np
@@ -45,14 +48,44 @@ def holm_bonferroni(named_pvals):
 
 class BiasAuditor:
 
-    def __init__(self, audit_log_path=AUDIT_LOG_PATH):
+    def __init__(self, audit_log_path=AUDIT_LOG_PATH, out_dir="logs/bias_audit"):
+        self.audit_log_path = audit_log_path
+        self.out_dir = out_dir
+        os.makedirs(out_dir, exist_ok=True)
+        self.case_gender = self._load_case_gender()
         self.entries = self._load_audit_log(audit_log_path)
+        self._apply_current_gender_labels()
         self.query_meta = self._load_query_metadata()
         self.corpus_gender = self._load_corpus_gender_prevalence()
+        # Classes with no corpus members (e.g. Needs Manual Classification after human relabelling) would give zero expected counts
+        self.gender_classes = [g for g in GENDER_CLASSES if self.corpus_gender.get(g, 0) > 0]
         self.corpus_stats = self._load_corpus_stats()
         self.by_base = self._group_variants()
 
     # ---- data loading ----
+
+    def _out(self, name):
+        return os.path.join(self.out_dir, name)
+
+    # Gender is read by case_id from the current dataset file, not from the label stored in the log, so relabelling the dataset flows through without a rerun
+    @staticmethod
+    def _load_case_gender():
+        gender = {}
+        with open(TRAIN_METADATA_PATH, "r", encoding="utf-8") as f:
+            for line in f:
+                rec = json.loads(line)
+                gender[rec["case_id"]] = rec.get("classification", {}).get("gender", "Unknown")
+        return gender
+
+    def _apply_current_gender_labels(self):
+        changed = 0
+        for e in self.entries:
+            for c in e["retrieved_cases"]:
+                current = self.case_gender.get(c["case_id"])
+                if current is not None and current != c["gender"]:
+                    c["gender"] = current
+                    changed += 1
+        self.relabelled_retrieved = changed
 
     @staticmethod
     def _load_audit_log(path):
@@ -118,19 +151,19 @@ class BiasAuditor:
                 retrieved[c["gender"]] += 1
 
         n, n_corpus = sum(retrieved.values()), sum(self.corpus_gender.values())
-        observed = [retrieved.get(g, 0) for g in GENDER_CLASSES]
-        expected = [self.corpus_gender.get(g, 0) / n_corpus * n for g in GENDER_CLASSES]
+        observed = [retrieved.get(g, 0) for g in self.gender_classes]
+        expected = [self.corpus_gender.get(g, 0) / n_corpus * n for g in self.gender_classes]
 
         chi2, p = chisquare(f_obs=observed, f_exp=expected)
-        v = cramers_v_gof(chi2, n, len(GENDER_CLASSES))
+        v = cramers_v_gof(chi2, n, len(self.gender_classes))
 
         return {
             "bias_type": "gender_vs_corpus_baseline",
             "null_hypothesis": "Retrieved-case gender distribution matches the corpus gender distribution",
             "test_name": "chi-square goodness-of-fit",
             "n": n,
-            "observed": dict(zip(GENDER_CLASSES, observed)),
-            "expected": dict(zip(GENDER_CLASSES, [round(x, 1) for x in expected])),
+            "observed": dict(zip(self.gender_classes, observed)),
+            "expected": dict(zip(self.gender_classes, [round(x, 1) for x in expected])),
             "statistic": float(chi2),
             "p_raw": float(p),
             "effect_size_name": "Cramer's V",
@@ -168,8 +201,8 @@ class BiasAuditor:
             if not corpus_strat or n_corpus_strat == 0 or n == 0:
                 continue
 
-            observed = [retrieved.get(g, 0) for g in GENDER_CLASSES]
-            expected = [corpus_strat.get(g, 0) / n_corpus_strat * n for g in GENDER_CLASSES]
+            observed = [retrieved.get(g, 0) for g in self.gender_classes]
+            expected = [corpus_strat.get(g, 0) / n_corpus_strat * n for g in self.gender_classes]
             if any(exp == 0 for exp in expected):
                 continue  # chi-square undefined with a zero expected cell
 
@@ -177,7 +210,7 @@ class BiasAuditor:
             results.append({
                 "stratum": key, "n": n, "n_corpus_stratum": n_corpus_strat,
                 "statistic": float(chi2), "p_raw": float(p),
-                "effect_size": float(cramers_v_gof(chi2, n, len(GENDER_CLASSES))),
+                "effect_size": float(cramers_v_gof(chi2, n, len(self.gender_classes))),
             })
 
         return {
@@ -455,7 +488,7 @@ class BiasAuditor:
         unconditional = self.gender_vs_corpus_baseline()
         print(f"\nUnconditional (n={unconditional['n']}):")
         print(f"  {'Class':<24}{'Observed':>10}{'Expected':>10}")
-        for g in GENDER_CLASSES:
+        for g in self.gender_classes:
             print(f"  {g:<24}{unconditional['observed'][g]:>10}{unconditional['expected'][g]:>10.1f}")
         print(f"  chi2={unconditional['statistic']:.3f}  p={unconditional['p_raw']:.6f}  "
               f"Cramer's V={unconditional['effect_size']:.3f}")
@@ -466,9 +499,9 @@ class BiasAuditor:
         for row in conditioned["per_stratum"]:
             print(f"  {row['stratum']:<10}{row['n']:>6}{row['statistic']:>10.3f}{row['p_raw']:>12.6f}{row['effect_size']:>10.3f}")
 
-        with open("logs/bias_audit/gender_vs_corpus_baseline.json", "w", encoding="utf-8") as f:
+        with open(self._out("gender_vs_corpus_baseline.json"), "w", encoding="utf-8") as f:
             json.dump({"unconditional": unconditional, "conditioned_on_article": conditioned}, f, indent=2, ensure_ascii=False)
-        print("\nSaved: logs/bias_audit/gender_vs_corpus_baseline.json")
+        print(f"\nSaved: {self._out('gender_vs_corpus_baseline.json')}")
 
         print("\n" + "=" * 78)
         print("BIAS AUDIT — PAIRED FRAMING TESTS (VARIANT SUBSET, RETRIEVAL SIDE)")
@@ -488,9 +521,9 @@ class BiasAuditor:
             p_str = f"{r['mcnemar_exact_p']:.5f}" if r["mcnemar_exact_p"] is not None else "n/a (0 discordant)"
             print(f"  McNemar (top-1 is Female-gendered): discordant {disc}, exact p={p_str}")
 
-        with open("logs/bias_audit/paired_variant_tests.json", "w", encoding="utf-8") as f:
+        with open(self._out("paired_variant_tests.json"), "w", encoding="utf-8") as f:
             json.dump(pair_results, f, indent=2, ensure_ascii=False)
-        print("\nSaved: logs/bias_audit/paired_variant_tests.json")
+        print(f"\nSaved: {self._out('paired_variant_tests.json')}")
 
         print("\n" + "=" * 78)
         print("BIAS AUDIT — PAIRED GENERATION TESTS (SAME RETRIEVED CASES, VARIANT SUBSET)")
@@ -515,9 +548,9 @@ class BiasAuditor:
                       f"(Wilson 95% CI [{ci[0]:.1%}, {ci[1]:.1%}])"
                       + (f"  bases: {', '.join(b['bases'])}" if b["bases"] else ""))
 
-        with open("logs/bias_audit/paired_generation_tests.json", "w", encoding="utf-8") as f:
+        with open(self._out("paired_generation_tests.json"), "w", encoding="utf-8") as f:
             json.dump(gen_pair_results, f, indent=2, ensure_ascii=False)
-        print("\nSaved: logs/bias_audit/paired_generation_tests.json")
+        print(f"\nSaved: {self._out('paired_generation_tests.json')}")
 
         print("\n" + "=" * 78)
         print("BIAS AUDIT — RETRIEVED GENDER BY QUERY GENDER (MAIN SET ONLY)")
@@ -533,9 +566,9 @@ class BiasAuditor:
               f"(dof={by_qgender['dof']})  p={by_qgender['p_raw']:.6f}  "
               f"Cramer's V={by_qgender['effect_size']:.3f}  (n={by_qgender['n']})")
 
-        with open("logs/bias_audit/retrieved_gender_by_query_gender.json", "w", encoding="utf-8") as f:
+        with open(self._out("retrieved_gender_by_query_gender.json"), "w", encoding="utf-8") as f:
             json.dump(by_qgender, f, indent=2, ensure_ascii=False)
-        print("Saved: logs/bias_audit/retrieved_gender_by_query_gender.json")
+        print(f"Saved: {self._out('retrieved_gender_by_query_gender.json')}")
 
         print("\n" + "=" * 78)
         print("BIAS AUDIT — OUTCOME / JURISDICTION / TEMPORAL / GENERATION STAGE")
@@ -609,13 +642,24 @@ class BiasAuditor:
             },
             "holm_bonferroni": {"family_size": len(family), "p_raw": family, "p_corrected": corrected},
         }
-        with open("logs/bias_audit/master_results.json", "w", encoding="utf-8") as f:
+        with open(self._out("master_results.json"), "w", encoding="utf-8") as f:
             json.dump(master, f, indent=2, ensure_ascii=False)
-        print("\nSaved: logs/bias_audit/master_results.json")
+        print(f"\nSaved: {self._out('master_results.json')}")
 
 
 def main():
-    BiasAuditor().run_all()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--log", default=AUDIT_LOG_PATH)
+    parser.add_argument("--out-dir", default="logs/bias_audit")
+    args = parser.parse_args()
+
+    auditor = BiasAuditor(audit_log_path=args.log, out_dir=args.out_dir)
+    auditor.run_all()
+    with open(auditor._out("run_info.json"), "w", encoding="utf-8") as f:
+        json.dump({"audit_log": args.log, "train_metadata": TRAIN_METADATA_PATH,
+                   "corpus_gender_counts": dict(auditor.corpus_gender),
+                   "retrieved_cases_relabelled_vs_log": auditor.relabelled_retrieved,
+                   "timestamp": datetime.now().isoformat()}, f, indent=2)
 
 
 if __name__ == "__main__":
