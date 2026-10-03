@@ -14,6 +14,12 @@ CONFIGS = {
         "output_file": "dataset/eval/llm_queries_enriched.jsonl",
         "key_fields": ("query_id",),
     },
+    "variants_batch2": {
+        "sentiment_file": "dataset/eval/llm_queries_gender_and_emotional_variants_batch2_metadata.jsonl",
+        "input_file": "dataset/eval/llm_queries_gender_and_emotional_variants_batch2.jsonl",
+        "output_file": "dataset/eval/final_llm_queries_variants_batch2.jsonl",
+        "key_fields": ("variant_id",),
+    },
 }
 
 

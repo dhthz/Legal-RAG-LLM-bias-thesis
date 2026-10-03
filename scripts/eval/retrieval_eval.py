@@ -11,7 +11,7 @@ import numpy as np
 from src.embeddings.chunk_embedder import ChunkRetriever
 from src.llm.config import PipelineConfig
 
-QUERY_FILE = "dataset/eval/retrieval_eval_queries.jsonl"
+QUERY_FILE = "dataset/eval/retrieval_harness_queries.jsonl"
 OUTPUT_DIR = "logs/retrieval_eval"
 EVAL_TOP_K_CHUNKS = 100
 RECALL_KS = (1, 5, 10)

@@ -6,7 +6,7 @@ from pathlib import Path
 from src.rag.pipeline import RAGPipeline
 
 MAIN_QUERIES_FILE = "dataset/eval/final_llm_queries.jsonl"
-VARIANT_QUERIES_FILE = "dataset/eval/final_llm_queries_variants.jsonl"
+VARIANT_QUERIES_FILES = ["dataset/eval/final_llm_queries_variants.jsonl"]
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 
 
@@ -27,10 +27,11 @@ class BiasAuditRunner:
                 for line in f:
                     row = json.loads(line)
                     queries.append({"query_id": row["query_id"], "query_text": row["query_text"]})
-        with open(VARIANT_QUERIES_FILE, "r", encoding="utf-8") as f:
-            for line in f:
-                row = json.loads(line)
-                queries.append({"query_id": row["variant_id"], "query_text": row["query_text"]})
+        for path in VARIANT_QUERIES_FILES:
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    row = json.loads(line)
+                    queries.append({"query_id": row["variant_id"], "query_text": row["query_text"]})
         return queries
 
     def load_done(self):
@@ -48,7 +49,7 @@ class BiasAuditRunner:
 
     def run(self, limit=None, variants_only=False):
         queries = self.load_queries(variants_only)
-        print(f"Loaded {len(queries)} queries (from {MAIN_QUERIES_FILE} and {VARIANT_QUERIES_FILE})")
+        print(f"Loaded {len(queries)} queries (from {MAIN_QUERIES_FILE} and {', '.join(VARIANT_QUERIES_FILES)})")
 
         if limit is not None:
             queries = queries[:limit]

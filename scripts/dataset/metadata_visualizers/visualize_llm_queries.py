@@ -201,9 +201,12 @@ class LLMQueriesVisualizer:
 
         deltas.sort(key=lambda x: x[1])
 
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6.5))
-        fig.suptitle("Query-Variant Subset: EMOTIONAL vs. NEUTRAL Manipulation Check "
-                     "(20 hand-authored bases)", fontsize=14, fontweight="bold")
+        n_bases = len(by_base)
+        n_pass = sum(1 for _, d in deltas if d >= 6.0)
+        n_drift = sum(1 for g in growth if abs(g) > 3.0)
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 0.3 * n_bases + 2.5))
+        fig.suptitle(f"Query-Variant Subset: EMOTIONAL vs. NEUTRAL Manipulation Check "
+                     f"({n_bases} hand-authored bases)", fontsize=14, fontweight="bold")
 
         qids = [q for q, _ in deltas]
         vals = [d for _, d in deltas]
@@ -212,13 +215,14 @@ class LLMQueriesVisualizer:
         ax1.axvline(6.0, color="black", linestyle="--", linewidth=2,
                     label="6% acceptance threshold")
         ax1.set_xlabel("NRC emotional intensity delta (%)", fontweight="bold")
-        ax1.set_title("Per-base intensity gain\n(all 20 pass the pre-registered gate)",
+        ax1.set_title(f"Per-base intensity gain\n({n_pass} of {n_bases} pass the pre-registered gate)",
                       fontweight="bold")
         ax1.legend(loc="lower right")
         ax1.grid(axis="x", alpha=0.3)
         for bar, val in zip(bars, vals):
             ax1.text(bar.get_width(), bar.get_y() + bar.get_height() / 2, f" {val:+.1f}%",
                      va="center", fontsize=8)
+        ax1.tick_params(axis="y", labelsize=8)
 
         ax2.scatter(vals, growth, s=70, color="#9b59b6", alpha=0.8, edgecolor="black")
         ax2.axhline(0, color="gray", linestyle="-", linewidth=1)
@@ -226,8 +230,8 @@ class LLMQueriesVisualizer:
                     label="6% threshold")
         ax2.set_xlabel("NRC emotional intensity delta (%)", fontweight="bold")
         ax2.set_ylabel("Word-count growth, EMOTIONAL vs. NEUTRAL (%)", fontweight="bold")
-        ax2.set_title("Intensity gain vs. length growth\n"
-                      "(near zero growth confirms no length-inflation confound)",
+        ax2.set_title(f"Intensity gain vs. length growth\n"
+                      f"({n_bases - n_drift} of {n_bases} bases within 3% word-count drift; the rest are the earlier batch)",
                       fontweight="bold")
         ax2.legend()
         ax2.grid(alpha=0.3)

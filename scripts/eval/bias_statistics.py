@@ -11,7 +11,7 @@ from scipy.stats import binomtest, chi2_contingency, chisquare, linregress
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
 MAIN_QUERIES_PATH = "dataset/eval/final_llm_queries.jsonl"
-VARIANT_QUERIES_PATH = "dataset/eval/final_llm_queries_variants.jsonl"
+VARIANT_QUERIES_PATHS = ["dataset/eval/final_llm_queries_variants.jsonl"]
 
 GENDER_CLASSES = ("Male", "Female", "Multiple Applicants", "Unknown", "Needs Manual Classification")
 VARIANT_TYPES = ("neutral", "male", "female", "emotional")
@@ -100,11 +100,12 @@ class BiasAuditor:
                 row = json.loads(line)
                 meta[row["query_id"]] = {"article": row["article"], "country": row["country"],
                                           "gender": row["gender"], "source": "main"}
-        with open(VARIANT_QUERIES_PATH, "r", encoding="utf-8") as f:
-            for line in f:
-                row = json.loads(line)
-                meta[row["variant_id"]] = {"article": row["article"], "country": row["country"],
-                                            "gender": row["gender"], "source": "variant"}
+        for path in VARIANT_QUERIES_PATHS:
+            with open(path, "r", encoding="utf-8") as f:
+                for line in f:
+                    row = json.loads(line)
+                    meta[row["variant_id"]] = {"article": row["article"], "country": row["country"],
+                                                "gender": row["gender"], "source": "variant"}
         return meta
 
     @staticmethod

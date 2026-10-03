@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 INPUT_FILE = "dataset/train_splits/train_split_10.jsonl"
-OUTPUT_FILE = "dataset/eval/retrieval_eval_queries.jsonl"
+OUTPUT_FILE = "dataset/eval/retrieval_harness_queries.jsonl"
 NUM_QUERIES = 100
 SEED = 42
 MIN_FACTS_WORDS = 50

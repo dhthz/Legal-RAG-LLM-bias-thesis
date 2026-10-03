@@ -135,66 +135,47 @@ class BiasAuditVisualizer:
         print("Creating per-base NEUTRAL/MALE/FEMALE retrieval grid...")
 
         variants = ["neutral", "male", "female"]
-        col_labels = ["Written\nneutrally", "Applicant\nis a man", "Applicant\nis a woman"]
+        col_labels = ["Neutral", "Man", "Woman"]
         bases = sorted(self.by_base)
+        n_panels = 4
+        per_panel = -(-len(bases) // n_panels)
 
-        fig, ax = plt.subplots(figsize=(8.6, 0.42 * len(bases) + 1.0))
+        fig, axes = plt.subplots(1, n_panels, figsize=(11.5, 0.42 * per_panel + 2.0))
 
-        for row, base in enumerate(bases):
-            v = self.by_base[base]
-            for col, vt in enumerate(variants):
-                if vt not in v:
-                    continue
-                gender = v[vt]["retrieved_cases"][0]["gender"]
-                color = GENDER_COLORS.get(gender, "#dddddd")
-                ax.add_patch(plt.Rectangle((col, len(bases) - row - 1), 1, 1,
-                                            facecolor=color, edgecolor="white", linewidth=1.5))
-
-        # Flag any row where the three variants don't all retrieve a case of
-        # the same gender — i.e. gender-marking (neutral -> male, neutral ->
-        # female, or male -> female) changed which gender of case comes back.
-        # Based on the retrieved case's GENDER, not its case_id: two variants
-        # can retrieve different case_ids that are still the same gender
-        # (not a gender-driven change), so comparing IDs directly would
-        # misclassify those rows.
+        # A base is flagged when its three variants don't all retrieve a top case of the same GENDER (compared by gender, not case_id: two different cases can share a gender)
         n_flagged = 0
-        for row, base in enumerate(bases):
-            v = self.by_base[base]
-            if "neutral" not in v or "male" not in v or "female" not in v:
-                continue
-            genders = {v[vt]["retrieved_cases"][0]["gender"] for vt in ("neutral", "male", "female")}
-            if len(genders) > 1:
-                n_flagged += 1
-                ax.text(3.15, len(bases) - row - 0.5, "◀ changed", va="center", fontsize=8.5,
-                        color="#c0392b", fontweight="bold")
+        for pi, ax in enumerate(axes):
+            chunk = bases[pi * per_panel:(pi + 1) * per_panel]
+            for row, base in enumerate(chunk):
+                v = self.by_base[base]
+                y = per_panel - row - 1
+                for col, vt in enumerate(variants):
+                    if vt not in v:
+                        continue
+                    color = GENDER_COLORS.get(v[vt]["retrieved_cases"][0]["gender"], "#dddddd")
+                    ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor=color, edgecolor="white", linewidth=1.5))
+                if all(vt in v for vt in variants):
+                    genders = {v[vt]["retrieved_cases"][0]["gender"] for vt in variants}
+                    if len(genders) > 1:
+                        n_flagged += 1
+                        ax.add_patch(plt.Rectangle((0, y), 3, 1, fill=False, edgecolor="#111111", linewidth=2.6))
+            ax.set_xlim(0, 3)
+            ax.set_ylim(0, per_panel)
+            ax.set_xticks([0.5, 1.5, 2.5])
+            ax.set_xticklabels(col_labels, fontsize=9.5, fontweight="bold")
+            ax.set_yticks([per_panel - i - 0.5 for i in range(len(chunk))])
+            ax.set_yticklabels(chunk, fontsize=10)
+            ax.tick_params(left=False, bottom=False)
+            for spine in ax.spines.values():
+                spine.set_visible(False)
 
-        ax.set_xlim(0, 3.9)
-        ax.set_ylim(0, len(bases))
-        ax.set_xticks([0.5, 1.5, 2.5])
-        ax.set_xticklabels(col_labels, fontsize=10, fontweight="bold")
-        ax.set_yticks([len(bases) - i - 0.5 for i in range(len(bases))])
-        ax.set_yticklabels(bases, fontsize=8)
-        ax.set_title("Same legal facts, only the applicant's gender changed",
-                      fontweight="bold", fontsize=13, pad=10)
-        ax.tick_params(left=False, bottom=False)
-        for spine in ax.spines.values():
-            spine.set_visible(False)
+        fig.suptitle("Same legal facts, only the applicant's gender changed", fontweight="bold", fontsize=14)
+        legend_handles = [Patch(facecolor=GENDER_COLORS[g], label=f"Top result: {g}") for g in
+                          ["Male", "Female", "Multiple Applicants", "Unknown"]]
+        legend_handles.append(Patch(facecolor="white", edgecolor="#111111", linewidth=2, label=f"Black outline = gender of top result changed ({n_flagged} of {len(bases)})"))
+        fig.legend(handles=legend_handles, loc="lower center", ncol=3, fontsize=9.5, frameon=False)
 
-        legend_handles = [Patch(facecolor=GENDER_COLORS[g], label=g) for g in
-                           ["Male", "Female", "Multiple Applicants", "Unknown"]]
-        ax.legend(handles=legend_handles, loc="upper left", bbox_to_anchor=(1.02, 1.0),
-                  fontsize=9, frameon=False, title="Top result", title_fontsize=9,
-                  alignment="left")
-
-        info_text = (
-            "Each row = one case,\nrewritten 3 ways with\nidentical facts.\n\n"
-            "\"◀ changed\" = the three\nversions did not all return\nthe same gender of case\n"
-            f"({n_flagged} of {len(bases)} bases)."
-        )
-        ax.text(1.02, 0.62, info_text, transform=ax.transAxes, fontsize=8.7,
-                va="top", color="#333", linespacing=1.5)
-
-        plt.tight_layout()
+        plt.tight_layout(rect=[0, 0.12, 1, 0.95])
         path = f"{self.output_dir}/02_gender_variant_retrieval_grid.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
@@ -256,64 +237,46 @@ class BiasAuditVisualizer:
 
         r = self.paired_generation["paired_generation_neutral_vs_emotional"]
         bases = sorted(b for b in self.by_base if "neutral" in self.by_base[b] and "emotional" in self.by_base[b])
-
-        rows = []
-        for base in bases:
-            cited_diff = base in r["cited_case_set_differs"]["bases"]
-            articles_diff = base in r["reported_articles_differ"]["bases"]
-            rows.append((base, cited_diff, articles_diff))
         excluded = set(r["skipped_retrieval_flip"])
+        n_panels = 4
+        per_panel = -(-len(bases) // n_panels)
+        col_labels = ["Different\ncase cited", "Different\narticle"]
 
-        fig, ax = plt.subplots(figsize=(7.8, 0.42 * len(rows) + 1.0))
-        col_labels = ["Cited a\ndifferent case", "Reported a\ndifferent article"]
+        fig, axes = plt.subplots(1, n_panels, figsize=(11.5, 0.42 * per_panel + 2.2))
 
-        for row, (base, cited_diff, articles_diff) in enumerate(rows):
-            y = len(rows) - row - 1
-            for col, changed in enumerate([cited_diff, articles_diff]):
-                if base in excluded:
-                    ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#ecf0f1", edgecolor="white", linewidth=1.5))
-                    ax.text(col + 0.5, y + 0.5, "not tested", ha="center", va="center", fontsize=7.5, color="#95a5a6")
-                    continue
-                color = "#e74c3c" if changed else "#eafaf1"
-                ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor=color, edgecolor="white", linewidth=1.5))
-                if changed:
-                    ax.text(col + 0.5, y + 0.5, "✕", ha="center", va="center", fontsize=13, color="white", fontweight="bold")
-
-        ax.set_xlim(0, 2)
-        ax.set_ylim(0, len(rows))
-        ax.set_xticks([0.5, 1.5])
-        ax.set_xticklabels(col_labels, fontsize=10, fontweight="bold")
-        ax.set_yticks([len(rows) - i - 0.5 for i in range(len(rows))])
-        ax.set_yticklabels([b for b, _, _ in rows], fontsize=8)
-        ax.tick_params(left=False, bottom=False)
-        for spine in ax.spines.values():
-            spine.set_visible(False)
-
-        ax.set_title("Same retrieved cases — did a more\nemotional question change the AI's answer?",
-                      fontweight="bold", fontsize=12.5, pad=10)
+        for pi, ax in enumerate(axes):
+            chunk = bases[pi * per_panel:(pi + 1) * per_panel]
+            for row, base in enumerate(chunk):
+                y = per_panel - row - 1
+                flags = [base in r["cited_case_set_differs"]["bases"], base in r["reported_articles_differ"]["bases"]]
+                for col, changed in enumerate(flags):
+                    if base in excluded:
+                        ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#ecf0f1", edgecolor="white", linewidth=1.5))
+                        ax.text(col + 0.5, y + 0.5, "n/t", ha="center", va="center", fontsize=8, color="#95a5a6")
+                        continue
+                    ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#e74c3c" if changed else "#eafaf1", edgecolor="white", linewidth=1.5))
+                    if changed:
+                        ax.text(col + 0.5, y + 0.5, "✕", ha="center", va="center", fontsize=12, color="white", fontweight="bold")
+            ax.set_xlim(0, 2)
+            ax.set_ylim(0, per_panel)
+            ax.set_xticks([0.5, 1.5])
+            ax.set_xticklabels(col_labels, fontsize=9, fontweight="bold")
+            ax.set_yticks([per_panel - i - 0.5 for i in range(len(chunk))])
+            ax.set_yticklabels(chunk, fontsize=10)
+            ax.tick_params(left=False, bottom=False)
+            for spine in ax.spines.values():
+                spine.set_visible(False)
 
         n_cited = r["cited_case_set_differs"]["n_differ"]
         n_articles = r["reported_articles_differ"]["n_differ"]
         n_pairs = r["n_pairs"]
-        info_text = (
-            f"Each row is one case, asked\n"
-            f"once neutrally and once with\n"
-            f"emotionally charged wording —\n"
-            f"the retrieved cases were\n"
-            f"identical both times.\n"
-            f"Grey rows ({len(excluded)}): the cases found\n"
-            f"differed, so not tested.\n\n"
-            f"✕ = the AI's answer changed\n"
-            f"anyway:\n\n"
-            f"• {n_cited}/{n_pairs} bases: discussed\n"
-            f"  a different case\n"
-            f"• {n_articles}/{n_pairs} bases: reported a\n"
-            f"  different violated article"
-        )
-        ax.text(1.05, 1.0, info_text, transform=ax.transAxes, fontsize=8.7,
-                va="top", color="#333", linespacing=1.6)
+        fig.suptitle("Same retrieved cases: did a more emotional question change the AI's answer?", fontweight="bold", fontsize=13.5)
+        fig.text(0.5, 0.045,
+                 f"✕ = the AI's answer changed.  Different case cited: {n_cited}/{n_pairs} bases.  Different article reported: {n_articles}/{n_pairs}.\n"
+                 f"n/t = not tested ({len(excluded)} bases): the retrieved cases differed between the two wordings.",
+                 ha="center", fontsize=9.5, color="#333", linespacing=1.6)
 
-        plt.tight_layout(rect=[0, 0, 0.78, 1])
+        plt.tight_layout(rect=[0, 0.12, 1, 0.95])
         path = f"{self.output_dir}/04_emotional_generation_grid.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
