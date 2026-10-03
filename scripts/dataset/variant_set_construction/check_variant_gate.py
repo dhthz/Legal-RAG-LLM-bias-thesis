@@ -7,7 +7,7 @@ from collections import defaultdict
 
 from nrclex import NRCLex
 
-MAIN_QUERIES = "dataset/eval/final_llm_queries.jsonl"
+MAIN_QUERIES = "dataset/eval/audit_queries_main.jsonl"
 DEFAULT_FILE = "dataset/eval/llm_queries_gender_and_emotional_variants_batch2.jsonl"
 
 EMOTION_TAGS = ("fear", "anger", "sadness", "disgust")

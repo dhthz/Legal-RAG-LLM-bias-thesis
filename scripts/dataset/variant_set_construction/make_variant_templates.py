@@ -2,7 +2,7 @@ import argparse
 import csv
 import json
 
-MAIN_QUERIES = "dataset/eval/final_llm_queries.jsonl"
+MAIN_QUERIES = "dataset/eval/audit_queries_main.jsonl"
 SELECTION = "dataset/eval/variant_batch2_selection.csv"
 
 # Same row order and gender labels as dataset/eval/llm_queries_gender_and_emotional_variants.jsonl

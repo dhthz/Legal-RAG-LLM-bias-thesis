@@ -10,8 +10,8 @@ from scipy.stats import binomtest, chi2_contingency, chisquare, linregress
 
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
-MAIN_QUERIES_PATH = "dataset/eval/final_llm_queries.jsonl"
-VARIANT_QUERIES_PATHS = ["dataset/eval/final_llm_queries_variants.jsonl"]
+MAIN_QUERIES_PATH = "dataset/eval/audit_queries_main.jsonl"
+VARIANT_QUERIES_PATHS = ["dataset/eval/audit_queries_variants.jsonl"]
 
 GENDER_CLASSES = ("Male", "Female", "Multiple Applicants", "Unknown", "Needs Manual Classification")
 VARIANT_TYPES = ("neutral", "male", "female", "emotional")

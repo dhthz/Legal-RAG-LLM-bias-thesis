@@ -5,8 +5,8 @@ import random
 import re
 from collections import Counter, defaultdict
 
-MAIN_QUERIES = "dataset/eval/final_llm_queries.jsonl"
-VARIANT_QUERIES = "dataset/eval/final_llm_queries_variants.jsonl"
+MAIN_QUERIES = "dataset/eval/audit_queries_main.jsonl"
+VARIANT_QUERIES = "dataset/eval/audit_queries_variants.jsonl"
 TEST_CASES = "dataset/test.jsonl"
 TRAIN_METADATA = "dataset/train_with_metadata.jsonl"
 

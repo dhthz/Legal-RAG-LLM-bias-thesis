@@ -248,8 +248,8 @@ def main():
     print(" " * 15 + "PHASE D QUERY SET VISUALIZATION (llm_queries)")
     print("=" * 80)
 
-    queries_path = "dataset/eval/final_llm_queries.jsonl"
-    variants_path = "dataset/eval/final_llm_queries_variants.jsonl"
+    queries_path = "dataset/eval/audit_queries_main.jsonl"
+    variants_path = "dataset/eval/audit_queries_variants.jsonl"
 
     viz = LLMQueriesVisualizer(queries_path, variants_path)
     viz.plot_gender_by_article()

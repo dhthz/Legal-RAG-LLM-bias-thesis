@@ -5,8 +5,8 @@ from pathlib import Path
 
 from src.rag.pipeline import RAGPipeline
 
-MAIN_QUERIES_FILE = "dataset/eval/final_llm_queries.jsonl"
-VARIANT_QUERIES_FILES = ["dataset/eval/final_llm_queries_variants.jsonl"]
+MAIN_QUERIES_FILE = "dataset/eval/audit_queries_main.jsonl"
+VARIANT_QUERIES_FILES = ["dataset/eval/audit_queries_variants.jsonl"]
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 
 
