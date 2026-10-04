@@ -1,0 +1,74 @@
+{
+  "headline": {
+    "pronoun_swap_top1": {
+      "pairs": 40,
+      "top1_changed": 15,
+      "discordant": {
+        "male_only": 0,
+        "female_only": 11
+      },
+      "p_holm": 0.0029296875
+    },
+    "gender_vs_corpus_cramers_v": 0.19102457069916268,
+    "query_gender_cramers_v": 0.3142860873515648,
+    "jurisdiction_cramers_v": 0.13301792360060136,
+    "query_country_match_rate": 0.7350597609561753,
+    "temporal_cohens_d": 0.394749739372935,
+    "outcome_odds_ratio": 1.358567006554989,
+    "generation_stage_p_per_run": {
+      "A": 0.4632927068547156,
+      "B": 0.031636681974327806,
+      "C": 0.15933451423762238,
+      "D": 0.09213458758562403
+    },
+    "llm_identical_input_cited_change": {
+      "male_vs_female": 0.0,
+      "neutral_vs_emotional": 0.1875,
+      "neutral_vs_emotional_repeat_noise": 0.17916666666666664
+    },
+    "position_bias_cited_change_different_order": {
+      "male_vs_female": 0.75,
+      "neutral_vs_emotional": 0.5
+    },
+    "cited_noise_floor_mean": 0.13854166666666665,
+    "predicted_articles_min_p_holm": 1.0,
+    "gender_label_accuracy": 0.9371500440196202
+  },
+  "provenance": {
+    "faiss_index_sha256": "fe0b20f3e08553cfb2b5149b9174162db8ac16b493b042f61cb63c9e0b4ab61a",
+    "retrieval_identical_across_runs": {
+      "identical_queries": 335,
+      "of": 335
+    },
+    "raw_logs_sha256": {
+      "logs/bias_audit/stateless/run40_A.jsonl": "e39930112b671071c700f89a09286e1b706a2fce2e05c131780d9dd687de7bc5",
+      "logs/bias_audit/stateless/run40_B.jsonl": "b8d3ae6243b56a0893bc57ee2369e32451878ff4176253ed54e317d6bb684f34",
+      "logs/bias_audit/stateless/run40_C.jsonl": "3f9912a3be703bcc517a0017eeb845cbcffbd1901f778550d15c039c91007fd0",
+      "logs/bias_audit/stateless/run40_D.jsonl": "9baded9fa6397e0184ce37c91ce3db63704aa2c2f957979410202b9ec4424aaf",
+      "logs/bias_audit/predict/run_A.jsonl": "36ff4e13b3ec731ff4db617708aff0556abe739d71792c82cce47283a868590b",
+      "logs/bias_audit/predict/run_B.jsonl": "66977960e5175ead8d8c350cc34f1145603e4c6038d5611cc6f64f1ab7313945",
+      "logs/bias_audit/predict/run_C.jsonl": "eb0d13ed16bd0260c004b2cf715f1d0dcc03f19b1e80fdae026d73ac3f82052c",
+      "logs/bias_audit/predict/run_D.jsonl": "53e319673628135b279f1ed494de8e7257fbcbcfbdf13f886799ee590dff6acd"
+    },
+    "query_sets_sha256": {
+      "dataset/eval/audit_queries_main.jsonl": "6096429f1b54190ae629719f8baf1fa88779e1602098a25db66d33ab08ceb90a",
+      "dataset/eval/audit_queries_variants.jsonl": "b14b82594d007ba3ebcf83a70fe34fd296e45c2a1eb8fc9cc8ecc7b81b4fa613"
+    },
+    "computed_from": [
+      "logs/bias_audit/stats_v3_40bases",
+      "logs/bias_audit/stats_v3_40bases_runB",
+      "logs/bias_audit/stats_v3_40bases_runC",
+      "logs/bias_audit/stats_v3_40bases_runD",
+      "logs/bias_audit/stats_multi_run/results.json",
+      "logs/bias_audit/stats_llm_output/results.json",
+      "logs/bias_audit/gender_validation_results.json"
+    ],
+    "scripts": [
+      "scripts/eval/bias_statistics.py",
+      "scripts/eval/multi_run_stability.py",
+      "scripts/eval/llm_output_bias.py",
+      "scripts/dataset/gender_label_validation/analyze_gender_validation.py",
+      "scripts/eval/export_audit_results.py"
+    ]
+  }
+}

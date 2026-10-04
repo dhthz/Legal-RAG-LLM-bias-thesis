@@ -7,7 +7,7 @@ from typing import Dict, List
 
 from src.embeddings.chunk_embedder import ChunkRetriever
 from src.llm.client import MistralClient
-from src.llm.config import PipelineConfig
+from src.llm.config import MANIFEST_PATH, PipelineConfig
 from src.llm.prompts import build_legal_prompt
 from src.rag.response_parsing import parse_structured_response
 
@@ -20,8 +20,9 @@ logger = logging.getLogger(__name__)
 
 class RAGPipeline():
 
-    def __init__(self):
+    def __init__(self, predict_articles=False):
         self.config = PipelineConfig.load_from_manifest()
+        self.predict_articles = predict_articles
 
         self.retriever = ChunkRetriever(
             index_path = self.config.index_path,
@@ -29,6 +30,10 @@ class RAGPipeline():
         )
 
         self.llm_client = MistralClient()
+        if predict_articles:
+            with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+                variant = json.load(f)["prompt_variants"]["predict_articles"]
+            self.llm_client.config.max_tokens = int(variant["max_tokens"])
 
         # Country/jurisdiction isn't carried in the chunk-level FAISS metadata,
         # so it's joined at logging time from the per-case dataset file instead.
@@ -92,6 +97,8 @@ class RAGPipeline():
                 'cited_case_ids': parsed['cited_case_ids'],
                 'case_articles': parsed['case_articles'],
                 'json_parse_ok': parsed['json_parse_ok'],
+                **({'predicted_articles': parsed.get('predicted_articles')} if self.predict_articles else {}),
+                'prompt_variant': 'predict_articles' if self.predict_articles else 'baseline',
                 'response': response_text,
                 'generation_error': generation_error,
                 'token_usage': {
@@ -114,7 +121,7 @@ class RAGPipeline():
         chunks = self.retriever.retrieve_chunks(legal_query, self.config.top_k_chunks)
         cases = self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
 
-        messages = build_legal_prompt(legal_query,cases)
+        messages = build_legal_prompt(legal_query, cases, predict_articles=self.predict_articles)
 
         # Retrieval must be logged even if generation fails, so a flaky LLM
         # call never silently drops a query's retrieval results from the audit.

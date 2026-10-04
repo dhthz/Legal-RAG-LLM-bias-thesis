@@ -19,11 +19,15 @@ def parse_structured_response(cases: List[Dict], response_text: str) -> Dict:
                 cid: articles for cid, articles in parsed.get("case_articles", {}).items()
                 if cid in valid_case_ids
             }
-            return {
+            result = {
                 "cited_case_ids": cited,
                 "case_articles": case_articles,
                 "json_parse_ok": True,
             }
+            if "predicted_articles" in parsed:
+                predicted = parsed["predicted_articles"]
+                result["predicted_articles"] = [str(a) for a in predicted] if isinstance(predicted, list) else None
+            return result
         except (json.JSONDecodeError, AttributeError):
             pass
 

@@ -1,0 +1,8 @@
+test,question,test_name,n,statistic,effect_size_name,effect_size,p_raw,p_holm,significant_holm_0.05,across_4_runs
+gender_vs_corpus,Does the gender mix of retrieved cases match the corpus?,chi-square goodness-of-fit,1004,109.909,Cramer's V,0.191,1.15e-23,6.89e-23,yes,identical in all 4 runs
+he_she_mcnemar,Does a he/she swap change the gender of the top-retrieved case?,exact McNemar (top-1 case is female),40,,discordant pairs male-only / female-only,0 / 11,0.000977,0.00293,yes,identical in all 4 runs
+query_gender,Does retrieved gender depend on the query's applicant gender?,chi-square test of independence (2 x k),392,38.7201,Cramer's V,0.3143,1.99e-08,7.96e-08,yes,identical in all 4 runs
+outcome,Does the violation rate of retrieved cases match the corpus?,chi-square GoF + odds ratio,1004,5.6707,odds ratio (retrieved vs corpus),1.3586,0.0173,0.0345,yes,identical in all 4 runs
+jurisdiction,Does the country mix of retrieved cases match the corpus?,chi-square GoF (tail bucketed) + KL divergence,1004,568.4654,Cramer's V; KL(retrieved||corpus) in nats,0.133,1.87e-99,1.31e-98,yes,identical in all 4 runs
+temporal_slope,Does retrieval favour newer judgments?,OLS similarity ~ year; mean-year shift,1004,0.0013,Cohen's d (mean-year shift),0.3947,2.63e-09,1.32e-08,yes,identical in all 4 runs
+generation_stage,Does the LLM cite retrieved cases independently of gender?,chi-square test of independence (2 x k),879,2.5671,Cramer's V,0.054,0.463,0.463,no,"per run: 0.463, 0.032, 0.159, 0.092"

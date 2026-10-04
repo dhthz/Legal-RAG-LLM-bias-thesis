@@ -14,7 +14,10 @@ plt.rcParams['figure.dpi'] = 150
 plt.rcParams['savefig.dpi'] = 300
 
 OUTPUT_DIR = "docs/bias_audit/visualizations"
-AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
+AUDIT_LOG_PATH = "logs/bias_audit/stateless/run40_A.jsonl"
+RESULTS_DIR = "logs/bias_audit/stats_v3_40bases"
+MULTI_RUN_PATH = "logs/bias_audit/stats_multi_run/results.json"
+LLM_OUTPUT_PATH = "logs/bias_audit/stats_llm_output/results.json"
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
 
 # "Needs Manual Classification" dropped from gender charts per owner's call
@@ -27,21 +30,18 @@ VARIANT_TYPES = ("neutral", "male", "female", "emotional")
 
 class BiasAuditVisualizer:
 
-    def __init__(self, results_dir="logs/bias_audit", log_path=AUDIT_LOG_PATH, output_dir=OUTPUT_DIR,
-                 repeat_results_dir=None, repeat_log_path=None):
+    def __init__(self, results_dir=RESULTS_DIR, log_path=AUDIT_LOG_PATH, output_dir=OUTPUT_DIR,
+                 multi_run_path=MULTI_RUN_PATH, llm_output_path=LLM_OUTPUT_PATH):
         self.results_dir = Path(results_dir)
         self.output_dir = output_dir
         self.master = self._load("master_results.json")
         self.paired_variants = self._load("paired_variant_tests.json")
-        self.paired_generation = self._load("paired_generation_tests.json")
         self.case_gender = self._load_case_gender()
         self.by_base = self._load_audit_log_grouped(log_path)
-        self.repeat_generation = None
-        self.same_query_cited_noise = None
-        if repeat_results_dir and repeat_log_path:
-            with open(Path(repeat_results_dir) / "paired_generation_tests.json", "r", encoding="utf-8") as f:
-                self.repeat_generation = json.load(f)
-            self.same_query_cited_noise = self._cited_noise_between_runs(log_path, repeat_log_path)
+        with open(multi_run_path, "r", encoding="utf-8") as f:
+            self.multi_run = json.load(f)
+        with open(llm_output_path, "r", encoding="utf-8") as f:
+            self.llm_output = json.load(f)
         Path(output_dir).mkdir(parents=True, exist_ok=True)
 
     def _load(self, filename):
@@ -72,21 +72,6 @@ class BiasAuditVisualizer:
                 if vtype in VARIANT_TYPES:
                     by_base[base][vtype] = e
         return by_base
-
-    # Share of variant queries whose cited-case set differs between two full runs of the same query (LLM run-to-run noise floor)
-    @staticmethod
-    def _cited_noise_between_runs(log_a, log_b):
-        def load(path):
-            out = {}
-            with open(path, "r", encoding="utf-8") as f:
-                for line in f:
-                    e = json.loads(line)
-                    if e["query_id"].rsplit("_", 1)[-1] in VARIANT_TYPES:
-                        out[e["query_id"]] = tuple(sorted(e.get("cited_case_ids") or []))
-            return out
-        a, b = load(log_a), load(log_b)
-        shared = [q for q in a if q in b]
-        return sum(a[q] != b[q] for q in shared) / len(shared)
 
     # ---- Finding 1: retrieval matches the query's own applicant gender ----
 
@@ -230,119 +215,158 @@ class BiasAuditVisualizer:
         print(f"  Saved: {path}")
         plt.close()
 
-    # ---- Finding 4: NEUTRAL vs EMOTIONAL, does the LLM's answer change? ----
+    # ---- Finding 4: does the LLM cite a different case when only the wording changes? ----
 
-    def plot_emotional_generation_grid(self):
-        print("Creating per-base NEUTRAL/EMOTIONAL generation-response grid...")
+    def plot_llm_input_similarity(self):
+        print("Creating LLM citation change by input similarity plot...")
 
-        r = self.paired_generation["paired_generation_neutral_vs_emotional"]
-        bases = sorted(b for b in self.by_base if "neutral" in self.by_base[b] and "emotional" in self.by_base[b])
-        excluded = set(r["skipped_retrieval_flip"])
-        n_panels = 4
-        per_panel = -(-len(bases) // n_panels)
-        col_labels = ["Different\ncase cited", "Different\narticle"]
+        groups = ["different order", "same order, different chunks shown", "identical input"]
+        labels = ["Same 3 cases,\ndifferent order", "Same order,\ndifferent excerpts", "Identical input\nto the AI"]
+        panels = [("male_vs_female", "Man vs woman wording"), ("neutral_vs_emotional", "Neutral vs emotional wording")]
+        split = self.multi_run["input_similarity_split"]
 
-        fig, axes = plt.subplots(1, n_panels, figsize=(11.5, 0.42 * per_panel + 2.2))
+        fig, axes = plt.subplots(1, 2, figsize=(12, 4.6), sharey=True)
+        for ax, (pair, title) in zip(axes, panels):
+            x = np.arange(len(groups))
+            rates, err_lo, err_hi, noise, ns = [], [], [], [], []
+            for g in groups:
+                v = split[pair][g]
+                if not v["n_bases"]:
+                    rates.append(0); err_lo.append(0); err_hi.append(0); noise.append(np.nan); ns.append(0)
+                    continue
+                r = v["wording_change_rate"]
+                lo, hi = v["wording_change_wilson_95ci"]
+                rates.append(r); err_lo.append(r - lo); err_hi.append(hi - r)
+                noise.append(v["same_bases_repeat_noise"]); ns.append(v["n_bases"])
+            colors = ["#e67e22", "#f5b041", "#2c3e50"]
+            ax.bar(x, rates, color=colors, edgecolor="black", width=0.6,
+                   yerr=[err_lo, err_hi], capsize=4, error_kw={"elinewidth": 1})
+            ax.scatter(x, noise, marker="_", s=900, color="#c0392b", linewidths=2.5, zorder=3,
+                       label="same question asked twice (noise)")
+            for xi, r in enumerate(rates):
+                ax.text(xi, min(r + err_hi[xi] + 0.03, 0.97), f"{r:.0%}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+            ax.set_xticks(x)
+            ax.set_xticklabels([f"{lab}\n({n} cases)" for lab, n in zip(labels, ns)], fontsize=9.5)
+            ax.set_ylim(0, 1)
+            ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
+            ax.set_title(title, fontweight="bold", fontsize=12)
+        axes[0].set_ylabel("AI cited a different case", fontweight="bold")
+        axes[1].legend(loc="upper right", fontsize=9, frameon=True)
 
-        for pi, ax in enumerate(axes):
-            chunk = bases[pi * per_panel:(pi + 1) * per_panel]
-            for row, base in enumerate(chunk):
-                y = per_panel - row - 1
-                flags = [base in r["cited_case_set_differs"]["bases"], base in r["reported_articles_differ"]["bases"]]
-                for col, changed in enumerate(flags):
-                    if base in excluded:
-                        ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#ecf0f1", edgecolor="white", linewidth=1.5))
-                        ax.text(col + 0.5, y + 0.5, "n/t", ha="center", va="center", fontsize=8, color="#95a5a6")
-                        continue
-                    ax.add_patch(plt.Rectangle((col, y), 1, 1, facecolor="#e74c3c" if changed else "#eafaf1", edgecolor="white", linewidth=1.5))
-                    if changed:
-                        ax.text(col + 0.5, y + 0.5, "✕", ha="center", va="center", fontsize=12, color="white", fontweight="bold")
-            ax.set_xlim(0, 2)
-            ax.set_ylim(0, per_panel)
-            ax.set_xticks([0.5, 1.5])
-            ax.set_xticklabels(col_labels, fontsize=9, fontweight="bold")
-            ax.set_yticks([per_panel - i - 0.5 for i in range(len(chunk))])
-            ax.set_yticklabels(chunk, fontsize=10)
-            ax.tick_params(left=False, bottom=False)
-            for spine in ax.spines.values():
-                spine.set_visible(False)
-
-        n_cited = r["cited_case_set_differs"]["n_differ"]
-        n_articles = r["reported_articles_differ"]["n_differ"]
-        n_pairs = r["n_pairs"]
-        fig.suptitle("Same retrieved cases: did a more emotional question change the AI's answer?", fontweight="bold", fontsize=13.5)
-        fig.text(0.5, 0.045,
-                 f"✕ = the AI's answer changed.  Different case cited: {n_cited}/{n_pairs} bases.  Different article reported: {n_articles}/{n_pairs}.\n"
-                 f"n/t = not tested ({len(excluded)} bases): the retrieved cases differed between the two wordings.",
-                 ha="center", fontsize=9.5, color="#333", linespacing=1.6)
-
-        plt.tight_layout(rect=[0, 0.12, 1, 0.95])
-        path = f"{self.output_dir}/04_emotional_generation_grid.png"
+        fig.suptitle("The AI only changes its citation when retrieval changes what it reads",
+                     fontweight="bold", fontsize=13.5)
+        fig.text(0.5, 0.01,
+                 "Pairs where both wordings retrieved the same 3 cases, 4 full runs. Bars: share of runs where the cited case differed "
+                 "between the two wordings (95% CI).\nRed line: how often the same question cited a different case across runs. "
+                 "With identical input, wording has no effect; a different order alone changes the citation (position bias).",
+                 ha="center", fontsize=8.8, color="#333", linespacing=1.5)
+        plt.tight_layout(rect=[0, 0.1, 1, 0.94])
+        path = f"{self.output_dir}/04_llm_input_similarity.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
 
-    # ---- Summary table: only the load-bearing findings ----
+    # ---- Summary table: the concluded findings ----
 
     def plot_findings_summary_table(self):
         print("Creating findings summary table...")
 
         hb = self.master["holm_bonferroni"]
-        p = hb["p_corrected"]["query_gender"]
-
-        dist = self.master["tests"]["query_gender"]["distributions"]
+        tests = self.master["tests"]
+        dist = tests["query_gender"]["distributions"]
         female_pct = dist["Female"].get("Female", 0) / sum(dist["Female"].values())
         male_pct = dist["Male"].get("Female", 0) / sum(dist["Male"].values())
-
         flips = self.paired_variants["paired_framing_male_vs_female"]
-        emo = self.paired_generation["paired_generation_neutral_vs_emotional"]["cited_case_set_differs"]
-        emo_rate = emo["n_differ"] / self.paired_generation["paired_generation_neutral_vs_emotional"]["n_pairs"]
-        if self.repeat_generation:
-            emo_b = self.repeat_generation["paired_generation_neutral_vs_emotional"]
-            rate_b = emo_b["cited_case_set_differs"]["n_differ"] / emo_b["n_pairs"]
-            emo_how = (f"Two full runs: {emo_rate:.0%} and {rate_b:.0%}\n"
-                       f"(same question twice already differs\n{self.same_query_cited_noise:.0%} of the time)")
-        else:
-            emo_how = "Single run\nnot yet repeat-tested"
+        disc = flips["mcnemar_discordant"]
+        split = self.multi_run["input_similarity_split"]
+        same_mf = split["male_vs_female"]["identical input"]
+        same_ne = split["neutral_vs_emotional"]["identical input"]
+        order = split["male_vs_female"]["different order"]
+        llm_p = min(self.llm_output["holm_bonferroni"]["p_corrected"].values())
 
         rows = [
-            ("Retrieval matches the\napplicant's gender",
-             f"Asking about a woman returns\n{female_pct / male_pct:.1f}× more female-applicant cases\nthan asking about a man",
-             f"Statistical test\np={p:.1e} (corrected)"),
-            ("A pronoun alone can change\nthe result",
-             f"Rewriting \"he\" as \"she\" (nothing\nelse changed) returned a different\ncase in {flips['top1_flips']} of {flips['n_pairs']} identical cases",
-             "Deterministic replay\n(retrieval has no randomness)"),
-            ("Emotional wording changes the\nAI's answer, not the search",
-             f"With the exact same cases found,\na more emotional question made the\nAI cite a different case {emo_rate:.0%} of the time",
-             emo_how),
+            ("A pronoun alone changes\nthe top result",
+             f"\"he\" to \"she\" (nothing else changed) gave a different top\ncase in {flips['top1_flips']} of {flips['n_pairs']} cases; "
+             f"{disc['female_only']} of {disc['female_only'] + disc['male_only']} gender changes went toward a woman",
+             f"Retrieval, causal\np={hb['p_corrected']['he_she_mcnemar']:.1e} (corrected)"),
+            ("Retrieval follows the\nquery's gender",
+             f"Asking about a woman returns {female_pct / male_pct:.1f}× more\nfemale-applicant cases than asking about a man",
+             f"Retrieval\np={hb['p_corrected']['query_gender']:.1e} (corrected)"),
+            ("Country, time and\noutcome skews",
+             f"{tests['jurisdiction']['query_country_match_rate']:.0%} of results match the query's country; results are\n"
+             f"newer than the corpus; violation cases slightly over-returned",
+             "Retrieval\nall significant (corrected)"),
+            ("The AI adds no bias\nof its own",
+             f"With identical input, wording changed the cited case\n{same_mf['wording_change_rate']:.0%} (gender) and "
+             f"{same_ne['wording_change_rate']:.0%} (tone, vs {same_ne['same_bases_repeat_noise']:.0%} noise); predicted articles unchanged",
+             f"AI answer\npredicted articles p={llm_p:.1f} (corrected)"),
+            ("The AI amplifies\nreordering",
+             f"The same cases in a different order changed\nthe cited case {order['wording_change_rate']:.0%} of the time (position bias)",
+             f"AI answer\n{order['n_bases']} cases, 4 runs"),
+            ("Emotional tone has\nno effect",
+             "No change in retrieval, citation, predicted\narticles or the tone of the answer",
+             "Both stages\nNRC-verified wording"),
         ]
 
-        fig, ax = plt.subplots(figsize=(12.5, 1.15 * len(rows) + 1.0))
+        fig, ax = plt.subplots(figsize=(13, 0.95 * len(rows) + 1.0))
         ax.axis("off")
-
-        col_labels = ["Finding", "What this means", "How we know"]
-        cell_text = [[finding, measured, confirmed] for finding, measured, confirmed in rows]
-
-        table = ax.table(cellText=cell_text, colLabels=col_labels, cellLoc="left",
-                          loc="center", bbox=[0, 0, 1, 1], colWidths=[0.24, 0.52, 0.24])
+        col_labels = ["Finding", "Evidence", "Where / strength"]
+        table = ax.table(cellText=[list(r) for r in rows], colLabels=col_labels, cellLoc="left",
+                         loc="center", bbox=[0, 0, 1, 1], colWidths=[0.22, 0.54, 0.24])
         table.auto_set_font_size(False)
-        table.set_fontsize(10.5)
+        table.set_fontsize(10)
         for i in range(len(col_labels)):
             table[0, i].set_facecolor("#34495e")
             table[0, i].set_text_props(color="white", fontweight="bold", ha="left")
-        # Last row (emotional-tone finding) is preliminary: single run, not
-        # repeat-tested, since generation (unlike retrieval) isn't deterministic.
-        for r in range(1, len(rows) + 1):
-            color = "#fdf3e3" if r == len(rows) else "#eafaf1"
+        # retrieval findings green, AI-stage findings blue, nulls grey
+        row_colors = ["#eafaf1", "#eafaf1", "#eafaf1", "#ebf5fb", "#ebf5fb", "#f2f3f4"]
+        for r, color in enumerate(row_colors, start=1):
             for c in range(len(col_labels)):
                 table[r, c].set_facecolor(color)
                 table[r, c].set_text_props(ha="left")
                 table[r, c].PAD = 0.02
 
         ax.set_title("Bias Audit — What We Found", fontweight="bold", fontsize=15, pad=8)
-
         plt.tight_layout()
         path = f"{self.output_dir}/05_findings_summary_table.png"
+        plt.savefig(path, bbox_inches="tight")
+        print(f"  Saved: {path}")
+        plt.close()
+
+    # ---- Finding 5: the AI's own verdict on the violated articles, by wording ----
+
+    def plot_predicted_articles_by_wording(self):
+        print("Creating predicted-articles accuracy plot...")
+
+        acc = self.llm_output["accuracy_vs_truth"]
+        wordings = ["original", "neutral", "male", "female", "emotional"]
+        labels = ["Original\ncase text", "Gender\nneutral", "A man", "A woman", "Emotional"]
+        metrics = [("key_hit", "Main article found", "#2c3e50"), ("jaccard", "Overlap with real articles", "#5d6d7e"),
+                   ("exact", "Exact match", "#aab7b8")]
+
+        fig, ax = plt.subplots(figsize=(11, 4.6))
+        x = np.arange(len(wordings))
+        w = 0.26
+        for i, (key, name, color) in enumerate(metrics):
+            vals = [acc[t][key] for t in wordings]
+            bars = ax.bar(x + (i - 1) * w, vals, width=w, color=color, edgecolor="black", label=name)
+            for b, v in zip(bars, vals):
+                ax.text(b.get_x() + b.get_width() / 2, v + 0.015, f"{v:.0%}" if key != "jaccard" else f"{v:.2f}",
+                        ha="center", va="bottom", fontsize=8.5)
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=10)
+        ax.set_ylim(0, 1)
+        ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda v, _: f"{v:.0%}"))
+        ax.legend(loc="upper right", fontsize=9, ncol=3, frameon=True)
+        ax.set_title("The AI's own verdict on the violated articles does not change with gender or tone",
+                     fontweight="bold", fontsize=13, pad=10)
+        p = min(self.llm_output["holm_bonferroni"]["p_corrected"].values())
+        fig.text(0.5, 0.01,
+                 f"40 cases, each worded five ways, 4 full runs averaged; compared with the case's real violated articles. "
+                 f"8 paired tests (gender, tone), smallest corrected p = {p:.1f}.",
+                 ha="center", fontsize=9, color="#333")
+        plt.tight_layout(rect=[0, 0.05, 1, 1])
+        path = f"{self.output_dir}/06_predicted_articles_by_wording.png"
         plt.savefig(path, bbox_inches="tight")
         print(f"  Saved: {path}")
         plt.close()
@@ -354,23 +378,21 @@ def main():
     print("=" * 80)
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", default="logs/bias_audit")
+    parser.add_argument("--results-dir", default=RESULTS_DIR)
     parser.add_argument("--log", default=AUDIT_LOG_PATH)
     parser.add_argument("--out-dir", default=OUTPUT_DIR)
-    parser.add_argument("--repeat-results-dir", default=None, help="Stats folder of a second full run (for the repeat-test row)")
-    parser.add_argument("--repeat-log", default=None, help="Audit log of that second run")
     args = parser.parse_args()
 
-    viz = BiasAuditVisualizer(results_dir=args.results_dir, log_path=args.log, output_dir=args.out_dir,
-                              repeat_results_dir=args.repeat_results_dir, repeat_log_path=args.repeat_log)
+    viz = BiasAuditVisualizer(results_dir=args.results_dir, log_path=args.log, output_dir=args.out_dir)
     viz.plot_retrieved_gender_by_query_gender()
     viz.plot_gender_variant_retrieval_grid()
     viz.plot_he_she_flip_summary()
-    viz.plot_emotional_generation_grid()
+    viz.plot_llm_input_similarity()
     viz.plot_findings_summary_table()
+    viz.plot_predicted_articles_by_wording()
 
     print("\n" + "=" * 80)
-    print(f"Done. Saved 5 plots to {viz.output_dir}/")
+    print(f"Done. Saved 6 plots to {viz.output_dir}/")
     print("=" * 80)
 
 

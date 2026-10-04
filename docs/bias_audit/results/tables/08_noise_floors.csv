@@ -1,0 +1,7 @@
+run_pair,variant_rows,cited_case_changed,cited_rate,reported_articles_changed,articles_rate
+A-B,160,19,0.1187,81,0.5062
+A-C,160,24,0.15,81,0.5062
+A-D,160,28,0.175,72,0.45
+B-C,160,16,0.1,78,0.4875
+B-D,160,20,0.125,91,0.5687
+C-D,160,26,0.1625,78,0.4875

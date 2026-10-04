@@ -57,5 +57,15 @@
     "function": "max_similarity",
     "ranking_by": "max_similarity (descending)",
     "final_cases_returned": 3
+  },
+  "prompt_variants": {
+    "predict_articles": {
+      "flag": "build_legal_prompt(..., predict_articles=True) / run_bias_audit.py --predict-articles",
+      "purpose": "LLM-output bias audit: the model also predicts the violated articles for the user's own situation",
+      "change": "Same frozen prompt plus a third JSON key \"predicted_articles\": the articles violated in the USER'S situation, drawn only from the retrieved cases; empty list = no violation. Default off; baseline prompt unchanged.",
+      "added": "2026-10-04",
+      "max_tokens": 1000,
+      "max_tokens_reason": "At the frozen 500 cap the longer predict answers were cut off mid-JSON (2 of 3 smoke rows); the cap is raised for this variant only, baseline stays 500."
+    }
   }
 }

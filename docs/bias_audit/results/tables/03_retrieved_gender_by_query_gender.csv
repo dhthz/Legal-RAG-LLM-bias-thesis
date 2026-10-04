@@ -1,0 +1,5 @@
+query_applicant_gender,retrieved_cases,share_male,share_female,share_multiple_applicants,share_unknown
+Male,218,0.8073,0.1284,0.0459,0.0183
+Female,174,0.523,0.3563,0.0575,0.0632
+Multiple Applicants,120,0.4583,0.125,0.3667,0.05
+Unknown,12,0.5833,0.1667,0.0833,0.1667

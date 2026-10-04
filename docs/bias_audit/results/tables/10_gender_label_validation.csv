@@ -1,0 +1,5 @@
+ai_label,n_checked,correct,accuracy,ci95_lo,ci95_hi
+Male,100,95,0.95,0.8882,0.9785
+Female,100,90,0.9,0.8256,0.9448
+Multiple Applicants,100,93,0.93,0.8625,0.9657
+overall (reweighted to corpus shares),300,,0.9372,0.9068,0.9675

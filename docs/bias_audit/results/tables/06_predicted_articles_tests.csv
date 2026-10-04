@@ -1,0 +1,5 @@
+scope,comparison,n_bases,prediction_change,repeat_noise,identical_prediction,p_change_vs_noise,jaccard_first,jaccard_second,p_jaccard,exact_correct_bases,p_exact,key_hit_bases,p_key_hit,p_change_holm
+whole_system,neutral_vs_emotional,40,0.3443,0.3408,0.4437,0.7032,0.5969,0.5813,0.4945,13 / 10,0.375,27 / 27,1.0,1.0
+whole_system,male_vs_female,40,0.2786,0.2643,0.5437,0.2178,0.6443,0.6328,0.6772,15 / 16,1.0,30 / 31,1.0,1.0
+same_retrieval_subset,neutral_vs_emotional,29,0.347,0.3388,0.4483,0.5754,0.5905,0.5589,0.3339,10 / 6,0.125,19 / 19,1.0,
+same_retrieval_subset,male_vs_female,5,0.4083,0.3778,0.35,0.625,0.575,0.5417,0.75,0 / 1,1.0,4 / 3,1.0,

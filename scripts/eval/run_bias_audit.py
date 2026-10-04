@@ -13,19 +13,24 @@ AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 class BiasAuditRunner:
     #Runs every query in the bias-audit test set (main + variant sets) through the frozen RAG pipeline, resumable by query_id.
 
-    def __init__(self, log_path=AUDIT_LOG_PATH):
+    def __init__(self, log_path=AUDIT_LOG_PATH, predict_articles=False):
         self.log_path = log_path
-        self.pipeline = RAGPipeline()
+        self.pipeline = RAGPipeline(predict_articles=predict_articles)
         self.pipeline.config.log_path = log_path
         Path(log_path).parent.mkdir(parents=True, exist_ok=True)
 
     @staticmethod
-    def load_queries(variants_only=False):
+    def load_queries(variants_only=False, with_originals=False):
         queries = []
-        if not variants_only:
+        if with_originals:
+            with open(VARIANT_QUERIES_FILES[0], "r", encoding="utf-8") as f:
+                variant_sources = {json.loads(line)["source_case_id"] for line in f}
+        if not variants_only or with_originals:
             with open(MAIN_QUERIES_FILE, "r", encoding="utf-8") as f:
                 for line in f:
                     row = json.loads(line)
+                    if with_originals and row["source_case_id"] not in variant_sources:
+                        continue
                     queries.append({"query_id": row["query_id"], "query_text": row["query_text"]})
         for path in VARIANT_QUERIES_FILES:
             with open(path, "r", encoding="utf-8") as f:
@@ -47,8 +52,8 @@ class BiasAuditRunner:
                         continue
         return done
 
-    def run(self, limit=None, variants_only=False):
-        queries = self.load_queries(variants_only)
+    def run(self, limit=None, variants_only=False, with_originals=False):
+        queries = self.load_queries(variants_only, with_originals)
         print(f"Loaded {len(queries)} queries (from {MAIN_QUERIES_FILE} and {', '.join(VARIANT_QUERIES_FILES)})")
 
         if limit is not None:
@@ -90,10 +95,14 @@ def main():
                          help="Log file for this run (use a new path for a repeat run)")
     parser.add_argument("--variants-only", action="store_true",
                          help="Run only the variant set (stability rerun)")
+    parser.add_argument("--with-originals", action="store_true",
+                         help="Run only the variant set plus the original main queries they were written from")
+    parser.add_argument("--predict-articles", action="store_true",
+                         help="Use the prompt variant that also asks for predicted_articles for the user's situation")
     args = parser.parse_args()
 
-    runner = BiasAuditRunner(log_path=args.log_path)
-    runner.run(limit=args.limit, variants_only=args.variants_only)
+    runner = BiasAuditRunner(log_path=args.log_path, predict_articles=args.predict_articles)
+    runner.run(limit=args.limit, variants_only=args.variants_only, with_originals=args.with_originals)
 
 
 if __name__ == "__main__":

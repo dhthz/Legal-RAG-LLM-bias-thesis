@@ -1,0 +1,7 @@
+comparison,model_input,n_bases,rows_cited_case_changed,rows,change_rate,ci95_lo,ci95_hi,same_query_repeat_noise,p_wilcoxon_vs_noise
+male_vs_female,different order,9,27,36,0.75,0.5893,0.8625,0.1667,0.0156
+male_vs_female,"same order, different chunks shown",2,6,8,0.75,0.4093,0.9285,0.25,1.0
+male_vs_female,identical input,3,0,12,0.0,0.0,0.2425,0.0,
+neutral_vs_emotional,different order,5,10,20,0.5,0.2993,0.7007,0.1167,0.25
+neutral_vs_emotional,"same order, different chunks shown",9,7,36,0.1944,0.0975,0.3503,0.1389,1.0
+neutral_vs_emotional,identical input,20,15,80,0.1875,0.1171,0.2866,0.1792,0.8923

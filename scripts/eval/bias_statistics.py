@@ -8,7 +8,8 @@ from collections import Counter, defaultdict
 import numpy as np
 from scipy.stats import binomtest, chi2_contingency, chisquare, linregress
 
-AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
+AUDIT_LOG_PATH = "logs/bias_audit/stateless/run40_A.jsonl"
+STATS_DIR = "logs/bias_audit/stats_v3_40bases"
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
 MAIN_QUERIES_PATH = "dataset/eval/audit_queries_main.jsonl"
 VARIANT_QUERIES_PATHS = ["dataset/eval/audit_queries_variants.jsonl"]
@@ -48,7 +49,7 @@ def holm_bonferroni(named_pvals):
 
 class BiasAuditor:
 
-    def __init__(self, audit_log_path=AUDIT_LOG_PATH, out_dir="logs/bias_audit"):
+    def __init__(self, audit_log_path=AUDIT_LOG_PATH, out_dir=STATS_DIR):
         self.audit_log_path = audit_log_path
         self.out_dir = out_dir
         os.makedirs(out_dir, exist_ok=True)
@@ -615,7 +616,8 @@ class BiasAuditor:
         corrected = holm_bonferroni(family)
         effects = {
             "gender_vs_corpus": f"V={unconditional['effect_size']:.3f}",
-            "he_she_mcnemar": "6/6 one-directional flips",
+            "he_she_mcnemar": "discordant male-only {male_only} / female-only {female_only}".format(
+                **pair_results["paired_framing_male_vs_female"]["mcnemar_discordant"]),
             "query_gender": f"V={by_qgender['effect_size']:.3f}",
             "outcome": f"OR={outcome['effect_size']:.3f}",
             "jurisdiction": f"V={jurisdiction['effect_size']:.3f}",
@@ -651,7 +653,7 @@ class BiasAuditor:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--log", default=AUDIT_LOG_PATH)
-    parser.add_argument("--out-dir", default="logs/bias_audit")
+    parser.add_argument("--out-dir", default=STATS_DIR)
     args = parser.parse_args()
 
     auditor = BiasAuditor(audit_log_path=args.log, out_dir=args.out_dir)
