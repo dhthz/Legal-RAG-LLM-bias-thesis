@@ -1,14 +1,16 @@
-
 import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Sequence, Tuple
+
+import numpy as np
 
 from src.embeddings.chunk_embedder import ChunkRetriever
-from src.llm.client import MistralClient
+from src.llm.client import Generation, MistralClient
 from src.llm.config import MANIFEST_PATH, PipelineConfig
 from src.llm.prompts import build_legal_prompt
+from src.mitigation import MitigationArm
 from src.rag.response_parsing import parse_structured_response
 
 # Configure logging at module level (called once)
@@ -18,15 +20,18 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-class RAGPipeline():
 
-    def __init__(self, predict_articles=False):
+class RAGPipeline:
+
+    # Mitigation arms are applied in the order given; with none, the pipeline is the frozen system
+    def __init__(self, predict_articles: bool = False, arms: Sequence[MitigationArm] = ()):
         self.config = PipelineConfig.load_from_manifest()
         self.predict_articles = predict_articles
+        self.arms = list(arms)
 
         self.retriever = ChunkRetriever(
-            index_path = self.config.index_path,
-            metadata_path = self.config.metadata_path
+            index_path=self.config.index_path,
+            metadata_path=self.config.metadata_path,
         )
 
         self.llm_client = MistralClient()
@@ -46,66 +51,61 @@ class RAGPipeline():
                     defendants = rec.get("defendants") or []
                     self._case_country[rec["case_id"]] = defendants[0] if defendants else None
 
-    def _log_interaction(self, timestamp: str, query: str, query_id: str, cases: List[Dict], response_text: str, token_usage: Dict, generation_error: str = None) -> None:
+    def _case_log_entry(self, rank: int, case: Dict) -> Dict:
+        return {
+            'rank': rank,
+            'case_id': case['case_id'],
+            'case_no': case['case_no'],
+            'title': case['title'],
+            'judgment_date': case['judgment_date'],
+            'avg_similarity': float(case['avg_similarity']),
+            'max_similarity': float(case['max_similarity']),
+            'num_chunks': case['num_chunks'],
+            'country': self._case_country.get(case['case_id']),
+            'gender': case['chunks'][0].get('gender'),
+            'violated_articles': case['violated_articles'],
+            'outcome': 'violation' if case['violated_articles'] else 'no_violation',
+            'chunks': [
+                {
+                    'chunk_id': chunk.get('chunk_id'),
+                    'similarity_score': float(chunk['similarity_score']),
+                    'word_count': chunk.get('word_count'),
+                }
+                for chunk in case['chunks']
+            ],
+        }
+
+    def _log_interaction(self, timestamp: str, query: str, query_id: str, search_text: str,
+                         cases: List[Dict], generation: Generation) -> None:
         try:
             log_path = Path(self.config.log_path)
             log_path.parent.mkdir(parents=True, exist_ok=True)
 
-            if response_text:
-                parsed = parse_structured_response(cases, response_text)
+            if generation.text:
+                parsed = parse_structured_response(cases, generation.text)
             else:
                 parsed = {"cited_case_ids": [], "case_articles": {}, "json_parse_ok": False}
-
-            retrieved_cases = []
-            for rank,case in enumerate(cases, start=1):
-
-                first_chunk = case['chunks'][0]
-                outcome = 'violation' if case['violated_articles'] else 'no_violation'
-
-                chunk_entries = [
-                    {
-                        'chunk_id': chunk.get('chunk_id'),
-                        'similarity_score': float(chunk['similarity_score']),
-                        'word_count': chunk.get('word_count'),
-                    }
-                    for chunk in case['chunks']
-                ]
-
-                case_entry = {
-                    'rank': rank,
-                    'case_id': case['case_id'],
-                    'case_no': case['case_no'],
-                    'title': case['title'],
-                    'judgment_date': case['judgment_date'],
-                    'avg_similarity': float(case['avg_similarity']),
-                    'max_similarity': float(case['max_similarity']),
-                    'num_chunks': case['num_chunks'],
-                    'country': self._case_country.get(case['case_id']),
-                    'gender': first_chunk.get('gender'),
-                    'violated_articles': case['violated_articles'],
-                    'outcome': outcome,
-                    'chunks': chunk_entries,
-                }
-
-                retrieved_cases.append(case_entry)
 
             log_entry = {
                 'timestamp': timestamp,
                 'query_id': query_id,
                 'query': query,
-                'retrieved_cases': retrieved_cases,
+                # Only present when an arm rewrote the query, so frozen-system rows keep their exact format
+                **({'search_text': search_text} if search_text != query else {}),
+                'retrieved_cases': [self._case_log_entry(rank, case) for rank, case in enumerate(cases, start=1)],
                 'cited_case_ids': parsed['cited_case_ids'],
                 'case_articles': parsed['case_articles'],
                 'json_parse_ok': parsed['json_parse_ok'],
                 **({'predicted_articles': parsed.get('predicted_articles')} if self.predict_articles else {}),
                 'prompt_variant': 'predict_articles' if self.predict_articles else 'baseline',
-                'response': response_text,
-                'generation_error': generation_error,
+                'arms': [arm.name for arm in self.arms],
+                'response': generation.text,
+                'generation_error': generation.error,
                 'token_usage': {
-                    'total_tokens': token_usage['token_count'],
-                    'prompt_tokens': token_usage['prompt_tokens'],
-                    'completion_tokens': token_usage['completion_tokens']
-                }
+                    'total_tokens': generation.total_tokens,
+                    'prompt_tokens': generation.prompt_tokens,
+                    'completion_tokens': generation.completion_tokens,
+                },
             }
 
             with open(log_path, 'a', encoding='utf-8') as f:
@@ -114,45 +114,39 @@ class RAGPipeline():
         except Exception as e:
             logger.error(f"Failed to log interaction: {e}")
 
+    def _transform_query_vector(self, vector: np.ndarray) -> np.ndarray:
+        for arm in self.arms:
+            vector = arm.transform_query_vector(vector)
+        return vector
+
+    # Returns the text actually searched (after any query-rewriting arm) and the ranked cases
+    def retrieve(self, legal_query: str) -> Tuple[str, List[Dict]]:
+        search_text = legal_query
+        for arm in self.arms:
+            search_text = arm.rewrite_query(search_text)
+
+        chunks = self.retriever.retrieve_chunks(search_text, self.config.top_k_chunks, transform=self._transform_query_vector)
+        for arm in self.arms:
+            chunks = arm.rescore_chunks(search_text, chunks, self.retriever, self.config.top_k_chunks)
+
+        return search_text, self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
 
     def query(self, legal_query: str, query_id: str = None) -> Dict:
-
         timestamp = datetime.now().isoformat()
-        chunks = self.retriever.retrieve_chunks(legal_query, self.config.top_k_chunks)
-        cases = self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
+        search_text, cases = self.retrieve(legal_query)
 
+        # The LLM always sees the user's original wording; arms only change what is searched
         messages = build_legal_prompt(legal_query, cases, predict_articles=self.predict_articles)
+        generation = self.llm_client.generate(messages)
+        if generation.error:
+            logger.error(f"Generation failed for query_id={query_id}: {generation.error}")
 
-        # Retrieval must be logged even if generation fails, so a flaky LLM
-        # call never silently drops a query's retrieval results from the audit.
-        try:
-            llm_response = self.llm_client.generate(messages)
-            response_text = llm_response['response']
-            token_usage = {
-                'token_count': llm_response['token_count'],
-                'prompt_tokens': llm_response['prompt_tokens'],
-                'completion_tokens': llm_response['completion_tokens']
-            }
-            generation_error = None
-        except Exception as e:
-            logger.error(f"Generation failed for query_id={query_id}: {e}")
-            response_text = None
-            token_usage = {'token_count': 0, 'prompt_tokens': 0, 'completion_tokens': 0}
-            generation_error = str(e)
-
-        self._log_interaction(
-            timestamp = timestamp,
-            query = legal_query,
-            query_id = query_id,
-            cases = cases,
-            response_text = response_text,
-            token_usage = token_usage,
-            generation_error = generation_error,
-        )
+        # Retrieval is logged even if generation failed, so a flaky LLM call never drops a query from the audit
+        self._log_interaction(timestamp, legal_query, query_id, search_text, cases, generation)
 
         return {
             'query': legal_query,
             'cases': cases,
-            'response': response_text,
-            'generation_error': generation_error,
+            'response': generation.text,
+            'generation_error': generation.error,
         }

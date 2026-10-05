@@ -2,7 +2,7 @@
 import json
 import os
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Callable, Dict, List, Optional
 
 import faiss
 import numpy as np
@@ -187,9 +187,11 @@ class ChunkRetriever:
         # One max-length warm-up pins that state, so retrieval no longer depends on query order (see KNOWN_QUIRKS.md).
         self.model.encode(["legal " * (self.model.max_seq_length + 1000)], normalize_embeddings=True)
 
-    def retrieve_chunks(self, query: str, top_k: int = 25) -> List[Dict]:
-        # Encode query
+    def retrieve_chunks(self, query: str, top_k: int = 25, transform: Optional[Callable] = None) -> List[Dict]:
+        # Encode query; transform is an optional query-vector stage (mitigation), off in the frozen system
         query_embedding = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
+        if transform is not None:
+            query_embedding = transform(query_embedding)
 
         # Search
         distances, indices = self.index.search(query_embedding.astype('float32'), top_k)
