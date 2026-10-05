@@ -2,9 +2,13 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional
 
 import httpx
-from openai import OpenAI
 
 from .config import PipelineConfig
+
+# Ollama's native chat API: unlike its OpenAI-compatible endpoint it honours num_ctx, so long prompts are not
+# silently cut to Ollama's default 4096-token context
+CHAT_ENDPOINT = "/api/chat"
+REQUEST_TIMEOUT_S = 600
 
 
 @dataclass
@@ -20,29 +24,38 @@ class MistralClient:
 
     def __init__(self):
         self.config = PipelineConfig.load_from_manifest()
-        self.client = OpenAI(
-            base_url=self.config.base_url,
-            api_key=self.config.api_key,
-            http_client=httpx.Client(verify=False),
-        )
+        self.client = httpx.Client(base_url=self.config.base_url, timeout=REQUEST_TIMEOUT_S)
 
     # A failed call is returned as a Generation with an error rather than raised, so callers can still log retrieval
     def generate(self, messages: List[Dict]) -> Generation:
         try:
-            response = self.client.chat.completions.create(
-                model=self.config.model,
-                messages=messages,
-                temperature=self.config.temperature,
-                max_tokens=self.config.max_tokens,
-            )
+            response = self.client.post(CHAT_ENDPOINT, json={
+                "model": self.config.model,
+                "messages": messages,
+                "stream": False,
+                "options": {
+                    "temperature": self.config.temperature,
+                    "num_predict": self.config.max_tokens,
+                    "num_ctx": self.config.num_ctx,
+                },
+            })
+            response.raise_for_status()
+            body = response.json()
         except Exception as e:
             return Generation(text=None, error=str(e))
 
+        prompt_tokens, completion_tokens = body.get("prompt_eval_count", 0), body.get("eval_count", 0)
+        # Ollama truncates an over-long prompt without failing; treat a full context window as an error, never a silent cut
+        if prompt_tokens + completion_tokens >= self.config.num_ctx:
+            return Generation(text=None, prompt_tokens=prompt_tokens, completion_tokens=completion_tokens,
+                              total_tokens=prompt_tokens + completion_tokens,
+                              error=f"context window full ({prompt_tokens}+{completion_tokens} >= num_ctx {self.config.num_ctx})")
+
         return Generation(
-            text=response.choices[0].message.content,
-            total_tokens=response.usage.total_tokens,
-            prompt_tokens=response.usage.prompt_tokens,
-            completion_tokens=response.usage.completion_tokens,
+            text=body["message"]["content"],
+            total_tokens=prompt_tokens + completion_tokens,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
         )
 
     def test_connection(self) -> bool:

@@ -16,10 +16,10 @@
     "temporal_cohens_d": 0.394749739372935,
     "outcome_odds_ratio": 1.358567006554989,
     "generation_stage_p_per_run": {
-      "A": 0.4632927068547156,
-      "B": 0.031636681974327806,
-      "C": 0.15933451423762238,
-      "D": 0.09213458758562403
+      "A": 0.45645917868389807,
+      "B": 0.04335217608900982,
+      "C": 0.18350733222724727,
+      "D": 0.12198717926080065
     },
     "llm_identical_input_cited_change": {
       "male_vs_female": 0.0,
@@ -41,10 +41,10 @@
       "of": 335
     },
     "raw_logs_sha256": {
-      "logs/bias_audit/stateless/run40_A.jsonl": "e39930112b671071c700f89a09286e1b706a2fce2e05c131780d9dd687de7bc5",
-      "logs/bias_audit/stateless/run40_B.jsonl": "b8d3ae6243b56a0893bc57ee2369e32451878ff4176253ed54e317d6bb684f34",
-      "logs/bias_audit/stateless/run40_C.jsonl": "3f9912a3be703bcc517a0017eeb845cbcffbd1901f778550d15c039c91007fd0",
-      "logs/bias_audit/stateless/run40_D.jsonl": "9baded9fa6397e0184ce37c91ce3db63704aa2c2f957979410202b9ec4424aaf",
+      "logs/bias_audit/stateless/run40_A.jsonl": "72afa6ec20c590780108e1ee68afc48745f6971ddc4331323d8f2c2a40bdfcd4",
+      "logs/bias_audit/stateless/run40_B.jsonl": "1cafe3a1ee86e766fc2c1fcf704e3fb95dc10e91c666b7d8aa4639cbb32f095b",
+      "logs/bias_audit/stateless/run40_C.jsonl": "0b8e28e5c8b9e7e3f44749013d14e968e4ca14e0ad3f62f68eee20057138a39e",
+      "logs/bias_audit/stateless/run40_D.jsonl": "9dc8aa6b979a14142c93e9a88caed6bc2f7a16cfb94697f3b52acd86fb72ebbe",
       "logs/bias_audit/predict/run_A.jsonl": "36ff4e13b3ec731ff4db617708aff0556abe739d71792c82cce47283a868590b",
       "logs/bias_audit/predict/run_B.jsonl": "66977960e5175ead8d8c350cc34f1145603e4c6038d5611cc6f64f1ab7313945",
       "logs/bias_audit/predict/run_C.jsonl": "eb0d13ed16bd0260c004b2cf715f1d0dcc03f19b1e80fdae026d73ac3f82052c",

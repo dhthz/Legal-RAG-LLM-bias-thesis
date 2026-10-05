@@ -157,7 +157,7 @@ def main():
                "p_exact", "key_hit_bases", "p_key_hit", "p_change_holm"], rows)
 
     shares = llm["predicted_article_shares"]
-    arts = sorted({a for s in shares.values() for a in s}, key=lambda a: -shares["true"].get(a, 0))
+    arts = sorted({a for s in shares.values() for a in s}, key=lambda a: (-shares["true"].get(a, 0), a))
     write_csv(os.path.join(tables, "07_predicted_article_shares.csv"),
               ["article"] + list(shares), [[a] + [r4(shares[t].get(a, 0)) for t in shares] for a in arts])
 

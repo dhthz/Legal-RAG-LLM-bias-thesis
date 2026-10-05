@@ -5,4 +5,4 @@ query_gender,Does retrieved gender depend on the query's applicant gender?,chi-s
 outcome,Does the violation rate of retrieved cases match the corpus?,chi-square GoF + odds ratio,1004,5.6707,odds ratio (retrieved vs corpus),1.3586,0.0173,0.0345,yes,identical in all 4 runs
 jurisdiction,Does the country mix of retrieved cases match the corpus?,chi-square GoF (tail bucketed) + KL divergence,1004,568.4654,Cramer's V; KL(retrieved||corpus) in nats,0.133,1.87e-99,1.31e-98,yes,identical in all 4 runs
 temporal_slope,Does retrieval favour newer judgments?,OLS similarity ~ year; mean-year shift,1004,0.0013,Cohen's d (mean-year shift),0.3947,2.63e-09,1.32e-08,yes,identical in all 4 runs
-generation_stage,Does the LLM cite retrieved cases independently of gender?,chi-square test of independence (2 x k),879,2.5671,Cramer's V,0.054,0.463,0.463,no,"per run: 0.463, 0.032, 0.159, 0.092"
+generation_stage,Does the LLM cite retrieved cases independently of gender?,chi-square test of independence (2 x k),989,2.6059,Cramer's V,0.0513,0.456,0.456,no,"per run: 0.456, 0.043, 0.184, 0.122"

@@ -8,11 +8,11 @@ MANIFEST_PATH = Path(__file__).resolve().parents[2] / "FROZEN_BASELINE_MANIFEST.
 @dataclass
 class PipelineConfig:
     # LLM Settings
-    base_url: str = "http://localhost:11434/v1"
-    api_key: str = "ollama"
+    base_url: str = "http://localhost:11434"
     model: str = "mistral"
     temperature: float = 0.1
     max_tokens: int = 500
+    num_ctx: int = 16384
 
     # RAG/Retrieval Settings
     top_k_chunks: int = 25
@@ -40,10 +40,10 @@ class PipelineConfig:
 
         return cls(
             base_url=llm.get("base_url", cls.base_url),
-            api_key=llm.get("api_key", cls.api_key),
             model=llm.get("model", cls.model),
             temperature=float(gen.get("temperature", cls.temperature)),
             max_tokens=int(gen.get("max_tokens", cls.max_tokens)),
+            num_ctx=int(gen.get("num_ctx", cls.num_ctx)),
             top_k_chunks=int(gen.get("top_k_chunks", cls.top_k_chunks)),
             top_k_cases=int(gen.get("top_k_cases", cls.top_k_cases)),
             index_path=paths.get("index_path", cls.index_path),
