@@ -75,7 +75,7 @@ class RAGPipeline:
             ],
         }
 
-    def _log_interaction(self, timestamp: str, query: str, query_id: str, search_text: str,
+    def _log_interaction(self, timestamp: str, query: str, query_id: str, effective_query: str,
                          cases: List[Dict], generation: Generation) -> None:
         try:
             log_path = Path(self.config.log_path)
@@ -91,7 +91,7 @@ class RAGPipeline:
                 'query_id': query_id,
                 'query': query,
                 # Only present when an arm rewrote the query, so frozen-system rows keep their exact format
-                **({'search_text': search_text} if search_text != query else {}),
+                **({'rewritten_query': effective_query} if effective_query != query else {}),
                 'retrieved_cases': [self._case_log_entry(rank, case) for rank, case in enumerate(cases, start=1)],
                 'cited_case_ids': parsed['cited_case_ids'],
                 'case_articles': parsed['case_articles'],
@@ -119,30 +119,30 @@ class RAGPipeline:
             vector = arm.transform_query_vector(vector)
         return vector
 
-    # Returns the text actually searched (after any query-rewriting arm) and the ranked cases
+    # Returns the query after any rewriting arm (used for both search and generation) and the ranked cases
     def retrieve(self, legal_query: str) -> Tuple[str, List[Dict]]:
-        search_text = legal_query
+        effective_query = legal_query
         for arm in self.arms:
-            search_text = arm.rewrite_query(search_text)
+            effective_query = arm.rewrite_query(effective_query)
 
-        chunks = self.retriever.retrieve_chunks(search_text, self.config.top_k_chunks, transform=self._transform_query_vector)
+        chunks = self.retriever.retrieve_chunks(effective_query, self.config.top_k_chunks, transform=self._transform_query_vector)
         for arm in self.arms:
-            chunks = arm.rescore_chunks(search_text, chunks, self.retriever, self.config.top_k_chunks)
+            chunks = arm.rescore_chunks(effective_query, chunks, self.retriever, self.config.top_k_chunks)
 
-        return search_text, self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
+        return effective_query, self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
 
     def query(self, legal_query: str, query_id: str = None) -> Dict:
         timestamp = datetime.now().isoformat()
-        search_text, cases = self.retrieve(legal_query)
+        effective_query, cases = self.retrieve(legal_query)
 
-        # The LLM always sees the user's original wording; arms only change what is searched
-        messages = build_legal_prompt(legal_query, cases, predict_articles=self.predict_articles)
+        # The LLM sees the same text that was searched, so a query-rewriting arm applies to the whole system
+        messages = build_legal_prompt(effective_query, cases, predict_articles=self.predict_articles)
         generation = self.llm_client.generate(messages)
         if generation.error:
             logger.error(f"Generation failed for query_id={query_id}: {generation.error}")
 
         # Retrieval is logged even if generation failed, so a flaky LLM call never drops a query from the audit
-        self._log_interaction(timestamp, legal_query, query_id, search_text, cases, generation)
+        self._log_interaction(timestamp, legal_query, query_id, effective_query, cases, generation)
 
         return {
             'query': legal_query,
