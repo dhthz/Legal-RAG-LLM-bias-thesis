@@ -4,13 +4,11 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
 
-import numpy as np
-
 from src.embeddings.chunk_embedder import ChunkRetriever
 from src.llm.client import Generation, MistralClient
 from src.llm.config import MANIFEST_PATH, PipelineConfig
 from src.llm.prompts import build_legal_prompt
-from src.mitigation import MitigationArm
+from src.mitigation import MitigationArm, retrieve_with_arms
 from src.rag.response_parsing import parse_structured_response
 
 # Configure logging at module level (called once)
@@ -51,7 +49,7 @@ class RAGPipeline:
                     defendants = rec.get("defendants") or []
                     self._case_country[rec["case_id"]] = defendants[0] if defendants else None
 
-    def _case_log_entry(self, rank: int, case: Dict) -> Dict:
+    def case_log_entry(self, rank: int, case: Dict) -> Dict:
         return {
             'rank': rank,
             'case_id': case['case_id'],
@@ -92,7 +90,7 @@ class RAGPipeline:
                 'query': query,
                 # Only present when an arm rewrote the query, so frozen-system rows keep their exact format
                 **({'rewritten_query': effective_query} if effective_query != query else {}),
-                'retrieved_cases': [self._case_log_entry(rank, case) for rank, case in enumerate(cases, start=1)],
+                'retrieved_cases': [self.case_log_entry(rank, case) for rank, case in enumerate(cases, start=1)],
                 'cited_case_ids': parsed['cited_case_ids'],
                 'case_articles': parsed['case_articles'],
                 'json_parse_ok': parsed['json_parse_ok'],
@@ -114,26 +112,21 @@ class RAGPipeline:
         except Exception as e:
             logger.error(f"Failed to log interaction: {e}")
 
-    def _transform_query_vector(self, vector: np.ndarray) -> np.ndarray:
-        for arm in self.arms:
-            vector = arm.transform_query_vector(vector)
-        return vector
-
     # Returns the query after any rewriting arm (used for both search and generation) and the ranked cases
     def retrieve(self, legal_query: str) -> Tuple[str, List[Dict]]:
-        effective_query = legal_query
-        for arm in self.arms:
-            effective_query = arm.rewrite_query(effective_query)
-
-        chunks = self.retriever.retrieve_chunks(effective_query, self.config.top_k_chunks, transform=self._transform_query_vector)
-        for arm in self.arms:
-            chunks = arm.rescore_chunks(effective_query, chunks, self.retriever, self.config.top_k_chunks)
-
+        effective_query, chunks = retrieve_with_arms(self.arms, legal_query, self.retriever, self.config.top_k_chunks)
         return effective_query, self.retriever.aggregate_chunks_to_cases(chunks, self.config.top_k_cases)
 
     def query(self, legal_query: str, query_id: str = None) -> Dict:
         timestamp = datetime.now().isoformat()
         effective_query, cases = self.retrieve(legal_query)
+        return self.answer(legal_query, cases, query_id, effective_query, timestamp)
+
+    # Prompt -> generate -> log for a given set of cases; also used directly to hold the cases fixed across queries
+    def answer(self, legal_query: str, cases: List[Dict], query_id: str = None, effective_query: str = None,
+               timestamp: str = None) -> Dict:
+        timestamp = timestamp or datetime.now().isoformat()
+        effective_query = effective_query or legal_query
 
         # The LLM sees the same text that was searched, so a query-rewriting arm applies to the whole system
         messages = build_legal_prompt(effective_query, cases, predict_articles=self.predict_articles)

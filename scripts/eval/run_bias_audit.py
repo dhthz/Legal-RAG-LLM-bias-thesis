@@ -3,6 +3,7 @@ import json
 import time
 from pathlib import Path
 
+from src.mitigation import build_arms
 from src.rag.pipeline import RAGPipeline
 
 MAIN_QUERIES_FILE = "dataset/eval/audit_queries_main.jsonl"
@@ -13,9 +14,9 @@ AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
 class BiasAuditRunner:
     #Runs every query in the bias-audit test set (main + variant sets) through the frozen RAG pipeline, resumable by query_id.
 
-    def __init__(self, log_path=AUDIT_LOG_PATH, predict_articles=False):
+    def __init__(self, log_path=AUDIT_LOG_PATH, predict_articles=False, arms=()):
         self.log_path = log_path
-        self.pipeline = RAGPipeline(predict_articles=predict_articles)
+        self.pipeline = RAGPipeline(predict_articles=predict_articles, arms=arms)
         self.pipeline.config.log_path = log_path
         Path(log_path).parent.mkdir(parents=True, exist_ok=True)
 
@@ -99,9 +100,11 @@ def main():
                          help="Run only the variant set plus the original main queries they were written from")
     parser.add_argument("--predict-articles", action="store_true",
                          help="Use the prompt variant that also asks for predicted_articles for the user's situation")
+    parser.add_argument("--arms", default="", help="Comma-separated mitigation arms (src/mitigation ARM_REGISTRY)")
     args = parser.parse_args()
 
-    runner = BiasAuditRunner(log_path=args.log_path, predict_articles=args.predict_articles)
+    arms = build_arms([a for a in args.arms.split(",") if a])
+    runner = BiasAuditRunner(log_path=args.log_path, predict_articles=args.predict_articles, arms=arms)
     runner.run(limit=args.limit, variants_only=args.variants_only, with_originals=args.with_originals)
 
 

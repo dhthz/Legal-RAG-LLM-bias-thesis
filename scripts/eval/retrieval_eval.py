@@ -10,6 +10,7 @@ import numpy as np
 
 from src.embeddings.chunk_embedder import ChunkRetriever
 from src.llm.config import PipelineConfig
+from src.mitigation import build_arms, retrieve_with_arms
 
 QUERY_FILE = "dataset/eval/retrieval_harness_queries.jsonl"
 OUTPUT_DIR = "logs/retrieval_eval"
@@ -68,12 +69,12 @@ def find_rank(case_list, gt_case_id):
     return None
 
 
-# Evaluate a single query: retrieve to depth 100, compute eval-depth rank, also compute prod-config rank (top_k_chunks → top_k_cases); collect diagnostics
-def evaluate_query(retriever, query, config, aggr_fn="max", top_k_chunks=None):
+# Evaluate a single query: retrieve to depth 100 (with any mitigation arms applied), compute eval-depth rank, also compute prod-config rank (top_k_chunks → top_k_cases); collect diagnostics
+def evaluate_query(retriever, query, config, aggr_fn="max", top_k_chunks=None, arms=()):
     field = SIMILARITY_FIELD[aggr_fn]
     if top_k_chunks is None:
         top_k_chunks = config.top_k_chunks
-    chunks = retriever.retrieve_chunks(query["query_text"], top_k=EVAL_TOP_K_CHUNKS)
+    _, chunks = retrieve_with_arms(arms, query["query_text"], retriever, EVAL_TOP_K_CHUNKS)
 
     eval_cases = rank_cases(retriever, chunks, aggr_fn=aggr_fn)
     eval_rank = find_rank(eval_cases, query["source_case_id"])
@@ -102,42 +103,8 @@ def evaluate_query(retriever, query, config, aggr_fn="max", top_k_chunks=None):
     }
 
 
-# Main harness: load config and queries, evaluate all 100 queries, compute metrics (recall@k, MRR, CIs), print table, write traceable JSON output
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--aggr_fn", choices=["mean", "max", "sum"], default="max")
-    parser.add_argument("--top_k_chunks", type=int, default=None)
-    args = parser.parse_args()
-    aggr_fn = args.aggr_fn
-
-    config = PipelineConfig.load_from_manifest()
-    top_k_chunks = args.top_k_chunks if args.top_k_chunks is not None else config.top_k_chunks
-
-    print(f"Index: {config.index_path}")
-    print(f"Metadata: {config.metadata_path}")
-    print(f"Production config: top_k_chunks={top_k_chunks}, top_k_cases={config.top_k_cases}")
-    print(f"Aggregation function: {aggr_fn}")
-    print(f"Eval retrieval depth: {EVAL_TOP_K_CHUNKS} chunks\n")
-
-    retriever = ChunkRetriever(config.index_path, config.metadata_path)
-
-    queries = []
-    with open(QUERY_FILE, "r", encoding="utf-8") as f:
-        for line in f:
-            queries.append(json.loads(line))
-    n = len(queries)
-    print(f"Loaded {n} queries from {QUERY_FILE}\n")
-
-    start = time.time()
-    per_query = []
-    for i, query in enumerate(queries, start=1):
-        result = evaluate_query(retriever, query, config, aggr_fn=aggr_fn, top_k_chunks=top_k_chunks)
-        per_query.append(result)
-        if i % 20 == 0:
-            print(f"  {i}/{n} queries evaluated ({time.time() - start:.1f}s)")
-    elapsed = time.time() - start
-    print(f"Done: {n} queries in {elapsed:.1f}s\n")
-
+def compute_metrics(per_query, config):
+    n = len(per_query)
     eval_ranks = [r["eval_rank"] for r in per_query]
     metrics = {}
     for k in RECALL_KS:
@@ -164,9 +131,14 @@ def main():
                if r["gt_top_chunk_similarity"] is not None]
     metrics["mean_gt_top_chunk_similarity"] = float(np.mean(gt_sims)) if gt_sims else None
     metrics["queries_with_gt_in_chunk_pool"] = len(gt_sims)
+    return metrics
 
+
+def print_metrics(metrics, per_query, config, aggr_fn, arm_names):
+    n = len(per_query)
     print("=" * 64)
-    print(f"RETRIEVAL EVALUATION RESULTS (case-level, {aggr_fn}-sim aggregation)")
+    print(f"RETRIEVAL EVALUATION RESULTS (case-level, {aggr_fn}-sim aggregation"
+          + (f", arms: {', '.join(arm_names)})" if arm_names else ")"))
     print("=" * 64)
     print(f"{'Metric':<28}{'Value':>8}   95% CI")
     print("-" * 64)
@@ -189,14 +161,37 @@ def main():
               f"(gt in {EVAL_TOP_K_CHUNKS}-chunk pool: {metrics['queries_with_gt_in_chunk_pool']}/{n})")
 
     rank_dist = {}
-    for rank in eval_ranks:
+    for r in per_query:
+        rank = r["eval_rank"]
         key = str(rank) if rank is not None and rank <= 10 else ">10/miss"
         rank_dist[key] = rank_dist.get(key, 0) + 1
     print("\nRank distribution (eval pass): "
           + ", ".join(f"rank {k}: {v}" for k, v in sorted(
             rank_dist.items(), key=lambda x: (x[0] == '>10/miss', x[0].zfill(3)))))
 
-    output = {
+
+# The B.1 harness: evaluate all harness queries with the given arms and return a traceable result dict
+def run_harness(retriever, config, aggr_fn="max", top_k_chunks=None, arms=(), verbose=True):
+    top_k_chunks = top_k_chunks if top_k_chunks is not None else config.top_k_chunks
+    with open(QUERY_FILE, "r", encoding="utf-8") as f:
+        queries = [json.loads(line) for line in f]
+    n = len(queries)
+
+    start = time.time()
+    per_query = []
+    for i, query in enumerate(queries, start=1):
+        per_query.append(evaluate_query(retriever, query, config, aggr_fn=aggr_fn, top_k_chunks=top_k_chunks, arms=arms))
+        if verbose and i % 20 == 0:
+            print(f"  {i}/{n} queries evaluated ({time.time() - start:.1f}s)")
+    elapsed = time.time() - start
+
+    metrics = compute_metrics(per_query, config)
+    arm_names = [arm.name for arm in arms]
+    if verbose:
+        print(f"Done: {n} queries in {elapsed:.1f}s\n")
+        print_metrics(metrics, per_query, config, aggr_fn, arm_names)
+
+    return {
         "timestamp": datetime.now().isoformat(),
         "config": {
             "index_path": config.index_path,
@@ -209,6 +204,7 @@ def main():
             "bootstrap_resamples": BOOTSTRAP_RESAMPLES,
             "bootstrap_seed": BOOTSTRAP_SEED,
             "aggregation": f"{aggr_fn}_similarity, tie-break case_id",
+            "arms": arm_names,
             "query_file": QUERY_FILE,
             "query_file_sha256": file_sha256(QUERY_FILE),
             "n_queries": n,
@@ -218,9 +214,31 @@ def main():
         "per_query": per_query,
     }
 
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--aggr_fn", choices=["mean", "max", "sum"], default="max")
+    parser.add_argument("--top_k_chunks", type=int, default=None)
+    parser.add_argument("--arms", default="", help="Comma-separated mitigation arms (src/mitigation ARM_REGISTRY)")
+    args = parser.parse_args()
+
+    config = PipelineConfig.load_from_manifest()
+    top_k_chunks = args.top_k_chunks if args.top_k_chunks is not None else config.top_k_chunks
+    arms = build_arms([a for a in args.arms.split(",") if a])
+
+    print(f"Index: {config.index_path}")
+    print(f"Metadata: {config.metadata_path}")
+    print(f"Production config: top_k_chunks={top_k_chunks}, top_k_cases={config.top_k_cases}")
+    print(f"Aggregation function: {args.aggr_fn}")
+    print(f"Eval retrieval depth: {EVAL_TOP_K_CHUNKS} chunks\n")
+
+    retriever = ChunkRetriever(config.index_path, config.metadata_path)
+    output = run_harness(retriever, config, aggr_fn=args.aggr_fn, top_k_chunks=top_k_chunks, arms=arms)
+
     output_dir = Path(OUTPUT_DIR)
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / f"eval_{aggr_fn}_k{top_k_chunks}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    arm_tag = "".join(f"_{arm.name}" for arm in arms)
+    output_path = output_dir / f"eval_{args.aggr_fn}_k{top_k_chunks}{arm_tag}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output, f, indent=2, ensure_ascii=False)
     print(f"\nFull results saved to {output_path}")

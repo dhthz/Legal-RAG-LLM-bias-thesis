@@ -68,20 +68,22 @@ class MultiRunStability:
     def per_run_summary(self):
         out = {}
         for r, rows in self.runs.items():
-            with open(os.path.join(self.run_stats[r], "master_results.json"), "r", encoding="utf-8") as f:
-                master = json.load(f)
-            with open(os.path.join(self.run_stats[r], "paired_generation_tests.json"), "r", encoding="utf-8") as f:
-                gen = json.load(f)
             out[r] = {
                 "json_parse_ok": sum(row["json_parse_ok"] for row in rows.values()),
                 "zero_cited": sum(not row["cited_case_ids"] for row in rows.values()),
                 "generation_errors": sum(bool(row["generation_error"]) for row in rows.values()),
                 "n_queries": len(rows),
-                "generation_stage_p": master["holm_bonferroni"]["p_raw"]["generation_stage"],
-                "paired_cited_set_differs": {k.replace("paired_generation_", ""): {
-                    "n_differ": v["cited_case_set_differs"]["n_differ"], "n_pairs": v["n_pairs"]}
-                    for k, v in gen.items()},
             }
+            # Per-run bias_statistics output exists only for the Phase E runs
+            if not self.run_stats:
+                continue
+            with open(os.path.join(self.run_stats[r], "master_results.json"), "r", encoding="utf-8") as f:
+                master = json.load(f)
+            with open(os.path.join(self.run_stats[r], "paired_generation_tests.json"), "r", encoding="utf-8") as f:
+                gen = json.load(f)
+            out[r]["generation_stage_p"] = master["holm_bonferroni"]["p_raw"]["generation_stage"]
+            out[r]["paired_cited_set_differs"] = {k.replace("paired_generation_", ""): {
+                "n_differ": v["cited_case_set_differs"]["n_differ"], "n_pairs": v["n_pairs"]} for k, v in gen.items()}
         return out
 
     # Same variant query, two runs: how often the output changes with nothing changed
@@ -153,9 +155,11 @@ def print_report(res):
     print(f"Retrieval identical in every run: {ri['identical_queries']}/{ri['of']} queries")
     print("\nPer run:")
     for r, v in res["per_run"].items():
-        cs = " | ".join(f"{k} {x['n_differ']}/{x['n_pairs']}" for k, x in v["paired_cited_set_differs"].items())
-        print(f"  {r}: JSON ok {v['json_parse_ok']}/{v['n_queries']}, generation errors {v['generation_errors']}, "
-              f"generation-stage p={v['generation_stage_p']:.3f}, same-set cited differs: {cs}")
+        line = f"  {r}: JSON ok {v['json_parse_ok']}/{v['n_queries']}, generation errors {v['generation_errors']}"
+        if "generation_stage_p" in v:
+            cs = " | ".join(f"{k} {x['n_differ']}/{x['n_pairs']}" for k, x in v["paired_cited_set_differs"].items())
+            line += f", generation-stage p={v['generation_stage_p']:.3f}, same-set cited differs: {cs}"
+        print(line)
     nf = res["noise_floor_variant_rows"]
     print(f"\nNoise floor (same variant query, two runs): cited {nf['cited_rate_mean']:.1%} "
           f"(range {nf['cited_rate_range'][0]:.1%}-{nf['cited_rate_range'][1]:.1%}), "
@@ -174,10 +178,15 @@ def print_report(res):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--logs", nargs="+", default=None, help="Run logs (default: the Phase E run40_A-D)")
     parser.add_argument("--out-dir", default=OUT_DIR)
     args = parser.parse_args()
 
-    res = MultiRunStability().run_all()
+    if args.logs:
+        stability = MultiRunStability({os.path.splitext(os.path.basename(p))[0]: p for p in args.logs}, None)
+    else:
+        stability = MultiRunStability()
+    res = stability.run_all()
     print_report(res)
 
     os.makedirs(args.out_dir, exist_ok=True)
