@@ -25,7 +25,7 @@ PAIRS_PATH = f"{OUT_DIR}/pairs.jsonl"
 TEST_PATH = "dataset/test.jsonl"
 VARIANTS_PATH = "dataset/eval/audit_queries_variants.jsonl"
 MAIN_PATH = "dataset/eval/audit_queries_main.jsonl"
-ARMS = ("baseline", "blind_query", "pcf")
+ARMS = ("baseline", "blind_query", "pcf", "leace")
 N_PAIRS, SEED = 300, 42
 # Looser than the hand-written set (there: other gender absent, <= 1500 words, a limit set by hand-writing effort):
 # with those gates only 34 female-applicant test cases exist. Here the applicant's gender must dominate 3:1 and the

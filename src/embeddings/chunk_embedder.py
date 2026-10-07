@@ -187,19 +187,20 @@ class ChunkRetriever:
         # One max-length warm-up pins that state, so retrieval no longer depends on query order (see KNOWN_QUIRKS.md).
         self.model.encode(["legal " * (self.model.max_seq_length + 1000)], normalize_embeddings=True)
 
-    def retrieve_chunks(self, query: str, top_k: int = 25, transform: Optional[Callable] = None) -> List[Dict]:
-        # Encode query; transform is an optional query-vector stage (mitigation), off in the frozen system
+    def retrieve_chunks(self, query: str, top_k: int = 25, transform: Optional[Callable] = None,
+                        index=None, metadata: Optional[List[Dict]] = None) -> List[Dict]:
+        # Mitigation stages, all off in the frozen system: transform the query vector, search another index/metadata
         query_embedding = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
         if transform is not None:
             query_embedding = transform(query_embedding)
 
         # Search
-        distances, indices = self.index.search(query_embedding.astype('float32'), top_k)
+        distances, indices = (self.index if index is None else index).search(query_embedding.astype('float32'), top_k)
 
         # Prepare results
         results = []
         for idx, distance in zip(indices[0], distances[0]):
-            chunk_meta = self.metadata[idx].copy()
+            chunk_meta = (self.metadata if metadata is None else metadata)[idx].copy()
             similarity_score = 1 - (distance ** 2 / 2)  # Convert L2 to similarity
             chunk_meta['similarity_score'] = float(similarity_score)
             chunk_meta['l2_distance'] = float(distance)

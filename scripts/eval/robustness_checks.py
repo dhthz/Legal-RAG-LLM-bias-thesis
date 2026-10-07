@@ -37,7 +37,7 @@ FIXED_CASES_DIR = "logs/robustness/fixed_cases"
 FIXED_TYPES = ("neutral", "male", "female")
 SWAP_SET_DIR = "logs/robustness/swap_set"
 SWAP_PAIRS_PATH = f"{SWAP_SET_DIR}/pairs.jsonl"
-SWAP_ARMS = (BASELINE, "blind_query", "pcf")
+SWAP_ARMS = (BASELINE, "blind_query", "pcf", "leace")
 
 ALPHA, POWER = 0.05, 0.80
 

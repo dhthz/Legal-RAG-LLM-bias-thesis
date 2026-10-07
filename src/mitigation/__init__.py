@@ -7,6 +7,10 @@ from src.mitigation.base import MitigationArm, retrieve_with_arms
 ARM_REGISTRY = {
     "blind_query": "src.mitigation.neutral_rewrite:BlindQuery",
     "pcf": "src.mitigation.pcf:PCF",
+    "permutation": "src.mitigation.permutation:PermutationSelfConsistency",
+    "leace": "src.mitigation.leace:LEACE",
+    "blind_index": "src.mitigation.blind_index:BlindIndex",
+    "facts_only": "src.mitigation.blind_index:FactsOnlyIndex",
 }
 
 
