@@ -41,7 +41,8 @@
   "paths": {
     "index_path": "faiss_indices/paragraph_chunks_l2.index",
     "metadata_path": "faiss_indices/paragraph_chunks_metadata_enriched.json",
-    "log_path": "logs/LLM/pipeline_interactions.jsonl"
+    "log_path": "logs/LLM/pipeline_interactions.jsonl",
+    "chunk_text_path": "dataset/train_chunked_paragraphs.jsonl"
   },
   "generation_params": {
     "temperature": 0.1,
@@ -51,7 +52,7 @@
     "top_k_cases": 3
   },
   "prompt_template": {
-    "system_prompt": "You are a legal research assistant for the European Court of Human Rights (ECtHR). A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated. The retrieved cases may not be an exact match — look for factual and legal similarities. Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed above.",
+    "system_prompt": "You are a legal research assistant for the European Court of Human Rights (ECtHR). A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated. The retrieved cases may not be an exact match — look for factual and legal similarities. Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed below.",
     "user_prompt_suffix": "Based only on the retrieved cases above, identify the most relevant cases, explain the factual similarities, and state what articles were violated."
   },
   "aggregation": {
@@ -64,6 +65,14 @@
       "flag": "--predict-articles",
       "max_tokens": 1000,
       "added": "2026-10-04"
+    }
+  },
+  "index_variants": {
+    "leace": {
+      "file": "faiss_indices/leace_paragraph_chunks_l2.index",
+      "file_sha256": "4bc1ebf4c22bac2b69c16bf6a0d4a52f3cb86b59bbd4aa096ae57ba7d3fedf49",
+      "eraser_file": "faiss_indices/leace_eraser.npz",
+      "eraser_file_sha256": "7cc4d799d88e69f882aac1382b71b7a6d557fdaf8fbdb4a2eca7978ab8317cc9"
     }
   }
 }

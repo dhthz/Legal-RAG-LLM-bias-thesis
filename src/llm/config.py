@@ -21,6 +21,8 @@ class PipelineConfig:
     # Index Paths
     index_path: str = "faiss_indices/paragraph_chunks_l2.index"
     metadata_path: str = "faiss_indices/paragraph_chunks_metadata_enriched.json"
+    # Chunk texts for the prompt (the index metadata stores no text), joined by chunk_id
+    chunk_text_path: str = "dataset/train_chunked_paragraphs.jsonl"
 
     # Log path
     log_path: str = "logs/LLM/pipeline_interactions.jsonl"
@@ -48,5 +50,6 @@ class PipelineConfig:
             top_k_cases=int(gen.get("top_k_cases", cls.top_k_cases)),
             index_path=paths.get("index_path", cls.index_path),
             metadata_path=paths.get("metadata_path", cls.metadata_path),
+            chunk_text_path=paths.get("chunk_text_path", cls.chunk_text_path),
             log_path=paths.get("log_path", cls.log_path),
         )

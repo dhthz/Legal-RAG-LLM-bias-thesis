@@ -9,6 +9,7 @@ from src.llm.client import Generation, MistralClient
 from src.llm.config import MANIFEST_PATH, PipelineConfig
 from src.llm.prompts import build_legal_prompt
 from src.mitigation import MitigationArm, retrieve_with_arms
+from src.mitigation.base import arm_corpus
 from src.rag.response_parsing import parse_structured_response
 
 # Configure logging at module level (called once)
@@ -32,6 +33,8 @@ class RAGPipeline:
             metadata_path=self.config.metadata_path,
         )
 
+        self._chunk_texts = {}
+
         self.llm_client = MistralClient()
         if predict_articles:
             with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
@@ -48,6 +51,18 @@ class RAGPipeline:
                     rec = json.loads(line)
                     defendants = rec.get("defendants") or []
                     self._case_country[rec["case_id"]] = defendants[0] if defendants else None
+
+    # The index metadata stores no text: the prompt's excerpts are joined by chunk_id from the searched corpus's
+    # chunk file, loaded on the first answer (retrieval-only runs never need it)
+    def with_chunk_texts(self, cases: List[Dict]) -> List[Dict]:
+        corpus = arm_corpus(self.arms)
+        path = (corpus and corpus.chunk_text_path) or self.config.chunk_text_path
+        if path not in self._chunk_texts:
+            with open(path, "r", encoding="utf-8") as f:
+                self._chunk_texts[path] = {c["chunk_id"]: c["chunk_text"] for c in map(json.loads, f)}
+        texts = self._chunk_texts[path]
+        return [{**case, "chunks": [{**chunk, "chunk_text": texts[chunk["chunk_id"]]} for chunk in case["chunks"]]}
+                for case in cases]
 
     def case_log_entry(self, rank: int, case: Dict) -> Dict:
         return {
@@ -74,15 +89,10 @@ class RAGPipeline:
         }
 
     def _log_interaction(self, timestamp: str, query: str, query_id: str, effective_query: str,
-                         cases: List[Dict], generation: Generation) -> None:
+                         cases: List[Dict], generation: Generation, parsed: Dict, extra: Dict) -> None:
         try:
             log_path = Path(self.config.log_path)
             log_path.parent.mkdir(parents=True, exist_ok=True)
-
-            if generation.text:
-                parsed = parse_structured_response(cases, generation.text)
-            else:
-                parsed = {"cited_case_ids": [], "case_articles": {}, "json_parse_ok": False}
 
             log_entry = {
                 'timestamp': timestamp,
@@ -104,6 +114,8 @@ class RAGPipeline:
                     'prompt_tokens': generation.prompt_tokens,
                     'completion_tokens': generation.completion_tokens,
                 },
+                # Only present when a generation arm adds fields (e.g. the per-order answers of arm 3)
+                **extra,
             }
 
             with open(log_path, 'a', encoding='utf-8') as f:
@@ -111,6 +123,13 @@ class RAGPipeline:
 
         except Exception as e:
             logger.error(f"Failed to log interaction: {e}")
+
+    # At most one arm may change how the answer is generated; without one, a single answer in the retrieved order
+    def _generation_arm(self) -> MitigationArm:
+        generating = [arm for arm in self.arms if arm.overrides_generation()]
+        if len(generating) > 1:
+            raise ValueError(f"Only one generation arm can be active, got {[arm.name for arm in generating]}")
+        return generating[0] if generating else MitigationArm()
 
     # Returns the query after any rewriting arm (used for both search and generation) and the ranked cases
     def retrieve(self, legal_query: str) -> Tuple[str, List[Dict]]:
@@ -129,13 +148,19 @@ class RAGPipeline:
         effective_query = effective_query or legal_query
 
         # The LLM sees the same text that was searched, so a query-rewriting arm applies to the whole system
-        messages = build_legal_prompt(effective_query, cases, predict_articles=self.predict_articles)
-        generation = self.llm_client.generate(messages)
+        def answer_once(ordered_cases: List[Dict]) -> Tuple[Generation, Dict]:
+            messages = build_legal_prompt(effective_query, ordered_cases, predict_articles=self.predict_articles)
+            generation = self.llm_client.generate(messages)
+            if generation.text:
+                return generation, parse_structured_response(ordered_cases, generation.text)
+            return generation, {"cited_case_ids": [], "case_articles": {}, "json_parse_ok": False}
+
+        generation, parsed, extra = self._generation_arm().generate(self.with_chunk_texts(cases), answer_once)
         if generation.error:
             logger.error(f"Generation failed for query_id={query_id}: {generation.error}")
 
         # Retrieval is logged even if generation failed, so a flaky LLM call never drops a query from the audit
-        self._log_interaction(timestamp, legal_query, query_id, effective_query, cases, generation)
+        self._log_interaction(timestamp, legal_query, query_id, effective_query, cases, generation, parsed, extra)
 
         return {
             'query': legal_query,

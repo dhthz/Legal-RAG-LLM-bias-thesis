@@ -16,22 +16,22 @@
     "temporal_cohens_d": 0.394749739372935,
     "outcome_odds_ratio": 1.358567006554989,
     "generation_stage_p_per_run": {
-      "A": 0.45645917868389807,
-      "B": 0.04335217608900982,
-      "C": 0.18350733222724727,
-      "D": 0.12198717926080065
+      "A": 0.3779344670150481,
+      "B": 0.40492225080958666,
+      "C": 0.6429056374907061,
+      "D": 0.684000808683567
     },
     "llm_identical_input_cited_change": {
-      "male_vs_female": 0.0,
-      "neutral_vs_emotional": 0.1875,
-      "neutral_vs_emotional_repeat_noise": 0.17916666666666664
+      "male_vs_female": 0.3333333333333333,
+      "neutral_vs_emotional": 0.1,
+      "neutral_vs_emotional_repeat_noise": 0.08333333333333333
     },
     "position_bias_cited_change_different_order": {
-      "male_vs_female": 0.75,
-      "neutral_vs_emotional": 0.5
+      "male_vs_female": 0.6944444444444444,
+      "neutral_vs_emotional": 0.65
     },
-    "cited_noise_floor_mean": 0.13854166666666665,
-    "predicted_articles_min_p_holm": 1.0,
+    "cited_noise_floor_mean": 0.08749999999999998,
+    "predicted_articles_min_p_holm": 0.02223131057631975,
     "gender_label_accuracy": 0.9371500440196202
   },
   "provenance": {
@@ -41,14 +41,14 @@
       "of": 335
     },
     "raw_logs_sha256": {
-      "logs/bias_audit/stateless/run40_A.jsonl": "72afa6ec20c590780108e1ee68afc48745f6971ddc4331323d8f2c2a40bdfcd4",
-      "logs/bias_audit/stateless/run40_B.jsonl": "1cafe3a1ee86e766fc2c1fcf704e3fb95dc10e91c666b7d8aa4639cbb32f095b",
-      "logs/bias_audit/stateless/run40_C.jsonl": "0b8e28e5c8b9e7e3f44749013d14e968e4ca14e0ad3f62f68eee20057138a39e",
-      "logs/bias_audit/stateless/run40_D.jsonl": "9dc8aa6b979a14142c93e9a88caed6bc2f7a16cfb94697f3b52acd86fb72ebbe",
-      "logs/bias_audit/predict/run_A.jsonl": "36ff4e13b3ec731ff4db617708aff0556abe739d71792c82cce47283a868590b",
-      "logs/bias_audit/predict/run_B.jsonl": "66977960e5175ead8d8c350cc34f1145603e4c6038d5611cc6f64f1ab7313945",
-      "logs/bias_audit/predict/run_C.jsonl": "eb0d13ed16bd0260c004b2cf715f1d0dcc03f19b1e80fdae026d73ac3f82052c",
-      "logs/bias_audit/predict/run_D.jsonl": "53e319673628135b279f1ed494de8e7257fbcbcfbdf13f886799ee590dff6acd"
+      "logs/bias_audit/stateless/run40_A.jsonl": "297ddfe77576064aa3a9a90a152b4b3cbfa208e5148bf560fa2630f126a3fad9",
+      "logs/bias_audit/stateless/run40_B.jsonl": "1b348c4da93b32beb3a59bdf115d18a5ae28d2728a361fdf15cc3b9a8bd43e18",
+      "logs/bias_audit/stateless/run40_C.jsonl": "1267e3b3a1913d80847e478139f37f1a5ed41587b5e4ac9fade63e5da7888de0",
+      "logs/bias_audit/stateless/run40_D.jsonl": "52ba977012445157c1beee31ee67975c5990eae8b6fcf2d6b52f196e3f5bfb84",
+      "logs/bias_audit/predict/run_A.jsonl": "15d5afbbd84836302185ee47cc9795e1d13439c93fb7fedacb26541afbda5490",
+      "logs/bias_audit/predict/run_B.jsonl": "703c79a5ddf40e61891a28f3ac1d99c1949d6b2eb8f8c8089a0ce62c74f7171e",
+      "logs/bias_audit/predict/run_C.jsonl": "f0153e6bd8b0cfcc18c3ff0f54c53885a605063871fc65ba07bae4b201c2793c",
+      "logs/bias_audit/predict/run_D.jsonl": "f9b8c8193f35636051830b295f6da4c747e576087d315a9de1e7ffdd5ac0540b"
     },
     "query_sets_sha256": {
       "dataset/eval/audit_queries_main.jsonl": "6096429f1b54190ae629719f8baf1fa88779e1602098a25db66d33ab08ceb90a",

@@ -31,17 +31,18 @@ def load_bases():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs", default=RUNS)
+    parser.add_argument("--out-dir", default=OUT_DIR)
     args = parser.parse_args()
 
     bases = load_bases()
-    runner = BiasAuditRunner(log_path=f"{OUT_DIR}/run_{args.runs[0]}.jsonl", predict_articles=True)
+    runner = BiasAuditRunner(log_path=f"{args.out_dir}/run_{args.runs[0]}.jsonl", predict_articles=True)
     pipeline = runner.pipeline
 
     print(f"Retrieving the fixed cases for {len(bases)} bases (neutral wording, frozen system)...")
     fixed = {b: pipeline.retrieve(v["neutral"]["query_text"])[1] for b, v in bases.items()}
 
     for run in args.runs:
-        runner.log_path = pipeline.config.log_path = f"{OUT_DIR}/run_{run}.jsonl"
+        runner.log_path = pipeline.config.log_path = f"{args.out_dir}/run_{run}.jsonl"
         done = runner.load_done()
         todo = [(b, t) for b in bases for t in TYPES if bases[b][t]["variant_id"] not in done]
         print(f"\nRun {run}: {len(todo)} generations left ({len(done)} already logged)")

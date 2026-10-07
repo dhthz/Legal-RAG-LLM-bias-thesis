@@ -5,7 +5,7 @@ def build_legal_prompt(query: str, cases: List[Dict], predict_articles: bool = F
     system_prompt = """You are a legal research assistant for the European Court of Human Rights (ECtHR).
 A user has described a legal situation. Your job is to identify which of the retrieved cases below are most analogous to that situation, explain why they are relevant, and note what articles were violated.
 The retrieved cases may not be an exact match — look for factual and legal similarities.
-Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed above.
+Ignore any case names, application numbers, or citations mentioned in the user's query — base your answer only on the retrieved cases listed below.
 Only cite cases from the retrieved list below — never refer to a case that is not listed there.
 
 After your explanation, end your response with a JSON block, on its own lines, in EXACTLY this format and these two keys only — no other keys, no nested objects beyond what is shown:
@@ -42,8 +42,7 @@ Always end your response with a JSON block in this exact shape, even if you are 
     for i, case in enumerate(cases, 1):
         context += f"--- Case {i}: {case['title']} ({case['case_id']}) ---\n"
         context += f"Date: {case['judgment_date']}\n"
-        context += f"Violated Articles: {', '.join(case['violated_articles'])}\n"
-        context += f"Relevance Score: {case['avg_similarity']:.3f}\n\n"
+        context += f"Violated Articles: {', '.join(case['violated_articles']) or 'none'}\n\n"
 
         for chunk in case['chunks'][:2]:
             text = chunk.get('chunk_text', chunk.get('chunk_text_preview', ''))

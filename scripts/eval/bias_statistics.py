@@ -299,6 +299,11 @@ class BiasAuditor:
             "query_country_match_rate": match / total if total else None,
         }
 
+    # Logged scores are 1 - D^2/2 with D the squared L2 distance FAISS returns; the cosine is 1 - D/2
+    @staticmethod
+    def cosine_from_logged(similarity):
+        return 1 - math.sqrt(max(0.0, 2 * (1 - similarity))) / 2
+
     def temporal_similarity(self):
         #OLS slope of similarity ~ judgment year, plus mean-year shift (Cohen's d).
         years, sims = [], []
@@ -307,7 +312,7 @@ class BiasAuditor:
                 date = c.get("judgment_date") or ""
                 if len(date) >= 4 and date[:4].isdigit():
                     years.append(int(date[:4]))
-                    sims.append(c["max_similarity"])
+                    sims.append(self.cosine_from_logged(c["max_similarity"]))
 
         reg = linregress(years, sims)
         slope_ci = [reg.slope - 1.96 * reg.stderr, reg.slope + 1.96 * reg.stderr]
