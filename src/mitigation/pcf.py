@@ -4,7 +4,7 @@ from typing import Dict, List, Optional
 
 import numpy as np
 
-from src.mitigation.base import MitigationArm
+from src.mitigation.base import MitigationArm, Search
 from src.mitigation.neutral_rewrite import swap_gender
 
 # Arm 5: Plug-in Counterfactual Fairness (Zhou, Liu, Bai, Gao, Kocaoglu & Inouye, NeurIPS 2024,
@@ -52,22 +52,23 @@ class PCF(MitigationArm):
         return {"male": self.p_male, "female": 1.0 - self.p_male, "tie": 0.5}[attribute]
 
     # Candidates are the union of the factual and counterfactual top-k; every candidate is scored exactly against
-    # both queries with its vector reconstructed from the flat index, then ranked by the PCF score
-    def rescore_chunks(self, query: str, chunks: List[Dict], retriever, top_k: int) -> List[Dict]:
+    # both queries with its vector reconstructed from the flat index, then ranked by the PCF score.
+    # phi = 1 - |q - v|^2 / 2, the cosine for unit vectors and monotonic in the L2 distance the index ranks by
+    def rescore_chunks(self, query: str, chunks: List[Dict], search: Search, top_k: int) -> List[Dict]:
         attribute = query_attribute(query)
         counterfactual = swap_gender(query)
         if attribute is None or counterfactual == query:
             return chunks
 
-        cf_chunks = retriever.retrieve_chunks(counterfactual, top_k)
+        cf_chunks = search.chunks(counterfactual, top_k)
         candidates = sorted({c["index"] for c in chunks} | {c["index"] for c in cf_chunks})
-        vectors = np.vstack([retriever.index.reconstruct(i) for i in candidates])
-        query_vectors = retriever.model.encode([query, counterfactual], convert_to_numpy=True, normalize_embeddings=True)
-        scores = pcf_scores(vectors @ query_vectors[0], vectors @ query_vectors[1], self.p_factual(attribute))
+        vectors = np.vstack([search.index.reconstruct(i) for i in candidates])
+        phi = [1 - np.sum((vectors - q) ** 2, axis=1) / 2 for q in search.embed([query, counterfactual])]
+        scores = pcf_scores(phi[0], phi[1], self.p_factual(attribute))
 
         rescored = []
         for k in np.argsort(-scores, kind="stable")[:top_k]:
-            chunk = retriever.metadata[candidates[k]].copy()
+            chunk = search.metadata[candidates[k]].copy()
             chunk["similarity_score"] = float(scores[k])
             chunk["index"] = int(candidates[k])
             rescored.append(chunk)
