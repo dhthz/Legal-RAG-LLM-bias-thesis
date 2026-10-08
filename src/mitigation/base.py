@@ -7,12 +7,14 @@ import numpy as np
 AnswerOnce = Callable[[List[Dict]], Tuple[object, Dict]]
 
 
-# A corpus an arm searches instead of the frozen one; metadata / chunk_text_path None = the frozen ones
+# A corpus an arm searches instead of the frozen one; metadata / chunk_text_path None = the frozen ones,
+# encoder None = queries embedded by the frozen model (a fine-tuned embedder embeds its own queries)
 @dataclass
 class Corpus:
     index: object
     metadata: Optional[List[Dict]] = None
     chunk_text_path: Optional[str] = None
+    encoder: Optional[object] = None
 
 
 # A mitigation arm overrides only the hooks it needs; every hook defaults to a no-op,
@@ -64,12 +66,16 @@ class Search:
     def metadata(self) -> List[Dict]:
         return self.corpus.metadata if self.corpus and self.corpus.metadata is not None else self.retriever.metadata
 
+    @property
+    def encoder(self):
+        return self.corpus.encoder if self.corpus and self.corpus.encoder is not None else self.retriever.model
+
     def chunks(self, query: str, top_k: int) -> List[Dict]:
         return self.retriever.retrieve_chunks(query, top_k, transform=self.transform, index=self.index,
-                                              metadata=self.metadata)
+                                              metadata=self.metadata, encoder=self.encoder)
 
     def embed(self, texts: List[str]) -> np.ndarray:
-        return self.transform(self.retriever.model.encode(texts, convert_to_numpy=True, normalize_embeddings=True))
+        return self.transform(self.encoder.encode(texts, convert_to_numpy=True, normalize_embeddings=True))
 
 
 # Retrieval with arms applied in order: rewrite the query, transform its vector, retrieve, rescore.
@@ -84,8 +90,8 @@ def retrieve_with_arms(arms: Sequence[MitigationArm], query: str, retriever, top
         return vector
 
     corpus = arm_corpus(arms)
-    chunks = retriever.retrieve_chunks(query, top_k, transform=transform,
-                                       index=corpus and corpus.index, metadata=corpus and corpus.metadata)
+    chunks = retriever.retrieve_chunks(query, top_k, transform=transform, index=corpus and corpus.index,
+                                       metadata=corpus and corpus.metadata, encoder=corpus and corpus.encoder)
     search = Search(retriever, transform, corpus)
     for arm in arms:
         chunks = arm.rescore_chunks(query, chunks, search, top_k)

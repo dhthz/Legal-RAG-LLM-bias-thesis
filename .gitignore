@@ -6,6 +6,7 @@
 *.index
 *.pyc
 /faiss_indices
+/models
 .env
 /logs
 .zed/settings.json

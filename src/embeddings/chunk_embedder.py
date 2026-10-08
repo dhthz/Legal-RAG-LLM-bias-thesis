@@ -188,9 +188,11 @@ class ChunkRetriever:
         self.model.encode(["legal " * (self.model.max_seq_length + 1000)], normalize_embeddings=True)
 
     def retrieve_chunks(self, query: str, top_k: int = 25, transform: Optional[Callable] = None,
-                        index=None, metadata: Optional[List[Dict]] = None) -> List[Dict]:
-        # Mitigation stages, all off in the frozen system: transform the query vector, search another index/metadata
-        query_embedding = self.model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
+                        index=None, metadata: Optional[List[Dict]] = None, encoder=None) -> List[Dict]:
+        # Mitigation stages, all off in the frozen system: embed with another model, transform the query vector,
+        # search another index/metadata
+        model = self.model if encoder is None else encoder
+        query_embedding = model.encode([query], convert_to_numpy=True, normalize_embeddings=True)
         if transform is not None:
             query_embedding = transform(query_embedding)
 
