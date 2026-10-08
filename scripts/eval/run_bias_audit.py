@@ -9,6 +9,7 @@ from src.rag.pipeline import RAGPipeline
 MAIN_QUERIES_FILE = "dataset/eval/audit_queries_main.jsonl"
 VARIANT_QUERIES_FILES = ["dataset/eval/audit_queries_variants.jsonl"]
 AUDIT_LOG_PATH = "logs/bias_audit/bias_audit_interactions.jsonl"
+WHOLE_SYSTEM_RUNS = ("A", "B", "C", "D")
 
 
 class BiasAuditRunner:
@@ -101,9 +102,19 @@ def main():
     parser.add_argument("--predict-articles", action="store_true",
                          help="Use the prompt variant that also asks for predicted_articles for the user's situation")
     parser.add_argument("--arms", default="", help="Comma-separated mitigation arms (src/mitigation ARM_REGISTRY)")
+    parser.add_argument("--whole-system", action="store_true",
+                         help="The 4 predict runs (A-D, variants + originals) of the whole-system analysis, logged to "
+                              "logs/mitigation/<arms>/predict/ (no arms: logs/bias_audit/predict/)")
     args = parser.parse_args()
 
-    arms = build_arms([a for a in args.arms.split(",") if a])
+    names = [a for a in args.arms.split(",") if a]
+    arms = build_arms(names)
+    if args.whole_system:
+        out_dir = f"logs/mitigation/{'+'.join(names)}/predict" if names else "logs/bias_audit/predict"
+        for r in WHOLE_SYSTEM_RUNS:
+            print(f"\n=== {time.strftime('%F %T')} {out_dir} run {r}", flush=True)
+            BiasAuditRunner(f"{out_dir}/run_{r}.jsonl", predict_articles=True, arms=arms).run(with_originals=True)
+        return
     runner = BiasAuditRunner(log_path=args.log_path, predict_articles=args.predict_articles, arms=arms)
     runner.run(limit=args.limit, variants_only=args.variants_only, with_originals=args.with_originals)
 

@@ -22,6 +22,7 @@ from scripts.eval.multi_run_stability import RUN_STATS
 #   r3  detectable effects: how large an effect could the null results have missed?
 #   r3b the LLM with identical cases: does its answer change with the pronoun alone? (needs run_fixed_case_test.py)
 #   r4  the pronoun flip on ~300 automatic he/she pairs, baseline and arms (needs run_swap_set_test.py)
+#   r5  retrieval cost beyond the harness: how easy the harness is, overlap with the baseline, article precision
 # Output: logs/robustness/<check>.json  (question, method, inputs with sha256, results)
 
 OUT_DIR = "logs/robustness"
@@ -37,7 +38,7 @@ FIXED_CASES_DIR = "logs/robustness/fixed_cases"
 FIXED_TYPES = ("neutral", "male", "female")
 SWAP_SET_DIR = "logs/robustness/swap_set"
 SWAP_PAIRS_PATH = f"{SWAP_SET_DIR}/pairs.jsonl"
-SWAP_ARMS = (BASELINE, "blind_query", "pcf", "leace")
+SWAP_ARMS = (BASELINE, "blind_query", "pcf", "leace", "blind_index", "cda", "ft_control")
 
 ALPHA, POWER = 0.05, 0.80
 
@@ -529,8 +530,85 @@ def r4_large_swap_set():
           "hand_set": {arm: {k: h[k] for k in ("top1_flips", "n_pairs", "mcnemar_exact_p")} for arm, h in hand.items()}})
 
 
+# ---- r5: retrieval cost beyond the harness ----
+
+def overlap(a, b):
+    return len(set(a) & set(b)) / len(a) if a else None
+
+
+def article_precision(cases, source_articles):
+    return float(np.mean([bool(set(map(str, c.get("violated_articles") or [])) & source_articles) for c in cases]))
+
+
+def r5_retrieval_cost():
+    logs = retrieval_logs()
+    harness = {}
+    for arm, path in logs.items():
+        with open(os.path.join(os.path.dirname(path), "harness.json"), "r", encoding="utf-8") as f:
+            harness[arm] = {p["query_id"]: p for p in json.load(f)["per_query"]}
+
+    # How easy the harness is: the margin between the source case and the best other case (baseline); a query whose
+    # 100 retrieved chunks all come from the source case has no other case to compare with
+    margins = [p["top_10_cases"][0]["max_similarity"] - p["top_10_cases"][1]["max_similarity"]
+               for p in harness[BASELINE].values() if p["eval_rank"] == 1 and len(p["top_10_cases"]) > 1]
+
+    main = load_jsonl(MAIN_QUERIES_PATH)
+    sources = load_cases(TEST_PATH, {q["source_case_id"] for q in main})
+    source_articles = {q["query_id"]: {str(a) for a in sources[q["source_case_id"]].get("violated_articles") or []}
+                       for q in main}
+    rows = {arm: {r["query_id"]: r for r in load_jsonl(p)} for arm, p in logs.items()}
+
+    def precision(arm, qid):
+        return article_precision(rows[arm][qid]["retrieved_cases"], source_articles[qid])
+
+    with_articles = [q["query_id"] for q in main if source_articles[q["query_id"]]]
+    arms = {}
+    for arm in logs:
+        res = {"harness_top10_overlap": float(np.mean([overlap([c["case_id"] for c in p["top_10_cases"]],
+                                                               [c["case_id"] for c in harness[BASELINE][q]["top_10_cases"]])
+                                                       for q, p in harness[arm].items()])),
+               "harness_top1_same": sum(p["top_10_cases"][0]["case_id"] == harness[BASELINE][q]["top_10_cases"][0]["case_id"]
+                                        for q, p in harness[arm].items()),
+               "audit_top3_overlap": float(np.mean([overlap([c["case_id"] for c in rows[arm][q["query_id"]]["retrieved_cases"]],
+                                                            [c["case_id"] for c in rows[BASELINE][q["query_id"]]["retrieved_cases"]])
+                                                    for q in main])),
+               "audit_article_precision_at_3": float(np.mean([precision(arm, q) for q in with_articles]))}
+        if arm != BASELINE:
+            d = [precision(arm, q) - precision(BASELINE, q) for q in with_articles]
+            res["article_precision_change"] = {"mean": float(np.mean(d)), "queries_lower": sum(x < 0 for x in d),
+                                               "queries_higher": sum(x > 0 for x in d),
+                                               "p_wilcoxon": float(wilcoxon(d).pvalue) if any(d) else None}
+        arms[arm] = res
+
+    print("\n" + "=" * 92)
+    print(f"R5 RETRIEVAL COST BEYOND THE HARNESS: harness margin source case vs best other case, median "
+          f"{np.median(margins):.3f} (< 0.01 in {sum(m < 0.01 for m in margins)}/{len(margins)} queries)")
+    print("=" * 92)
+    print(f"{'arm':<14}{'harness top-10 overlap':>24}{'top-1 same':>12}{'audit top-3 overlap':>21}"
+          f"{'article prec@3':>16}{'lower/higher, p':>20}")
+    for arm, r in arms.items():
+        ch = r.get("article_precision_change")
+        lh = f"{ch['queries_lower']}/{ch['queries_higher']}, {ch['p_wilcoxon']:.2g}" if ch and ch["p_wilcoxon"] else "-"
+        print(f"{arm:<14}{r['harness_top10_overlap']:>24.3f}{r['harness_top1_same']:>9}/{len(harness[arm])}"
+              f"{r['audit_top3_overlap']:>21.3f}"
+              f"{r['audit_article_precision_at_3']:>16.3f}{lh:>20}")
+
+    save("r5_retrieval_cost",
+         "Is 'no retrieval cost' (harness recall@1 0.95 for every arm) real, or is the harness too easy to show one?",
+         {"harness_margin": "baseline similarity of the source case minus the best other case, per harness query",
+          "overlap": "share of each arm's top-10 harness cases / top-3 audit cases also in the baseline's",
+          "article_precision_at_3": f"share of the top-3 retrieved cases sharing a violated article with the main "
+                                    f"query's source case ({len(with_articles)}/175 main queries whose source has "
+                                    f"violated articles); paired Wilcoxon against the baseline",
+          "note": "precision is a topical relevance proxy, not a relevance judgement"},
+         list(logs.values()) + [os.path.join(os.path.dirname(p), "harness.json") for p in logs.values()]
+         + [MAIN_QUERIES_PATH],
+         {"harness_margin": {"median": float(np.median(margins)), "below_0.01": sum(m < 0.01 for m in margins),
+                             "n": len(margins)}, "arms": arms})
+
+
 CHECKS = {"r1": r1_topic_control, "r2": r2_gender_relevant, "r3": r3_detectable_effects,
-          "r3b": r3b_llm_pronoun_fixed_cases, "r4": r4_large_swap_set}
+          "r3b": r3b_llm_pronoun_fixed_cases, "r4": r4_large_swap_set, "r5": r5_retrieval_cost}
 
 
 def main():

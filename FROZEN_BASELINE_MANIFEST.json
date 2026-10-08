@@ -73,6 +73,12 @@
       "file_sha256": "4bc1ebf4c22bac2b69c16bf6a0d4a52f3cb86b59bbd4aa096ae57ba7d3fedf49",
       "eraser_file": "faiss_indices/leace_eraser.npz",
       "eraser_file_sha256": "7cc4d799d88e69f882aac1382b71b7a6d557fdaf8fbdb4a2eca7978ab8317cc9"
+    },
+    "blind_index": {
+      "file": "faiss_indices/blind_paragraph_chunks_l2.index",
+      "file_sha256": "fdcc21b31a0a4e109c2e912275b65ea3c1427169bd3ac57769d4e2e8d01e1118",
+      "chunks_file": "dataset/train_chunked_paragraphs_blind.jsonl",
+      "chunks_file_sha256": "ad1501f33cd0a072ec16a4a2904541d6b6738af9b8450a63cdf1e29b7ba8cf97"
     }
   }
 }
