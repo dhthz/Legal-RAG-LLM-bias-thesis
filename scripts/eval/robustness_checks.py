@@ -38,7 +38,8 @@ FIXED_CASES_DIR = "logs/robustness/fixed_cases"
 FIXED_TYPES = ("neutral", "male", "female")
 SWAP_SET_DIR = "logs/robustness/swap_set"
 SWAP_PAIRS_PATH = f"{SWAP_SET_DIR}/pairs.jsonl"
-SWAP_ARMS = (BASELINE, "blind_query", "pcf", "leace", "blind_index", "cda", "ft_control")
+SWAP_ARMS = (BASELINE, "blind_query", "pcf", "leace", "leace_query", "blind_index", "cda", "ft_control", "ft_ccd",
+             "blind_query+blind_index", "leace_query+blind_index")
 
 ALPHA, POWER = 0.05, 0.80
 
@@ -540,6 +541,28 @@ def article_precision(cases, source_articles):
     return float(np.mean([bool(set(map(str, c.get("violated_articles") or [])) & source_articles) for c in cases]))
 
 
+# The top-3 cases an arm dropped and brought in: are the new ones as relevant, and were the dropped ones gender-matched?
+def changed_cases(base_rows, arm_rows, main, source_articles):
+    left, entered = [], []
+    for q in main:
+        base, arm = base_rows[q["query_id"]]["retrieved_cases"], arm_rows[q["query_id"]]["retrieved_cases"]
+        ids_base, ids_arm = {c["case_id"] for c in base}, {c["case_id"] for c in arm}
+        left += [(q, c) for c in base if c["case_id"] not in ids_arm]
+        entered += [(q, c) for c in arm if c["case_id"] not in ids_base]
+
+    def precision(pairs):
+        hits = [article_precision([c], source_articles[q["query_id"]]) for q, c in pairs if source_articles[q["query_id"]]]
+        return float(np.mean(hits)) if hits else None
+
+    def same_gender(pairs):
+        hits = [c["gender"] == q["gender"] for q, c in pairs if q["gender"] in ("Male", "Female")]
+        return float(np.mean(hits)) if hits else None
+
+    return {"cases_changed": len(left), "left_article_precision": precision(left),
+            "entered_article_precision": precision(entered), "left_same_gender_share": same_gender(left),
+            "entered_same_gender_share": same_gender(entered)}
+
+
 def r5_retrieval_cost():
     logs = retrieval_logs()
     harness = {}
@@ -578,6 +601,7 @@ def r5_retrieval_cost():
             res["article_precision_change"] = {"mean": float(np.mean(d)), "queries_lower": sum(x < 0 for x in d),
                                                "queries_higher": sum(x > 0 for x in d),
                                                "p_wilcoxon": float(wilcoxon(d).pvalue) if any(d) else None}
+            res["changed_cases"] = changed_cases(rows[BASELINE], rows[arm], main, source_articles)
         arms[arm] = res
 
     print("\n" + "=" * 92)
@@ -592,6 +616,12 @@ def r5_retrieval_cost():
         print(f"{arm:<14}{r['harness_top10_overlap']:>24.3f}{r['harness_top1_same']:>9}/{len(harness[arm])}"
               f"{r['audit_top3_overlap']:>21.3f}"
               f"{r['audit_article_precision_at_3']:>16.3f}{lh:>20}")
+    print(f"\n{'arm':<14}{'top-3 cases changed':>21}{'article prec left / entered':>29}{'query-gender share left / entered':>35}")
+    for arm, r in arms.items():
+        if "changed_cases" in r:
+            c = r["changed_cases"]
+            print(f"{arm:<14}{c['cases_changed']:>21}{c['left_article_precision']:>18.3f} / {c['entered_article_precision']:<8.3f}"
+                  f"{c['left_same_gender_share']:>24.3f} / {c['entered_same_gender_share']:.3f}")
 
     save("r5_retrieval_cost",
          "Is 'no retrieval cost' (harness recall@1 0.95 for every arm) real, or is the harness too easy to show one?",
@@ -600,6 +630,10 @@ def r5_retrieval_cost():
           "article_precision_at_3": f"share of the top-3 retrieved cases sharing a violated article with the main "
                                     f"query's source case ({len(with_articles)}/175 main queries whose source has "
                                     f"violated articles); paired Wilcoxon against the baseline",
+          "changed_cases": "per main query, the top-3 cases the arm dropped (left) and the ones it brought in (entered); "
+                           "pooled article precision of each, and the share whose gender label matches the query's "
+                           "(Male/Female queries); left more gender-matched than entered = the change removed "
+                           "gender-driven retrievals",
           "note": "precision is a topical relevance proxy, not a relevance judgement"},
          list(logs.values()) + [os.path.join(os.path.dirname(p), "harness.json") for p in logs.values()]
          + [MAIN_QUERIES_PATH],

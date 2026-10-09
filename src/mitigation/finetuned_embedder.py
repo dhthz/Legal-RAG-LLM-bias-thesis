@@ -10,9 +10,12 @@ from src.mitigation.base import Corpus, MitigationArm
 # Sap (ACL Findings 2025, "Mitigating Bias in RAG: Controlling the Embedder"). ft_control is the same fine-tune
 # without the twins. The corpus is re-embedded with each model and the query is embedded by the same model; chunk
 # texts and metadata are the frozen ones. Built by scripts/chunking_and_embeddings/finetune_cda.py.
+# Arm 4b, ft_ccd: the embedder fine-tuned with content conditional debiasing (Deng et al. 2024), built by
+# scripts/chunking_and_embeddings/finetune_ccd.py.
 
 MODELS = {"cda": ("models/cda", "faiss_indices/cda_paragraph_chunks_l2.index"),
-          "ft_control": ("models/ft_control", "faiss_indices/ft_control_paragraph_chunks_l2.index")}
+          "ft_control": ("models/ft_control", "faiss_indices/ft_control_paragraph_chunks_l2.index"),
+          "ft_ccd": ("models/ft_ccd", "faiss_indices/ft_ccd_paragraph_chunks_l2.index")}
 
 
 def load_encoder(path: str, device: str = "cuda") -> SentenceTransformer:
@@ -36,3 +39,7 @@ class FineTunedEmbedder(MitigationArm):
 
 class FineTunedControl(FineTunedEmbedder):
     name = "ft_control"
+
+
+class FineTunedCCD(FineTunedEmbedder):
+    name = "ft_ccd"

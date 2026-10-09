@@ -25,7 +25,7 @@ PAIRS_PATH = f"{OUT_DIR}/pairs.jsonl"
 TEST_PATH = "dataset/test.jsonl"
 VARIANTS_PATH = "dataset/eval/audit_queries_variants.jsonl"
 MAIN_PATH = "dataset/eval/audit_queries_main.jsonl"
-ARMS = ("baseline", "blind_query", "pcf", "leace", "blind_index", "cda", "ft_control")
+ARMS = ("baseline", "blind_query", "pcf", "leace", "leace_query", "blind_index", "cda", "ft_control", "ft_ccd")
 N_PAIRS, SEED = 300, 42
 # Looser than the hand-written set (there: other gender absent, <= 1500 words, a limit set by hand-writing effort):
 # with those gates only 34 female-applicant test cases exist. Here the applicant's gender must dominate 3:1 and the
@@ -113,7 +113,7 @@ def run_arm(pipeline, arm, pairs):
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
             done = {json.loads(line)["query_id"] for line in f}
-    pipeline.arms = build_arms([] if arm == "baseline" else [arm])
+    pipeline.arms = build_arms([] if arm == "baseline" else arm.split("+"))
     todo = [(p, g) for p in pairs for g in ("male", "female") if f"{p['pair_id']}_{g}" not in done]
     print(f"\n[{arm}] {len(todo)} queries left ({len(done)} already logged)")
     start = time.time()

@@ -79,6 +79,28 @@
       "file_sha256": "fdcc21b31a0a4e109c2e912275b65ea3c1427169bd3ac57769d4e2e8d01e1118",
       "chunks_file": "dataset/train_chunked_paragraphs_blind.jsonl",
       "chunks_file_sha256": "ad1501f33cd0a072ec16a4a2904541d6b6738af9b8450a63cdf1e29b7ba8cf97"
+    },
+    "leace_query": {
+      "eraser_file": "faiss_indices/leace_query_eraser.npz",
+      "eraser_file_sha256": "eeb9b3a2a7160beb84645776562d37ea1311d11cec37030c1e4ead9664a08c52"
+    },
+    "cda": {
+      "file": "faiss_indices/cda_paragraph_chunks_l2.index",
+      "file_sha256": "e77c48ed46243fe2799895e1432056fd4b8cfd1b4d1214f5c6208fca2deff1b8",
+      "model_file": "models/cda/model.safetensors",
+      "model_file_sha256": "5fe050cf4171a87e56ce79b021a9084c287ffe770994c606f67c1c824e45bd5e"
+    },
+    "ft_control": {
+      "file": "faiss_indices/ft_control_paragraph_chunks_l2.index",
+      "file_sha256": "a5f3203b60fd6f1bd962b71dc0e706aa4c731d3628ad0983dada651e852c7461",
+      "model_file": "models/ft_control/model.safetensors",
+      "model_file_sha256": "c21d868b808fa58693414b5be4069f90fbb7668c2364f850b98ccb185ac74f85"
+    },
+    "ft_ccd": {
+      "file": "faiss_indices/ft_ccd_paragraph_chunks_l2.index",
+      "file_sha256": "1c32e28d0b24b846b080ed11cbf333dafcae724af00056a0873639c05598b6b1",
+      "model_file": "models/ft_ccd/model.safetensors",
+      "model_file_sha256": "c0c34198d82db29251e9344a8c7b51bc20c6f4ab94c9c0602e8f36fa87160108"
     }
   }
 }

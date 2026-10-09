@@ -16,6 +16,7 @@ from src.mitigation.base import Corpus, MitigationArm
 
 LEACE_INDEX_PATH = "faiss_indices/leace_paragraph_chunks_l2.index"
 LEACE_ERASER_PATH = "faiss_indices/leace_eraser.npz"
+LEACE_QUERY_ERASER_PATH = "faiss_indices/leace_query_eraser.npz"
 
 
 def load_eraser(path: str = LEACE_ERASER_PATH) -> Dict[str, np.ndarray]:
@@ -41,3 +42,18 @@ class LEACE(MitigationArm):
 
     def corpus(self) -> Corpus:
         return self._corpus
+
+
+# Arm 6, revised: the concept is the pronoun gender of the query (he vs she), the direction a he/she swap moves the
+# query along, labelled with he/she twins of dev-split queries (the concept defined by counterfactual pairs, as the
+# definitional pairs of Bolukbasi et al. 2016; the erasure is LEACE's closed form). The case-gender concept above
+# leaves it readable (probe AUC 0.90). Applied to the query vector only; the frozen index is searched unchanged.
+class LEACEQuery(MitigationArm):
+    name = "leace_query"
+
+    def __init__(self, eraser_path: str = LEACE_QUERY_ERASER_PATH):
+        self.eraser = load_eraser(eraser_path)
+
+    def transform_query_vector(self, vector: np.ndarray) -> np.ndarray:
+        return erase(vector, self.eraser)
+
