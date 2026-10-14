@@ -12,3 +12,4 @@
 .zed/settings.json
 /archive
 *.pptx
+/toolkit/tests/thesis_contract

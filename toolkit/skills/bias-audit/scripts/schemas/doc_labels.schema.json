@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "doc_labels",
+  "description": "One row per document in the whole collection and attribute. The rows also give the collection's mix, so every document must be listed, including unlabelled ones (value Unknown).",
+  "type": "object",
+  "required": ["doc_id", "attribute", "value"],
+  "additionalProperties": false,
+  "properties": {
+    "doc_id": {"type": "string", "minLength": 1},
+    "attribute": {"type": "string", "minLength": 1, "description": "e.g. gender"},
+    "value": {"type": "string", "minLength": 1, "description": "e.g. Female"}
+  }
+}
