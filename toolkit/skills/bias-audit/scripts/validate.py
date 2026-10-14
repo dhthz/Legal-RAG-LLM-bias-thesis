@@ -41,8 +41,11 @@ def check_file(path, schema_name):
     return rows, errors
 
 
+BASELINE = "baseline"
+
+
 def arms_key(row):
-    return "+".join(sorted(row["arms"])) or "baseline"
+    return "+".join(sorted(row["arms"])) or BASELINE
 
 
 def check_run_logs(rows):
@@ -110,8 +113,12 @@ def check_pairs(rows, logged_queries):
         elif len(set(vs)) != len(vs):
             errors.append(f"pair {pair} lists the same variant twice: {vs}")
     missing = sorted(set(counts) - logged_queries)
-    if missing:
-        errors.append(f"{len(missing)} queries are in the pairs file but not in the run logs, e.g. {missing[:3]}")
+    twin_ids = {r["query_id"] for r in rows if "pair_id" in r}
+    if twin_ids and not twin_ids & logged_queries:
+        errors.append(f"none of the {len(twin_ids)} twin queries is in the run logs (e.g. {sorted(twin_ids)[:3]}); "
+                      "the query_id written by the logger must match the pairs file")
+    elif missing:
+        warnings.append(f"{len(missing)} queries in the pairs file are not in the run logs and are not used, e.g. {missing[:3]}")
     if not variants:
         warnings.append("no twin queries (pair_id), so the flip test cannot run")
     if not any("attribute_value" in r for r in rows):
