@@ -33,7 +33,9 @@ Everything the statistics read: a run log, document labels and question pairs, e
 
 ## Scope
 
-Gender (he/she) is the validated attribute: the twin rewrite matches hand-written twins word for word (581/581 words). Other attributes work with your own twin questions and labels but are not validated. The report does not measure relevance: check your search with your own test before keeping a fix.
+Gender (he/she) is the validated attribute: the twin rewrite matches hand-written twins word for word (581/581 words). Other attributes work with your own twin questions and labels but are not validated. Relevance is checked only when your documents have a topic or category, and a topic match is a rough stand-in: check your search with your own test (e.g. recall@k) before keeping a fix.
+
+Only fixes that act on the question are applied. Fixes that rebuild the index (blind index) or retrain the embedder (CCD, Deng et al. 2024) worked in the thesis too, but change your index or model; Claude describes them when relevant and does not apply them.
 
 ## Credits
 

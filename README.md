@@ -2,7 +2,7 @@
 
 **An audit of gender bias in a retrieval-augmented legal assistant, six published fixes compared, and a Claude Code plugin that runs the same audit on any RAG system.**
 
-MSc thesis. The system under audit answers questions on European Court of Human Rights case law: 9,000 judgments split into 217,903 paragraph chunks, retrieved with FAISS and `nomic-embed-text-v1`, answered by Mistral 7B through Ollama. Every interaction is logged, and every claim is tested against repeat-run noise with exact tests, effect sizes and Holm-Bonferroni correction.
+MSc thesis. The system under audit answers questions on European Court of Human Rights case law: the 9,000 training judgments of the [ECtHR cases dataset](#data) split into 217,903 paragraph chunks, retrieved with FAISS and `nomic-embed-text-v1`, answered by Mistral 7B through Ollama. Every interaction is logged, and every claim is tested against repeat-run noise with exact tests, effect sizes and Holm-Bonferroni correction.
 
 ![Swapping "he" for "she" changes which case is found in 15 of 40 pairs](docs/bias_audit/visualizations/03_he_she_flip_summary.png)
 
@@ -59,11 +59,15 @@ Then, in your RAG project, ask Claude to audit it for gender bias, or run `/rag-
 | [`tests/`](tests/) | End-to-end test and the frozen-retrieval tripwire |
 | [`FROZEN_BASELINE_MANIFEST.json`](FROZEN_BASELINE_MANIFEST.json) | Every pipeline setting, the index checksum and the prompt variants |
 
-The dataset, the FAISS indices and the run logs are not in the repository (size).
+The dataset, the FAISS indices and the run logs are not in the repository (size, and the dataset's own license).
+
+## Data
+
+The judgments come from the **ECtHR cases** dataset of Chalkidis et al. (2019, 2021), [`AUEB-NLP/ecthr_cases`](https://huggingface.co/datasets/AUEB-NLP/ecthr_cases) on Hugging Face (a version of it is also part of [LexGLUE](https://github.com/coastalcph/lex-glue), Chalkidis et al. 2022), built from the Court's public database [HUDOC](https://hudoc.echr.coe.int). It is licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). The index holds the 9,000 training judgments; the dev and test splits are used for questions and for fitting the fixes, never indexed. Applicant gender was added for the audit: Claude Sonnet 4.5 labelled each judgment from its title and facts (Male, Female, Multiple Applicants, Unknown), the 209 cases it could not settle were labelled by hand, and a hand check of 300 labels confirmed 93.7% (95% CI 90.7–96.8%). Each case also has NRC emotion scores (Mohammad & Turney 2013), used to build and check the emotional question variants. Both are released in [`docs/data/case_metadata.csv`](docs/data/case_metadata.csv) (one row per case: gender, `confidence` = `human` for the hand-labelled cases, NRC scores), with the 300-case hand check in [`docs/data/`](docs/data/) (`gender_validation_key.csv`, `gender_validation_tagged.csv`; no case text). Counts in [`docs/metadata_reports/gender_labels.csv`](docs/metadata_reports/gender_labels.csv), charts in [`visualizations/gender_analysis/`](visualizations/gender_analysis/).
 
 ## Running it
 
-Python 3.12, CUDA, and Ollama with `mistral` pulled.
+Python 3.12, CUDA, and Ollama with `mistral` pulled. Download the dataset above into `dataset/` (`train.jsonl`, `dev.jsonl`, `test.jsonl`), then add this work's metadata: `python -m scripts.dataset.case_metadata merge` writes `dataset/train_with_metadata.jsonl`.
 
 ```bash
 python -m venv thesis_venv && source thesis_venv/bin/activate
@@ -94,6 +98,12 @@ python -m scripts.eval.export_audit_results
 9. Tang, R., Zhang, X., Ma, X., Lin, J., & Ture, F. (2024). Found in the Middle: Permutation Self-Consistency Improves Listwise Ranking in Large Language Models. *NAACL 2024*. [arXiv:2310.07712](https://arxiv.org/abs/2310.07712)
 10. Kaneko, M., & Bollegala, D. (2021). Debiasing Pre-trained Contextualised Embeddings. *EACL 2021*. [arXiv:2101.09523](https://arxiv.org/abs/2101.09523)
 
+Dataset:
+
+11. Chalkidis, I., Androutsopoulos, I., & Aletras, N. (2019). Neural Legal Judgment Prediction in English. *ACL 2019*. [arXiv:1906.02059](https://arxiv.org/abs/1906.02059)
+12. Chalkidis, I., Fergadiotis, M., Tsarapatsanis, D., Aletras, N., Androutsopoulos, I., & Malakasiotis, P. (2021). Paragraph-level Rationale Extraction through Regularization: A case study on European Court of Human Rights Cases. *NAACL 2021*. [arXiv:2103.13084](https://arxiv.org/abs/2103.13084)
+13. Chalkidis, I., Jana, A., Hartung, D., Bommarito, M., Androutsopoulos, I., Katz, D. M., & Aletras, N. (2022). LexGLUE: A Benchmark Dataset for Legal Language Understanding in English. *ACL 2022*. [arXiv:2110.00976](https://arxiv.org/abs/2110.00976)
+
 Built with: [FAISS](https://github.com/facebookresearch/faiss), [nomic-embed-text-v1](https://huggingface.co/nomic-ai/nomic-embed-text-v1), [Mistral 7B](https://mistral.ai/news/announcing-mistral-7b) through [Ollama](https://ollama.com), [spaCy](https://spacy.io), GPT-2 (for the rewrite), and the LEACE authors' [concept-erasure](https://github.com/EleutherAI/concept-erasure) library.
 
 ## Status
@@ -101,3 +111,7 @@ Built with: [FAISS](https://github.com/facebookresearch/faiss), [nomic-embed-tex
 - Audit and fixes: complete.
 - Toolkit: v0.1, reproduces the thesis audit exactly; testing on a second, unseen RAG system in progress.
 - Gender is the validated attribute. The system is English-only and ECtHR-only, with one embedder and one LLM.
+
+## Data license
+
+Files that contain text from the ECtHR cases dataset, or metadata added to its cases, are adapted from it and shared under its license, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/), credited to Chalkidis et al. (2019, 2021) with HUDOC as the original source: the audit questions in [`docs/llm_queries/`](docs/llm_queries/) (written from case facts), the per-case metadata in [`docs/data/`](docs/data/), and any result file that quotes case text. The papers behind the fixes are credited in [References](#references); the fixes are independent implementations of the published methods, and LEACE uses the authors' MIT-licensed library.

@@ -35,6 +35,7 @@
     "api": "ollama /api/chat",
     "model": "mistral",
     "ollama_tag": "mistral:latest",
+    "ollama_model_id": "6577803aa9a0",
     "model_type": "Mistral 7B Instruct",
     "context_window_tokens": 32768
   },

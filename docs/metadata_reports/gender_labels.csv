@@ -1,0 +1,7 @@
+label,before_hand_labelling,labelled_by_hand,final,final_share
+Male,4962,103,5065,0.5628
+Female,1413,87,1500,0.1667
+Multiple Applicants,1576,16,1592,0.1769
+Unknown,840,3,843,0.0937
+Needs Manual Classification,209,0,0,0.0
+total,9000,209,9000,1.0

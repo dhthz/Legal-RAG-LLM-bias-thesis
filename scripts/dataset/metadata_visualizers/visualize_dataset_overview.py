@@ -15,8 +15,8 @@ plt.rcParams['font.size'] = 10
 
 # Paths
 DATASET_PATH = "dataset/train.jsonl"
-OUTPUT_DIR = Path("visualizations")
-OUTPUT_DIR.mkdir(exist_ok=True)
+OUTPUT_DIR = Path("visualizations/case_analysis")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def load_data():
     print("Loading data from train.jsonl...")
