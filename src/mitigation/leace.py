@@ -4,6 +4,7 @@ import faiss
 import numpy as np
 
 from src.mitigation.base import Corpus, MitigationArm
+from toolkit.fixes.leace import erase, load_eraser as _load_eraser  # r(x), shared with the toolkit
 
 # Arm 6: LEACE, least-squares linear concept erasure (Belrose, Schneider-Joseph, Ravfogel, Cotterell, Raff &
 # Biderman, NeurIPS 2023, "LEACE: Perfect linear concept erasure in closed form"), with the authors' library
@@ -20,14 +21,7 @@ LEACE_QUERY_ERASER_PATH = "faiss_indices/leace_query_eraser.npz"
 
 
 def load_eraser(path: str = LEACE_ERASER_PATH) -> Dict[str, np.ndarray]:
-    data = np.load(path)
-    return {k: data[k] for k in ("bias", "proj_left", "proj_right")}
-
-
-# r(x) = x - ((x - bias) P_right^T) P_left^T, as LeaceEraser.__call__
-def erase(vectors: np.ndarray, eraser: Dict[str, np.ndarray]) -> np.ndarray:
-    x = vectors.astype(np.float64)
-    return (x - ((x - eraser["bias"]) @ eraser["proj_right"].T) @ eraser["proj_left"].T).astype(np.float32)
+    return _load_eraser(path)
 
 
 class LEACE(MitigationArm):

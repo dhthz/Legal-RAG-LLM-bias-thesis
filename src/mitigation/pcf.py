@@ -1,35 +1,21 @@
 import json
-import re
 from typing import Dict, List, Optional
 
 import numpy as np
 
 from src.mitigation.base import MitigationArm, Search
 from src.mitigation.neutral_rewrite import swap_gender
+from toolkit.fixes.pcf import pcf_scores, query_attribute
 
 # Arm 5: Plug-in Counterfactual Fairness (Zhou, Liu, Bai, Gao, Kocaoglu & Inouye, NeurIPS 2024,
 # "Counterfactual Fairness by Combining Factual and Counterfactual Predictions"), Algorithm 1:
 #   mu(x) = p(A=a) * phi(x, a) + p(A=1-a) * phi(x_cf, 1-a),   x_cf = G(x, a, 1-a)
 # phi is the frozen retrieval score of a chunk, x the query, G the two-sided gender swap, p(A) the corpus prior
-# over male vs female applicants. With the true G the score is identical for a query and its gender swap
+# over male vs female applicants (query_attribute and pcf_scores are shared with the toolkit, toolkit/fixes/pcf.py).
+# With the true G the score is identical for a query and its gender swap
 # (their Proposition 3.5), so the ranking cannot depend on the pronoun.
 
-MALE = re.compile(r"\b(he|him|his|himself|mr)\b", re.IGNORECASE)
-FEMALE = re.compile(r"\b(she|her|hers|herself|mrs|ms)\b", re.IGNORECASE)
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
-
-
-# The query's attribute a: the majority gender of its gendered words; None if it has none, "tie" if balanced
-def query_attribute(text: str) -> Optional[str]:
-    male, female = len(MALE.findall(text)), len(FEMALE.findall(text))
-    if male == female:
-        return None if male == 0 else "tie"
-    return "male" if male > female else "female"
-
-
-# Algorithm 1 for one candidate set: factual and counterfactual scores (same candidates, same order) -> fair scores
-def pcf_scores(factual: np.ndarray, counterfactual: np.ndarray, p_factual: float) -> np.ndarray:
-    return p_factual * factual + (1.0 - p_factual) * counterfactual
 
 
 def corpus_male_prior(path: str = TRAIN_METADATA_PATH) -> float:

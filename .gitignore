@@ -13,3 +13,5 @@
 /archive
 *.pptx
 /toolkit/tests
+!/toolkit/README.md
+!/toolkit/skills/*/SKILL.md
