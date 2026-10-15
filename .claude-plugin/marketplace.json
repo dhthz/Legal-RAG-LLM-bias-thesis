@@ -1,0 +1,12 @@
+{
+  "name": "rag-bias-audit",
+  "description": "The bias audit toolkit from the MSc thesis on bias in a legal RAG system",
+  "owner": {"name": "dhthz"},
+  "plugins": [
+    {
+      "name": "rag-bias-audit",
+      "source": "./toolkit",
+      "description": "Agent-guided gender bias audit and mitigation for RAG systems"
+    }
+  ]
+}
