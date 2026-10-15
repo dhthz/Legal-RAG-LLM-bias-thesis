@@ -70,7 +70,19 @@ Every script reads only these files (JSON Lines, one object per line). Schemas: 
 
 ## Stage 1. Understand the system
 
-Read the repo. Show the user, with file and line: where documents are retrieved (embedder, index, top-k), where the prompt is built and the LLM is called, how the answer names the documents it uses (citations), where the document collection lives, and whether the LLM and the embedder are local or a paid API. If answers do not cite documents, agree with the user how to extract `cited_doc_ids`. If the search is a hosted service, check whether it returns scores for given document ids (PCF needs this) and lets you change the query vector before searching (LEACE needs this), and say which fixes are possible. Confirm.
+Read the repo. Then show the user what you found as a short list, one line each with file:line, before asking anything:
+
+```
+I found:
+- Retrieval: <embedder>, <index>, top-k <n>            (file:line)
+- Prompt: <function>                                    (file:line)
+- LLM call: <model>, <settings such as temperature>     (file:line)
+- Citations: <how the answer names documents>           (file:line)
+- Collection: <where it lives, how many documents>      (file:line)
+- Local or paid: <LLM>, <embedder>
+```
+
+Then ask the user to confirm the list (options: correct / something is wrong). A one-sentence summary is not enough. If answers do not cite documents, agree with the user how to extract `cited_doc_ids`. If the search is a hosted service, check whether it returns scores for given document ids (PCF needs this) and lets you change the query vector before searching (LEACE needs this), and say which fixes are possible. Confirm.
 
 ## Stage 2. Labels
 
