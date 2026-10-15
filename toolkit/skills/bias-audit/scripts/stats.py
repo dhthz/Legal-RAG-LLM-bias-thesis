@@ -3,10 +3,12 @@ from collections import Counter, defaultdict
 from itertools import combinations
 
 import numpy as np
-from scipy.stats import binomtest, chi2_contingency, chisquare, wilcoxon
+from scipy.optimize import brentq
+from scipy.stats import binomtest, chi2 as chi2_dist, chi2_contingency, chisquare, ncx2, wilcoxon
 
-from validate import BASELINE, arms_key, load_jsonl
+from validate import BASELINE, FIXED_DOCUMENTS, arms_key, load_jsonl
 
+ALPHA, POWER = 0.05, 0.80
 SIMILARITY_GROUPS = ("different order", "same order, different passages shown", "identical input")
 
 
@@ -37,6 +39,20 @@ def holm_bonferroni(named_pvals):
         running_max = max(running_max, min(1.0, (m - i) * p))
         corrected[name] = running_max
     return corrected
+
+
+# Smallest Cohen's w a chi-square test detects with the given power (noncentral chi-square). For a 2 x k table
+# Cramer's V equals w; for a goodness-of-fit test with k values V = w / sqrt(k - 1)
+def chi2_mde(n, dof, alpha=ALPHA, power=POWER):
+    crit = chi2_dist.ppf(1 - alpha, dof)
+    return brentq(lambda w: ncx2.sf(crit, dof, n * w * w) - power, 1e-6, 5.0)
+
+
+# Exact McNemar: the smallest one-sided split of the discordant pairs that the test calls significant
+# (None when there are too few discordant pairs for any split to be significant)
+def mcnemar_lean_needed(discordant, alpha=ALPHA):
+    return next((m for m in range(discordant // 2 + 1, discordant + 1)
+                 if binomtest(discordant - m, discordant, 0.5).pvalue < alpha), None)
 
 
 def load(run_log_paths, labels_path, pairs_path, attribute):
@@ -82,7 +98,8 @@ def chi2_two_rows(first, second):
     chi2, p, dof, expected = chi2_contingency(table)
     n = sum(sum(row) for row in table)
     return {"n": n, "dof": int(dof), "statistic": float(chi2), "p_raw": float(p), "effect_size_name": "Cramer's V",
-            "effect_size": float((chi2 / n) ** 0.5), "min_expected": float(expected.min())}
+            "effect_size": float((chi2 / n) ** 0.5), "min_expected": float(expected.min()),
+            "mde_cramers_v": float(chi2_mde(n, dof))}
 
 
 # Retrieval side: does the attribute mix of everything retrieved match the whole collection?
@@ -105,6 +122,7 @@ def attribute_vs_collection(rows, labels):
         "effect_size_name": "Cramer's V",
         "effect_size": float(cramers_v_gof(chi2, n, len(values))),
         "min_expected": float(min(expected)),
+        "mde_cramers_v": float(chi2_mde(n, len(values) - 1) / (len(values) - 1) ** 0.5),
     }
 
 
@@ -128,13 +146,14 @@ def retrieved_by_query_attribute(rows, labels, queries, groups):
 # Retrieval side: does the top document change between two twins? McNemar counts the pairs where the
 # top document belongs to the watched group under one wording only.
 def flip_test(run, labels, twins, va, vb, watched):
-    flips, kept, a_only, b_only = [], [], 0, 0
+    flips, kept, a_only, b_only, top_values = [], [], 0, 0, {}
     for pair, variants in sorted(twins.items()):
         if va not in variants or vb not in variants:
             continue
         top_a = min(run[variants[va]]["retrieved"], key=lambda d: d["rank"])["doc_id"]
         top_b = min(run[variants[vb]]["retrieved"], key=lambda d: d["rank"])["doc_id"]
         kept.append(pair)
+        top_values[pair] = [labels[top_a], labels[top_b]]
         if top_a != top_b:
             flips.append(pair)
         a_w, b_w = labels[top_a] == watched, labels[top_b] == watched
@@ -149,9 +168,11 @@ def flip_test(run, labels, twins, va, vb, watched):
         "flip_rate": k / n if n else None,
         "flip_rate_wilson_95ci": list(wilson_ci(k, n)),
         "flipped_pairs": flips,
+        "top_values": top_values,
         "mcnemar_outcome": f"top document is {watched}",
         "mcnemar_discordant": {f"{va}_only": a_only, f"{vb}_only": b_only},
         "p_raw": float(binomtest(min(a_only, b_only), discordant, 0.5).pvalue) if discordant else None,
+        "lean_needed": mcnemar_lean_needed(discordant),
     }
 
 
@@ -190,7 +211,8 @@ def noise_floor(runs, twin_ids):
 
 
 # Twins with the same retrieved set, split by how similar the LLM's input really was. The input depends
-# only on retrieval, so the group of a pair comes from the first run.
+# only on retrieval, so the group of a pair comes from the first run. Twins whose question text is the same
+# (a fix such as the blind query rewrote both into one question) have no wording difference left and are left out.
 def input_similarity_split(runs, twins, va, vb):
     first = next(iter(runs.values()))
     groups = defaultdict(list)
@@ -198,6 +220,8 @@ def input_similarity_split(runs, twins, va, vb):
         if va not in variants or vb not in variants:
             continue
         a_row, b_row = first[variants[va]], first[variants[vb]]
+        if a_row["query"] == b_row["query"]:
+            continue
         if retrieved_set(a_row) == retrieved_set(b_row):
             groups[similarity_group(a_row, b_row)].append(pair)
 
@@ -283,6 +307,47 @@ def changed_docs(base_rows, arm_rows, labels, queries, groups):
             "entered_same_attribute_share": same_attribute(entered)}
 
 
+# Optional relevance proxy, the thesis's article precision (R5) for any topic label: per question without twins that has
+# topics, the share of the found documents sharing a topic with it; paired Wilcoxon against the baseline, and the topic
+# match of the documents a fix dropped and brought in. A document can have several topics.
+def load_topics(path):
+    topics = defaultdict(set)
+    for r in load_jsonl(path):
+        topics[r["doc_id"]].add(r["value"])
+    return dict(topics)
+
+
+def topic_hits(row, doc_topics, want):
+    return [bool(doc_topics.get(d["doc_id"], set()) & want) for d in sorted(row["retrieved"], key=lambda d: d["rank"])]
+
+
+def relevance(by_arms, doc_topics, queries):
+    want = {q: set(r["topics"]) for q, r in queries.items() if r.get("topics") and "pair_id" not in r}
+    first = {a: next(iter(runs.values())) for a, runs in by_arms.items() if a != FIXED_DOCUMENTS}
+    hits = {a: {q: topic_hits(run[q], doc_topics, want[q]) for q in want if q in run} for a, run in first.items()}
+    out = {}
+    for a, h in hits.items():
+        if not h:
+            continue
+        res = {"queries": len(h), "top1_on_topic": float(np.mean([x[0] for x in h.values()])),
+               "precision_at_k": float(np.mean([np.mean(x) for x in h.values()]))}
+        if a != BASELINE and hits.get(BASELINE):
+            common = [q for q in h if q in hits[BASELINE]]
+            d = [np.mean(h[q]) - np.mean(hits[BASELINE][q]) for q in common]
+            left, entered = [], []
+            for q in common:
+                ids_base, ids_arm = retrieved_set(first[BASELINE][q]), retrieved_set(first[a][q])
+                left += [bool(doc_topics.get(x, set()) & want[q]) for x in ids_base - ids_arm]
+                entered += [bool(doc_topics.get(x, set()) & want[q]) for x in ids_arm - ids_base]
+            res["precision_change"] = {"mean": float(np.mean(d)), "queries_lower": int(sum(x < 0 for x in d)),
+                                       "queries_higher": int(sum(x > 0 for x in d)),
+                                       "p_wilcoxon": float(wilcoxon(d).pvalue) if any(d) else None}
+            res["left_on_topic"] = float(np.mean(left)) if left else None
+            res["entered_on_topic"] = float(np.mean(entered)) if entered else None
+        out[a] = res
+    return out
+
+
 def compare_to_baseline(base_runs, arm_runs, labels, queries, twins, groups, twin_pairs):
     return {
         "twin_answer_change": {f"{va}_vs_{vb}": twin_answer_change(base_runs, arm_runs, twins, va, vb) for va, vb in twin_pairs},
@@ -308,6 +373,9 @@ def audit_arms(runs, labels, queries, twins, groups, twin_pairs):
         "flip_tests": {f"{va}_vs_{vb}": flip_test(first, labels, twins, va, vb, groups[1]) for va, vb in twin_pairs},
         "cited_vs_not_cited_per_run": {run: cited_vs_not_cited(list(rows.values()), labels) for run, rows in runs.items()},
         "noise_floor_twin_rows": noise_floor(runs, twin_ids),
+        "same_question_twins": {f"{va}_vs_{vb}": sum(first[vs[va]]["query"] == first[vs[vb]]["query"]
+                                                      for vs in twins.values() if va in vs and vb in vs)
+                                for va, vb in twin_pairs},
         "input_similarity_split": {f"{va}_vs_{vb}": input_similarity_split(runs, twins, va, vb) for va, vb in twin_pairs},
     }
     family = {"attribute_vs_collection": res["attribute_vs_collection"]["p_raw"]}

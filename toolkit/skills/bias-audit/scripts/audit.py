@@ -3,8 +3,8 @@ import json
 import sys
 from itertools import combinations
 
-from stats import BASELINE, audit_arms, compare_to_baseline, load
-from validate import validate
+from stats import BASELINE, FIXED_DOCUMENTS, audit_arms, compare_to_baseline, load, load_topics, relevance
+from validate import check_file, validate
 
 
 def pct(x):
@@ -84,6 +84,8 @@ def main():
                         help="The two attribute values to compare, the group you are checking for last (e.g. Male Female)")
     parser.add_argument("--twin-pairs", nargs="+", default=None, metavar="VA:VB",
                         help="Twin variants to compare, e.g. male:female neutral:emotional (default: every pair of variants)")
+    parser.add_argument("--topics", help="Optional: documents' topics (rows doc_id, attribute, value; several per document "
+                                         "allowed) for the relevance check against the questions' topics")
     parser.add_argument("--out", default="bias_audit_results.json")
     args = parser.parse_args()
 
@@ -122,20 +124,34 @@ def main():
         print_summary(arms, results["arms"][arms], attribute, args.groups)
         print()
 
-    if BASELINE in by_arms and len(by_arms) > 1:
+    fixes = [arms for arms in by_arms if arms not in (BASELINE, FIXED_DOCUMENTS)]
+    if BASELINE in by_arms and fixes:
         print("=" * 78)
         print("FIXES COMPARED WITH THE BASELINE")
         print("=" * 78)
         results["comparison"] = {}
-        for arms, runs in by_arms.items():
-            if arms == BASELINE:
-                continue
+        for arms in fixes:
+            runs = by_arms[arms]
             results["comparison"][arms] = compare_to_baseline(by_arms[BASELINE], runs, labels, queries, twins,
                                                               args.groups, twin_pairs)
             print_comparison(arms, results["comparison"][arms])
         print()
-    elif len(by_arms) > 1:
+    elif fixes:
         print("No baseline rows (arms empty) in the run logs, so the fixes are not compared.\n")
+
+    if args.topics:
+        _, topic_errors = check_file(args.topics, "doc_labels")
+        if topic_errors:
+            print(f"The topics file is not valid ({len(topic_errors)} problems). First one:\n  - {topic_errors[0]}")
+            sys.exit(1)
+        results["relevance"] = relevance(by_arms, load_topics(args.topics), queries)
+        if not results["relevance"]:
+            print("Relevance: no question without twins has topics in the pairs file, so it is skipped\n")
+        for arms, r in results["relevance"].items():
+            ch = r.get("precision_change")
+            print(f"Relevance {arms}: top document on topic {pct(r['top1_on_topic'])}, documents on topic "
+                  f"{pct(r['precision_at_k'])} over {r['queries']} questions"
+                  + (f"; vs baseline {ch['mean']:+.3f} (lower {ch['queries_lower']}, higher {ch['queries_higher']})" if ch else ""))
 
     with open(args.out, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=2, ensure_ascii=False)

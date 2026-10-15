@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "query_pairs",
-  "description": "One row per query in the run log. Twin queries share a pair_id and differ in variant (e.g. male, female, neutral). attribute_value is the query's own attribute (e.g. the gender of the person it describes), used to compare what different queries retrieve.",
+  "description": "One row per query in the run log. Twin queries share a pair_id and differ in variant (e.g. male, female, neutral). attribute_value is the query's own attribute (e.g. the gender of the person it describes), used to compare what different queries retrieve. topics (optional) are the topics a relevant document should have, for the relevance check.",
   "type": "object",
   "required": ["query_id"],
   "additionalProperties": false,
@@ -9,7 +9,8 @@
     "query_id": {"type": "string", "minLength": 1},
     "pair_id": {"type": "string", "minLength": 1},
     "variant": {"type": "string", "minLength": 1},
-    "attribute_value": {"type": "string", "minLength": 1}
+    "attribute_value": {"type": "string", "minLength": 1},
+    "topics": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1}
   },
   "dependentRequired": {"pair_id": ["variant"], "variant": ["pair_id"]}
 }

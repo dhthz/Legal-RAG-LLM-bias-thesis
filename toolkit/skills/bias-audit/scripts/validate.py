@@ -42,6 +42,8 @@ def check_file(path, schema_name):
 
 
 BASELINE = "baseline"
+# Not a fix: the LLM test where both twins get the same documents (found with the neutral version of the question)
+FIXED_DOCUMENTS = "fixed_documents"
 
 
 def arms_key(row):
@@ -76,7 +78,9 @@ def check_run_logs(rows):
 
     not_retrieved = sum(len(set(r["cited_doc_ids"]) - {d["doc_id"] for d in r["retrieved"]}) for r in rows)
     if not_retrieved:
-        warnings.append(f"{not_retrieved} cited ids are not among the retrieved documents; they are ignored")
+        warnings.append(f"{not_retrieved} cited ids are not among the retrieved documents (the answer names a document it "
+                        "was not given). They count as part of the answer when twins and repeats are compared, but "
+                        "are left out of the cited vs not cited test")
     return errors, warnings
 
 
