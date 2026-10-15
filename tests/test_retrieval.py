@@ -5,8 +5,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 from src.embeddings.chunk_embedder import ChunkRetriever
 from pathlib import Path
-import json
-from typing import List, Optional
+from typing import List
 
 
 # ======================
@@ -23,24 +22,24 @@ METADATA_PATH_BASIC = f"{INDEX_DIR}/{INDEX_NAME}_metadata.json"
 
 if Path(METADATA_PATH_ENRICHED).exists():
     METADATA_PATH = METADATA_PATH_ENRICHED
-    print("✅ Using ENRICHED metadata (includes age, sentiment, gender)")
+    print("Using ENRICHED metadata (includes gender and sentiment)")
 elif Path(METADATA_PATH_BASIC).exists():
     METADATA_PATH = METADATA_PATH_BASIC
-    print("⚠️  Using BASIC metadata (age/sentiment/gender NOT available)")
-    print("   Run: python scripts/dataset/mergers/merge_metadata_to_chunks.py to enrich")
+    print("Warning: Using BASIC metadata (gender and sentiment NOT available)")
+    print("   Run: python -m scripts.dataset.mergers.merge_metadata_to_chunks to enrich")
 else:
-    print(f"❌ Error: No metadata found!")
+    print("Error: No metadata found!")
     print(f"   Tried: {METADATA_PATH_ENRICHED}")
     print(f"   Tried: {METADATA_PATH_BASIC}")
     print("   Run the chunking pipeline first:")
-    print("   $ python scripts/test/RAG/run_chunking_pipeline.py")
+    print("   $ python -m scripts.chunking_and_embeddings.run_chunking_pipeline")
     sys.exit(1)
 
 # Check if index exists
 if not Path(INDEX_PATH).exists():
-    print(f"❌ Error: Index not found at {INDEX_PATH}")
+    print(f"Error: Index not found at {INDEX_PATH}")
     print("   Run the chunking pipeline first:")
-    print("   $ python scripts/test/RAG/run_chunking_pipeline.py")
+    print("   $ python -m scripts.chunking_and_embeddings.run_chunking_pipeline")
     sys.exit(1)
 
 # ======================
@@ -51,7 +50,7 @@ print("=" * 70)
 print(" " * 20 + "INTERACTIVE RETRIEVAL TESTER")
 print("=" * 70)
 
-print("\n🔄 Loading retrieval system...")
+print("\nLoading retrieval system...")
 retriever = ChunkRetriever(
     index_path=INDEX_PATH,
     metadata_path=METADATA_PATH
@@ -77,7 +76,7 @@ def query(
     global _last_query, _last_chunks, _last_cases
 
     print(f"\n{'=' * 70}")
-    print(f"🔍 QUERY: {q}")
+    print(f"QUERY: {q}")
     print(f"{'=' * 70}")
 
     # Retrieve chunks
@@ -93,16 +92,16 @@ def query(
 
     # Display results
     if show_preview:
-        print(f"\n✅ Retrieved {len(chunks)} chunks from {len(cases)} cases\n")
+        print(f"\nRetrieved {len(chunks)} chunks from {len(cases)} cases\n")
 
         for i, case in enumerate(cases):
             print(f"\n{'─' * 70}")
             print(f"[{i}] {case['case_id']} | {case['title'][:50]}...")
             print(f"{'─' * 70}")
-            print(f"  📅 Date: {case['judgment_date']}")
-            print(f"  📜 Articles: {', '.join(case['violated_articles'])}")
-            print(f"  📊 Similarity: {case['avg_similarity']:.4f} (avg) | {case['max_similarity']:.4f} (max)")
-            print(f"  📦 Chunks: {case['num_chunks']} retrieved")
+            print(f"  Date: {case['judgment_date']}")
+            print(f"  Articles: {', '.join(case['violated_articles'])}")
+            print(f"  Similarity: {case['avg_similarity']:.4f} (avg) | {case['max_similarity']:.4f} (max)")
+            print(f"  Chunks: {case['num_chunks']} retrieved")
 
             # Show enriched metadata from first chunk (case-level data)
             first_chunk = case['chunks'][0] if case['chunks'] else {}
@@ -110,12 +109,12 @@ def query(
             # Gender classification
             if 'classification' in first_chunk:
                 cls = first_chunk['classification']
-                print(f"  👤 Gender: {cls.get('gender', 'N/A')} ({cls.get('confidence', 'N/A')})")
+                print(f"  Gender: {cls.get('gender', 'N/A')} ({cls.get('confidence', 'N/A')})")
 
             # Sentiment info (case-level average)
             if 'sentiment_info' in first_chunk:
                 sent = first_chunk['sentiment_info']
-                print(f"  😰 Emotional intensity: {sent.get('nrc_emotional_intensity', 0):.2%} | "
+                print(f"  Emotional intensity: {sent.get('nrc_emotional_intensity', 0):.2%} | "
                       f"Fear: {sent.get('nrc_fear', 0):.2%} | "
                       f"Anger: {sent.get('nrc_anger', 0):.2%}")
 
@@ -129,8 +128,8 @@ def query(
                 print(f"        Preview: {preview}...")
 
     print(f"\n{'=' * 70}")
-    print(f"💡 Use case_detail(i) to see full case info")
-    print(f"💡 Use show_chunk(case_idx, chunk_idx) to see full chunk text")
+    print("Use case_detail(i) to see full case info")
+    print("Use show_chunk(case_idx, chunk_idx) to see full chunk text")
     print(f"{'=' * 70}\n")
 
     return cases
@@ -138,11 +137,11 @@ def query(
 
 def case_detail(case_idx: int):
     if _last_cases is None:
-        print("❌ No query results. Run query() first.")
+        print("Error: No query results. Run query() first.")
         return
 
     if case_idx >= len(_last_cases):
-        print(f"❌ Case index {case_idx} out of range (0-{len(_last_cases)-1})")
+        print(f"Error: Case index {case_idx} out of range (0-{len(_last_cases)-1})")
         return
 
     case = _last_cases[case_idx]
@@ -155,12 +154,12 @@ def case_detail(case_idx: int):
     print(f"Title:            {case['title']}")
     print(f"Judgment Date:    {case['judgment_date']}")
     print(f"Violated Articles: {', '.join(case['violated_articles'])}")
-    print(f"\nRelevance Scores:")
+    print("\nRelevance Scores:")
     print(f"  Average:        {case['avg_similarity']:.4f}")
     print(f"  Maximum:        {case['max_similarity']:.4f}")
     print(f"  Chunks found:   {case['num_chunks']}")
 
-    print(f"\nAll Retrieved Chunks:")
+    print("\nAll Retrieved Chunks:")
     print(f"{'─' * 70}")
     for i, chunk in enumerate(case['chunks']):
         print(f"[{i}] {chunk['chunk_id']}")
@@ -173,17 +172,17 @@ def case_detail(case_idx: int):
 
 def show_chunk(case_idx: int, chunk_idx: int):
     if _last_cases is None:
-        print("❌ No query results. Run query() first.")
+        print("Error: No query results. Run query() first.")
         return
 
     if case_idx >= len(_last_cases):
-        print(f"❌ Case index {case_idx} out of range (0-{len(_last_cases)-1})")
+        print(f"Error: Case index {case_idx} out of range (0-{len(_last_cases)-1})")
         return
 
     case = _last_cases[case_idx]
 
     if chunk_idx >= len(case['chunks']):
-        print(f"❌ Chunk index {chunk_idx} out of range (0-{len(case['chunks'])-1})")
+        print(f"Error: Chunk index {chunk_idx} out of range (0-{len(case['chunks'])-1})")
         return
 
     chunk = case['chunks'][chunk_idx]
@@ -244,11 +243,11 @@ def stats():
     word_counts = [m['word_count'] for m in retriever.metadata]
 
     import numpy as np
-    print(f"\nCase Statistics:")
+    print("\nCase Statistics:")
     print(f"  Unique cases:        {len(unique_cases)}")
     print(f"  Avg chunks per case: {len(retriever.metadata) / len(unique_cases):.1f}")
 
-    print(f"\nChunk Statistics:")
+    print("\nChunk Statistics:")
     print(f"  Avg word count:      {np.mean(word_counts):.1f}")
     print(f"  Median word count:   {np.median(word_counts):.0f}")
     print(f"  Min word count:      {min(word_counts)}")
@@ -287,7 +286,7 @@ def compare_queries(queries: List[str], top_k: int = 25, top_cases: int = 3):
     return all_results
 
 
-def test_context_window(q: str, max_cases: int = 5, chunks_per_case: int = 3):
+def test_context_window(q: str, max_cases: int = 3, chunks_per_case: int = 2):
     print(f"\n{'=' * 70}")
     print("MISTRAL 7B CONTEXT WINDOW TEST")
     print(f"{'=' * 70}")
@@ -318,18 +317,18 @@ def test_context_window(q: str, max_cases: int = 5, chunks_per_case: int = 3):
     print(f"\n{'─' * 70}")
     print("PROMPT BREAKDOWN:")
     print(f"{'─' * 70}")
-    print(f"  System prompt:       ~200 tokens")
-    print(f"  User query:          ~100 tokens")
+    print("  System prompt:       ~200 tokens")
+    print("  User query:          ~100 tokens")
     print(f"  Retrieved context:   ~{total_tokens} tokens ({total_chunks} chunks, {total_words} words)")
-    print(f"  Prompt template:     ~300 tokens")
-    print(f"  Generation buffer:   ~1,500 tokens")
+    print("  Prompt template:     ~300 tokens")
+    print("  Generation:          up to 1,000 tokens")
     print(f"  {'─' * 60}")
-    print(f"  TOTAL:              ~{200 + 100 + total_tokens + 300 + 1500} tokens")
+    print(f"  TOTAL:              ~{200 + 100 + total_tokens + 300 + 1000} tokens")
 
-    if (200 + 100 + total_tokens + 300 + 1500) < 8000:
-        print(f"\n  ✅ Fits in Mistral 7B optimal window (8k tokens)")
+    if (200 + 100 + total_tokens + 300 + 1000) < 32768:
+        print("\n  Fits in the 32,768-token context window")
     else:
-        print(f"\n  ⚠️  Exceeds optimal window! Consider reducing chunks.")
+        print("\n  Warning: exceeds the 32,768-token context window")
 
     print(f"{'=' * 70}\n")
 
@@ -436,10 +435,10 @@ def help():
 # Startup Message
 # ======================
 
-print("\n✅ Retrieval system loaded successfully!\n")
-print(f"📊 Index: {retriever.index.ntotal:,} chunks")
-print(f"📁 Metadata: {len(retriever.metadata):,} entries\n")
+print("\nRetrieval system loaded successfully!\n")
+print(f"Index: {retriever.index.ntotal:,} chunks")
+print(f"Metadata: {len(retriever.metadata):,} entries\n")
 
 help()
 
-print("💡 TIP: Start with example_queries() to see what you can search for!\n")
+print("TIP: Start with example_queries() to see what you can search for!\n")

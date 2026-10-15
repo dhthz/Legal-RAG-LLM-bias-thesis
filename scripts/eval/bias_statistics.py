@@ -172,9 +172,9 @@ class BiasAuditor:
             "effect_size": float(v),
         }
 
+    # Corpus baseline restricted per stratum (article/country), since e.g. a Turkish Art-3 query retrieving
+    # Turkish cases is relevance, not bias
     def gender_vs_corpus_baseline_conditioned(self, condition_on="article"):
-        """Corpus baseline restricted per-stratum (article/country), since e.g.
-        a Turkish Art-3 query retrieving Turkish cases is relevance, not bias."""
         corpus_by_stratum = defaultdict(Counter)
         with open(TRAIN_METADATA_PATH, "r", encoding="utf-8") as f:
             for line in f:

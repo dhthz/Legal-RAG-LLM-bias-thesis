@@ -5,7 +5,6 @@ import random
 import time
 from datetime import datetime
 
-import numpy as np
 import torch
 import torch.nn.functional as F
 from sentence_transformers import SentenceTransformer

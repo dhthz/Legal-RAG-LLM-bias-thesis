@@ -1,8 +1,7 @@
 
 import json
 from pathlib import Path
-from typing import Dict, List
-from collections import defaultdict
+from typing import Dict
 
 
 class MetadataMerger:
@@ -96,22 +95,22 @@ class MetadataMerger:
         print("METADATA MERGE SUMMARY")
         print("=" * 60)
         print(f"Total chunks: {stats['total_chunks']:,}")
-        print(f"\nCoverage:")
+        print("\nCoverage:")
         print(f"  Gender:    {stats['chunks_with_gender']:,} ({stats['gender_coverage_%']:.1f}%)")
         print(f"  Sentiment: {stats['chunks_with_sentiment']:,} ({stats['sentiment_coverage_%']:.1f}%)")
         print(f"  Fully enriched: {stats['chunks_fully_enriched']:,} ({stats['fully_enriched_%']:.1f}%)")
 
         if stats['missing_gender']:
-            print(f"\n⚠️  Missing gender for {len(stats['missing_gender'])} cases")
+            print(f"\nWarning: Missing gender for {len(stats['missing_gender'])} cases")
         if stats['missing_sentiment']:
-            print(f"⚠️  Missing sentiment for {len(stats['missing_sentiment'])} cases")
+            print(f"Warning: Missing sentiment for {len(stats['missing_sentiment'])} cases")
 
         print("=" * 60)
 
         return stats
 
     def verify_enriched_chunks(self, enriched_file: str, sample_size: int = 5):
-        print(f"\n" + "=" * 60)
+        print("\n" + "=" * 60)
         print(f"VERIFYING ENRICHED CHUNKS (showing {sample_size} samples)")
         print("=" * 60)
 
@@ -154,7 +153,7 @@ def main():
             missing_files.append(file_path)
 
     if missing_files:
-        print("\n⚠️  ERROR: Missing required files:")
+        print("\nERROR: Missing required files:")
         for file_path in missing_files:
             print(f"  - {file_path}")
         print("\nPlease update the file paths in this script and re-run.")
@@ -173,13 +172,14 @@ def main():
     merger.verify_enriched_chunks(OUTPUT_FILE, sample_size=5)
 
     # Save statistics
-    stats_file = "metadata_merge_stats.json"
+    stats_file = "logs/chunking/metadata_merge_stats.json"
+    Path(stats_file).parent.mkdir(parents=True, exist_ok=True)
     with open(stats_file, 'w') as f:
         json.dump(stats, f, indent=2)
     print(f"\nStatistics saved to: {stats_file}")
 
     print("\n" + "=" * 60)
-    print("✓ METADATA MERGE COMPLETE!")
+    print("METADATA MERGE COMPLETE!")
     print("=" * 60)
 
 

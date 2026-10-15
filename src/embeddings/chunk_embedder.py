@@ -114,7 +114,7 @@ class ChunkEmbedder:
         # Print file sizes
         index_size_mb = os.path.getsize(index_path) / (1024 * 1024)
         metadata_size_mb = os.path.getsize(metadata_path) / (1024 * 1024)
-        print(f"\nFile sizes:")
+        print("\nFile sizes:")
         print(f"  Index: {index_size_mb:.2f} MB")
         print(f"  Metadata: {metadata_size_mb:.2f} MB")
         print(f"  Total: {index_size_mb + metadata_size_mb:.2f} MB")
@@ -245,58 +245,3 @@ class ChunkRetriever:
         case_scores.sort(key=lambda x: x[sort_key], reverse=True)
 
         return case_scores[:top_k_cases]
-
-
-# ==========================
-# Example Usage
-# ==========================
-
-if __name__ == "__main__":
-    print("=" * 60)
-    print("CHUNK EMBEDDING PIPELINE")
-    print("=" * 60)
-
-    # Step 1: Create embeddings for chunked dataset
-    embedder = ChunkEmbedder(
-        model_name="nomic-ai/nomic-embed-text-v1",
-        device="cuda",
-        batch_size=32
-    )
-
-    stats = embedder.process_chunked_dataset(
-        chunk_file="dataset/train_chunked.jsonl",
-        output_dir="faiss_indices",
-        index_name="paragraph_chunks"
-    )
-
-    print("\n" + "=" * 60)
-    print("TESTING RETRIEVAL")
-    print("=" * 60)
-
-    # Step 2: Test retrieval
-    retriever = ChunkRetriever(
-        index_path="faiss_indices/paragraph_chunks_l2.index",
-        metadata_path="faiss_indices/paragraph_chunks_metadata.json"
-    )
-
-    query = "The applicant was detained without trial for 3 years"
-    print(f"\nQuery: {query}")
-
-    # Retrieve chunks
-    chunks = retriever.retrieve_chunks(query, top_k=25)
-    print(f"\nRetrieved {len(chunks)} chunks")
-
-    # Aggregate to cases
-    cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=5)
-
-    print(f"\nTop {len(cases)} cases:")
-    for i, case in enumerate(cases, 1):
-        print(f"\n{i}. {case['case_id']} - {case['title']}")
-        print(f"   Avg similarity: {case['avg_similarity']:.4f}")
-        print(f"   Relevant chunks: {case['num_chunks']}")
-        print(f"   Violated articles: {case['violated_articles']}")
-        print(f"   Top chunk: {case['chunks'][0]['chunk_id']}")
-
-    print("\n" + "=" * 60)
-    print("Ready for RAG pipeline integration!")
-    print("=" * 60)

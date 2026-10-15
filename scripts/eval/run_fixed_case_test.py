@@ -2,7 +2,6 @@ import argparse
 import json
 import time
 from collections import defaultdict
-from pathlib import Path
 
 from scripts.eval.run_bias_audit import BiasAuditRunner, VARIANT_QUERIES_FILES
 

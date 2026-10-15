@@ -11,7 +11,6 @@ ARM_REGISTRY = {
     "leace": "src.mitigation.leace:LEACE",
     "leace_query": "src.mitigation.leace:LEACEQuery",
     "blind_index": "src.mitigation.blind_index:BlindIndex",
-    "facts_only": "src.mitigation.blind_index:FactsOnlyIndex",
     "cda": "src.mitigation.finetuned_embedder:FineTunedEmbedder",
     "ft_control": "src.mitigation.finetuned_embedder:FineTunedControl",
     "ft_ccd": "src.mitigation.finetuned_embedder:FineTunedCCD",

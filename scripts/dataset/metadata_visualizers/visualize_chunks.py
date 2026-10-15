@@ -105,7 +105,7 @@ def visualize_chunking_results(chunked_file: str, output_dir: str = "visualizati
     print(f"Total chunks: {len(chunks)}")
     print(f"Unique cases: {unique_cases}")
     print(f"Chunks per case: {len(chunks) / unique_cases:.2f}")
-    print(f"\nWord counts:")
+    print("\nWord counts:")
     print(f"  Mean: {np.mean(word_counts):.1f}")
     print(f"  Median: {np.median(word_counts):.1f}")
     print(f"  Std: {np.std(word_counts):.1f}")
@@ -114,40 +114,40 @@ def visualize_chunking_results(chunked_file: str, output_dir: str = "visualizati
     print(f"  25th percentile: {np.percentile(word_counts, 25):.1f}")
     print(f"  75th percentile: {np.percentile(word_counts, 75):.1f}")
 
-    print(f"\nChunk types:")
+    print("\nChunk types:")
     for chunk_type, count in type_counts.items():
         print(f"  {chunk_type}: {count} ({count/len(chunks)*100:.1f}%)")
 
     # Estimate Mistral 7B context usage
-    print(f"\n" + "=" * 60)
+    print("\n" + "=" * 60)
     print("MISTRAL 7B CONTEXT ESTIMATION")
     print("=" * 60)
 
-    # Simulate: retrieve 25 chunks, take top 3 per case for top 5 cases
+    # The frozen prompt: 25 chunks retrieved, top 3 cases, 2 chunks per case
     avg_words_per_chunk = np.mean(word_counts)
-    chunks_in_context = 15  # 5 cases × 3 chunks
+    chunks_in_context = 6  # 3 cases × 2 chunks
     estimated_context_words = chunks_in_context * avg_words_per_chunk
     estimated_context_tokens = estimated_context_words * 1.3  # Word to token ratio
 
-    print(f"Scenario: Retrieve 25 chunks, aggregate to 5 cases, use top 3 chunks per case")
+    print("Scenario: retrieve 25 chunks, aggregate to 3 cases, use the top 2 chunks per case")
     print(f"  Chunks in context: {chunks_in_context}")
     print(f"  Estimated words: {estimated_context_words:.0f}")
     print(f"  Estimated tokens: {estimated_context_tokens:.0f}")
-    print(f"\nTotal prompt estimate:")
-    print(f"  System + query + template: ~600 tokens")
+    print("\nTotal prompt estimate:")
+    print("  System + query + template: ~600 tokens")
     print(f"  Retrieved context: ~{estimated_context_tokens:.0f} tokens")
-    print(f"  Generation buffer: ~1,500 tokens")
-    print(f"  TOTAL: ~{600 + estimated_context_tokens + 1500:.0f} tokens")
+    print("  Generation: up to 1,000 tokens")
+    print(f"  TOTAL: ~{600 + estimated_context_tokens + 1000:.0f} tokens")
 
-    if (600 + estimated_context_tokens + 1500) < 8000:
-        print(f"\n✓ Fits in optimal window (< 8,000 tokens)")
+    if (600 + estimated_context_tokens + 1000) < 32768:
+        print("\nFits in the 32,768-token context window")
     else:
-        print(f"\n⚠️  May exceed optimal window!")
+        print("\nWarning: may exceed the 32,768-token context window")
 
 
 def compare_case_before_after(case_id: str, original_file: str, chunked_file: str):
 
-    print(f"\n" + "=" * 60)
+    print("\n" + "=" * 60)
     print(f"CASE COMPARISON: {case_id}")
     print("=" * 60)
 
@@ -171,16 +171,16 @@ def compare_case_before_after(case_id: str, original_file: str, chunked_file: st
     original_facts = original_case['facts']
     total_original_words = sum(len(p.split()) for p in original_facts)
 
-    print(f"\nORIGINAL CASE:")
+    print("\nORIGINAL CASE:")
     print(f"  Paragraphs: {len(original_facts)}")
     print(f"  Total words: {total_original_words}")
     print(f"  Estimated tokens: {total_original_words * 1.3:.0f}")
 
-    print(f"\nAFTER CHUNKING:")
+    print("\nAFTER CHUNKING:")
     print(f"  Total chunks: {len(case_chunks)}")
     print(f"  Avg words per chunk: {np.mean([c['word_count'] for c in case_chunks]):.1f}")
 
-    print(f"\nCHUNK DETAILS:")
+    print("\nCHUNK DETAILS:")
     for i, chunk in enumerate(case_chunks[:5], 1):  # Show first 5
         print(f"\n  Chunk {i}:")
         print(f"    ID: {chunk['chunk_id']}")

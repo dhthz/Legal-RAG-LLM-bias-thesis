@@ -73,6 +73,7 @@ Python 3.12, CUDA, and Ollama with `mistral` pulled. Download the dataset above 
 python -m venv thesis_venv && source thesis_venv/bin/activate
 pip install -r requirements.txt
 python -m scripts.chunking_and_embeddings.run_chunking_pipeline   # build the chunked dataset and the FAISS index (GPU, ~30 min)
+python -m scripts.dataset.mergers.merge_metadata_to_chunks      # add the case metadata (gender, NRC) to the chunks
 python -m tests.test_frozen_retrieval        # retrieval must match the frozen baseline exactly
 python -m tests.test_pipeline                # one question end to end
 ```
@@ -109,9 +110,5 @@ Built with: [FAISS](https://github.com/facebookresearch/faiss), [nomic-embed-tex
 ## Status
 
 - Audit and fixes: complete.
-- Toolkit: v0.1, reproduces the thesis audit exactly; testing on a second, unseen RAG system in progress.
+- Toolkit: v0.1, reproduces the thesis audit exactly, and was tested from a fresh session on a second, unseen RAG system (a Bias in Bios search app).
 - Gender is the validated attribute. The system is English-only and ECtHR-only, with one embedder and one LLM.
-
-## Data license
-
-Files that contain text from the ECtHR cases dataset, or metadata added to its cases, are adapted from it and shared under its license, [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/), credited to Chalkidis et al. (2019, 2021) with HUDOC as the original source: the audit questions in [`docs/llm_queries/`](docs/llm_queries/) (written from case facts), the per-case metadata in [`docs/data/`](docs/data/), and any result file that quotes case text. The papers behind the fixes are credited in [References](#references); the fixes are independent implementations of the published methods, and LEACE uses the authors' MIT-licensed library.

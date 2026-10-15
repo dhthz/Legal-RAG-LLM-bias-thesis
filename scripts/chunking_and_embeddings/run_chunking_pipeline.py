@@ -1,12 +1,20 @@
 
-import sys
+import hashlib
+import json
 import os
-sys.path.insert(0, os.path.abspath('.'))
+
+import numpy as np
 
 from src.chunking.legal_chunker import LegalCaseChunker, ChunkConfig
 from src.embeddings.chunk_embedder import ChunkEmbedder, ChunkRetriever
-import json
-from pathlib import Path
+from src.llm.config import PipelineConfig
+
+# Rebuilds the chunked dataset and the FAISS index from dataset/train.jsonl, then checks the index against the
+# SHA256 in the manifest. Next: merge_metadata_to_chunks, then tests.test_frozen_retrieval.
+#   python -m scripts.chunking_and_embeddings.run_chunking_pipeline   (GPU, ~30 min)
+
+MANIFEST_PATH = "FROZEN_BASELINE_MANIFEST.json"
+REPORT_PATH = "logs/chunking/pipeline_report.json"
 
 
 def analyze_original_dataset(dataset_path: str):
@@ -39,8 +47,6 @@ def analyze_original_dataset(dataset_path: str):
 
             word_counts_per_case.append(case_words)
 
-    import numpy as np
-
     print(f"\nTotal cases: {case_count}")
     print(f"Total paragraphs: {total_paragraphs}")
     print(f"Avg paragraphs per case: {np.mean(paragraph_counts):.1f}")
@@ -60,12 +66,6 @@ def analyze_original_dataset(dataset_path: str):
     avg_tokens_per_case = np.mean(word_counts_per_case) * 1.3
     print(f"\nEstimated avg tokens per case: {avg_tokens_per_case:.0f}")
 
-    if avg_tokens_per_case > 6000:
-        print("⚠️  WARNING: Average case size exceeds Mistral 7B optimal context!")
-        print("   Chunking is ESSENTIAL for this dataset.")
-    else:
-        print("✓ Average case size is manageable for Mistral 7B")
-
     return {
         'case_count': case_count,
         'avg_paragraphs_per_case': np.mean(paragraph_counts),
@@ -74,17 +74,26 @@ def analyze_original_dataset(dataset_path: str):
     }
 
 
+def file_sha256(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as f:
+        for block in iter(lambda: f.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
 def run_complete_pipeline():
 
     print("\n" + "=" * 80)
     print(" " * 20 + "LEGAL CASE CHUNKING & EMBEDDING PIPELINE")
     print("=" * 80)
 
-    # Configuration
     DATASET_PATH = "dataset/train.jsonl"
     CHUNKED_OUTPUT = "dataset/train_chunked_paragraphs.jsonl"
     INDEX_DIR = "faiss_indices"
     INDEX_NAME = "paragraph_chunks"
+    INDEX_PATH = f"{INDEX_DIR}/{INDEX_NAME}_l2.index"
+    pipeline_config = PipelineConfig.load_from_manifest()
 
     # Step 0: Analyze original dataset
     original_stats = analyze_original_dataset(DATASET_PATH)
@@ -107,7 +116,7 @@ def run_complete_pipeline():
     chunking_stats = chunker.chunk_dataset(
         dataset_path=DATASET_PATH,
         output_path=CHUNKED_OUTPUT,
-        strategy='paragraph'  # or 'multi_paragraph'
+        strategy='paragraph'
     )
 
     # Step 2: Create embeddings and index
@@ -127,17 +136,30 @@ def run_complete_pipeline():
         index_name=INDEX_NAME
     )
 
-    # Step 3: Test retrieval
+    # Step 3: Check the index against the frozen one
     print("\n" + "=" * 60)
-    print("STEP 3: TESTING RETRIEVAL")
+    print("STEP 3: CHECKING THE INDEX")
+    print("=" * 60)
+
+    with open(MANIFEST_PATH, "r", encoding="utf-8") as f:
+        frozen_sha256 = json.load(f)["faiss_index"]["sha256_checksum"]
+    index_sha256 = file_sha256(INDEX_PATH)
+    matches = index_sha256 == frozen_sha256
+    print(f"Index SHA256: {index_sha256}")
+    print(f"Manifest:     {frozen_sha256}")
+    print("Index matches the frozen baseline" if matches else
+          "Index differs from the frozen baseline: results will not reproduce the thesis")
+
+    # Step 4: Test retrieval with the frozen settings
+    print("\n" + "=" * 60)
+    print("STEP 4: TESTING RETRIEVAL")
     print("=" * 60)
 
     retriever = ChunkRetriever(
-        index_path=f"{INDEX_DIR}/{INDEX_NAME}_l2.index",
+        index_path=INDEX_PATH,
         metadata_path=f"{INDEX_DIR}/{INDEX_NAME}_metadata.json"
     )
 
-    # Test queries
     test_queries = [
         "The applicant was detained without trial for several years",
         "Article 3 violation involving torture and inhuman treatment",
@@ -145,106 +167,39 @@ def run_complete_pipeline():
         "Freedom of expression and defamation case involving journalist",
     ]
 
-    print("\nTest Queries:")
     for i, query in enumerate(test_queries, 1):
         print(f"\n{i}. Query: {query}")
 
-        chunks = retriever.retrieve_chunks(query, top_k=25)
-        cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=5)
+        chunks = retriever.retrieve_chunks(query, top_k=pipeline_config.top_k_chunks)
+        cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=pipeline_config.top_k_cases)
 
         print(f"   Retrieved {len(chunks)} chunks from {len(cases)} cases")
-        print(f"   Top case: {cases[0]['case_id']} ({cases[0]['avg_similarity']:.3f})")
+        print(f"   Top case: {cases[0]['case_id']} ({cases[0]['max_similarity']:.3f})")
         print(f"   Articles: {cases[0]['violated_articles']}")
-
-    # Step 4: Calculate context window usage
-    print("\n" + "=" * 60)
-    print("STEP 4: MISTRAL 7B CONTEXT WINDOW ANALYSIS")
-    print("=" * 60)
-
-    # Simulate retrieval for context estimation
-    query = "The applicant was detained without trial"
-    chunks = retriever.retrieve_chunks(query, top_k=25)
-    cases = retriever.aggregate_chunks_to_cases(chunks, top_k_cases=5)
-
-    # Calculate total words in retrieved context
-    total_context_words = 0
-    total_chunks_used = 0
-
-    for case in cases:
-        # Take top 3 most relevant chunks per case
-        for chunk in case['chunks'][:3]:
-            total_context_words += chunk['word_count']
-            total_chunks_used += 1
-
-    # Estimate tokens (word * 1.3)
-    total_context_tokens = total_context_words * 1.3
-
-    print(f"\nContext Window Usage Estimate:")
-    print(f"  Chunks retrieved: 25")
-    print(f"  Cases aggregated: {len(cases)}")
-    print(f"  Chunks used in context: {total_chunks_used}")
-    print(f"  Total words: {total_context_words}")
-    print(f"  Estimated tokens: {total_context_tokens:.0f}")
-
-    print(f"\nMistral 7B Prompt Breakdown:")
-    print(f"  System prompt:      ~200 tokens")
-    print(f"  User query:         ~100 tokens")
-    print(f"  Retrieved context:  ~{total_context_tokens:.0f} tokens")
-    print(f"  Prompt template:    ~300 tokens")
-    print(f"  Generation buffer:  ~1,500 tokens")
-    print(f"  " + "-" * 40)
-    print(f"  TOTAL:             ~{200 + 100 + total_context_tokens + 300 + 1500:.0f} tokens")
-
-    if (200 + 100 + total_context_tokens + 300 + 1500) < 8000:
-        print("\n✓ Context fits comfortably in Mistral 7B optimal window (8k tokens)")
-    else:
-        print("\n⚠️  WARNING: Context may exceed optimal window!")
-        print("   Consider reducing chunks per case or number of cases")
-
-    # Step 5: Generate summary report
-    print("\n" + "=" * 60)
-    print("PIPELINE SUMMARY REPORT")
-    print("=" * 60)
 
     summary = {
         'original_dataset': original_stats,
         'chunking': chunking_stats,
         'embeddings': embedding_stats,
-        'context_window_estimate_tokens': int(total_context_tokens),
-        'total_pipeline_tokens_estimate': int(200 + 100 + total_context_tokens + 300 + 1500),
+        'index_sha256': index_sha256,
+        'index_matches_manifest': matches,
     }
 
-    # Save report
-    report_path = "pipeline_report.json"
-    with open(report_path, 'w') as f:
-        json.dump(summary, f, indent=2)
+    os.makedirs(os.path.dirname(REPORT_PATH), exist_ok=True)
+    with open(REPORT_PATH, 'w', encoding='utf-8') as f:
+        json.dump(summary, f, indent=2, default=float)
 
-    print(f"\nPipeline report saved to: {report_path}")
+    print(f"\nPipeline report saved to: {REPORT_PATH}")
 
-    print("\n" + "=" * 60)
-    print("✓ PIPELINE COMPLETE!")
-    print("=" * 60)
-
-    print(f"""
-Next Steps:
-
-1. Check the chunked dataset:
-   $ head -n 5 {CHUNKED_OUTPUT}
-
-2. Test retrieval interactively:
-   $ python -i scripts/test_retrieval.py
-
-3. Integrate with Mistral 7B:
-   - Use ChunkRetriever to get relevant chunks
-   - Aggregate to top 5 cases
-   - Take top 3 chunks per case
-   - Format into Mistral prompt template
-
-4. For bias analysis:
-   - Create semantic chunks using multi_paragraph strategy
-   - Build separate index for bias testing
-   - Compare retrieval patterns across both indices
-    """)
+    print("""
+Next steps:
+1. Add the case metadata to the chunks:
+   $ python -m scripts.dataset.mergers.merge_metadata_to_chunks
+2. Check retrieval against the frozen audit run (335/335 identical):
+   $ python -m tests.test_frozen_retrieval
+3. Explore retrieval interactively:
+   $ python -i tests/test_retrieval.py
+""")
 
 
 if __name__ == "__main__":

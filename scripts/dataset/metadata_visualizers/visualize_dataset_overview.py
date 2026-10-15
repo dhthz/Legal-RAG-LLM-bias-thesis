@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 from collections import defaultdict, Counter
-from datetime import datetime
 import itertools
 
 # Set style for publication-quality plots
@@ -27,7 +26,7 @@ def load_data():
             case = json.loads(line)
             data.append(case)
 
-    print(f"✅ Loaded {len(data)} cases")
+    print(f"Loaded {len(data)} cases")
     return data
 
 def plot_article_distribution(data):
@@ -151,7 +150,7 @@ def plot_article_distribution(data):
     plt.tight_layout()
     output_path = OUTPUT_DIR / "article_distribution.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
     plt.close()
 
 def plot_temporal_trends(data):
@@ -166,7 +165,7 @@ def plot_temporal_trends(data):
                 year = int(judgment_date.split('-')[0])
                 if 1950 <= year <= 2030:  # Sanity check
                     years.append(year)
-            except:
+            except ValueError:
                 continue
 
     year_counts = Counter(years)
@@ -267,7 +266,7 @@ def plot_temporal_trends(data):
     plt.tight_layout()
     output_path = OUTPUT_DIR / "temporal_trends.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
     plt.close()
 
 def plot_defendant_countries(data):
@@ -356,8 +355,8 @@ def plot_defendant_countries(data):
 
     bars = ax3.bar(range(len(sorted_counts)), sorted_counts, color='steelblue',
                    edgecolor='black', alpha=0.7, label='Case Count')
-    line = ax3_twin.plot(range(len(cumsum_pct)), cumsum_pct, 'r-', linewidth=2,
-                         marker='o', markersize=4, label='Cumulative %')
+    ax3_twin.plot(range(len(cumsum_pct)), cumsum_pct, 'r-', linewidth=2,
+                  marker='o', markersize=4, label='Cumulative %')
     ax3_twin.axhline(y=80, color='orange', linestyle='--', linewidth=2, alpha=0.7)
 
     ax3.set_xlabel('Country Rank', fontsize=12)
@@ -417,7 +416,7 @@ def plot_defendant_countries(data):
     plt.tight_layout()
     output_path = OUTPUT_DIR / "defendant_countries.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
     plt.close()
 
 def plot_case_outcomes(data):
@@ -539,7 +538,7 @@ def plot_case_outcomes(data):
     plt.tight_layout()
     output_path = OUTPUT_DIR / "case_outcomes.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
     plt.close()
 
 def plot_article_cooccurrence(data):
@@ -589,9 +588,9 @@ def plot_article_cooccurrence(data):
     for i in range(len(top_15_articles)):
         for j in range(len(top_15_articles)):
             if matrix[i, j] > 0:
-                text = ax1.text(j, i, int(matrix[i, j]),
-                               ha="center", va="center", color="black" if matrix[i, j] < matrix.max()/2 else "white",
-                               fontsize=8)
+                ax1.text(j, i, int(matrix[i, j]),
+                         ha="center", va="center", color="black" if matrix[i, j] < matrix.max()/2 else "white",
+                         fontsize=8)
 
     ax1.set_title('Article Co-occurrence Matrix (Top 15 Articles)', fontsize=14, fontweight='bold')
     plt.colorbar(im, ax=ax1, label='Number of Co-occurrences')
@@ -633,7 +632,7 @@ def plot_article_cooccurrence(data):
     plt.tight_layout()
     output_path = OUTPUT_DIR / "article_cooccurrence.png"
     plt.savefig(output_path, dpi=300, bbox_inches='tight')
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
     plt.close()
 
 def generate_dataset_report(data):
@@ -662,7 +661,7 @@ def generate_dataset_report(data):
                 year = int(judgment_date.split('-')[0])
                 if 1950 <= year <= 2030:
                     years.append(year)
-            except:
+            except ValueError:
                 pass
 
     violations_array = np.array(violations_per_case)
@@ -755,7 +754,7 @@ END OF REPORT
     with open(output_path, 'w') as f:
         f.write(report)
 
-    print(f"   ✅ Saved: {output_path}")
+    print(f"   Saved: {output_path}")
 
 def main():
     print("=" * 70)
@@ -774,7 +773,7 @@ def main():
     generate_dataset_report(data)
 
     print("\n" + "=" * 70)
-    print("✅ All dataset visualizations completed!")
+    print("All dataset visualizations completed!")
     print("=" * 70)
     print(f"\nOutput files saved to: {OUTPUT_DIR}/")
     print("  1. article_distribution.png")

@@ -3,7 +3,6 @@
 
 import json
 import os
-from pathlib import Path
 
 def split_jsonl(input_file, output_dir, num_splits=10):
     # Read all lines

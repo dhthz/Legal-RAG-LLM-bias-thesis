@@ -3,7 +3,7 @@ import csv
 import json
 import random
 import re
-from collections import Counter, defaultdict
+from collections import Counter
 
 MAIN_QUERIES = "dataset/eval/audit_queries_main.jsonl"
 VARIANT_QUERIES = "dataset/eval/audit_queries_variants.jsonl"
