@@ -18,6 +18,7 @@ AUDIT_LOG_PATH = "logs/bias_audit/stateless/run40_A.jsonl"
 RESULTS_DIR = "logs/bias_audit/stats_v3_40bases"
 MULTI_RUN_PATH = "logs/bias_audit/stats_multi_run/results.json"
 LLM_OUTPUT_PATH = "logs/bias_audit/stats_llm_output/results.json"
+R3B_PATH = "logs/robustness/r3b_llm_pronoun_fixed_cases.json"
 TRAIN_METADATA_PATH = "dataset/train_with_metadata.jsonl"
 
 # "Needs Manual Classification" dropped from gender charts per owner's call
@@ -279,10 +280,11 @@ class BiasAuditVisualizer:
         flips = self.paired_variants["paired_framing_male_vs_female"]
         disc = flips["mcnemar_discordant"]
         split = self.multi_run["input_similarity_split"]
-        same_mf = split["male_vs_female"]["identical input"]
         same_ne = split["neutral_vs_emotional"]["identical input"]
         order = split["male_vs_female"]["different order"]
-        llm_p = min(self.llm_output["holm_bonferroni"]["p_corrected"].values())
+        # The identical-input gender test comes from R3b (the cases held fixed, 160 rows), not the 3 bases of the split
+        with open(R3B_PATH, "r", encoding="utf-8") as f:
+            r3b = json.load(f)["results"]["pairs"]["male_vs_female"]["cited_case"]
 
         rows = [
             ("A pronoun alone changes\nthe top result",
@@ -297,9 +299,9 @@ class BiasAuditVisualizer:
              f"newer than the corpus; violation cases slightly over-returned",
              "Retrieval\nall significant (corrected)"),
             ("The AI adds no bias\nof its own",
-             f"With identical input, wording changed the cited case\n{same_mf['wording_change_rate']:.0%} (gender) and "
-             f"{same_ne['wording_change_rate']:.0%} (tone, vs {same_ne['same_bases_repeat_noise']:.0%} noise); predicted articles unchanged",
-             f"AI answer\npredicted articles p={llm_p:.1f} (corrected)"),
+             f"With identical cases, the pronoun changed the cited case in {r3b['change_rate']:.1%}\n(noise {r3b['repeat_noise']:.1%}), "
+             f"tone in {same_ne['wording_change_rate']:.0%} (noise {same_ne['same_bases_repeat_noise']:.0%}); predicted articles unchanged",
+             f"AI answer\nR3b p={r3b['p_wilcoxon_change_above_noise']:.2f}"),
             ("The AI amplifies\nreordering",
              f"The same cases in a different order changed\nthe cited case {order['wording_change_rate']:.0%} of the time (position bias)",
              f"AI answer\n{order['n_bases']} cases, 4 runs"),
@@ -363,7 +365,7 @@ class BiasAuditVisualizer:
         p = min(self.llm_output["holm_bonferroni"]["p_corrected"].values())
         fig.text(0.5, 0.01,
                  f"40 cases, each worded five ways, 4 full runs averaged; compared with the case's real violated articles. "
-                 f"8 paired tests (gender, tone), smallest corrected p = {p:.1f}.",
+                 f"Accuracy does not change. Tone shifts which articles are predicted slightly (Holm p = {p:.2g}), mostly through retrieval.",
                  ha="center", fontsize=9, color="#333")
         plt.tight_layout(rect=[0, 0.05, 1, 1])
         path = f"{self.output_dir}/06_predicted_articles_by_wording.png"
