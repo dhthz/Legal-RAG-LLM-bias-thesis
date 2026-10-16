@@ -306,7 +306,7 @@ class BiasAuditVisualizer:
              f"The same cases in a different order changed\nthe cited case {order['wording_change_rate']:.0%} of the time (position bias)",
              f"AI answer\n{order['n_bases']} cases, 4 runs"),
             ("Emotional tone has\nno effect",
-             "No change in retrieval, citation, predicted\narticles or the tone of the answer",
+             "No change in retrieval, citation, article\naccuracy or the tone of the answer",
              "Both stages\nNRC-verified wording"),
         ]
 
@@ -328,7 +328,7 @@ class BiasAuditVisualizer:
                 table[r, c].set_text_props(ha="left")
                 table[r, c].PAD = 0.02
 
-        ax.set_title("Bias Audit — What We Found", fontweight="bold", fontsize=15, pad=8)
+        ax.set_title("Bias audit findings", fontweight="bold", fontsize=15, pad=8)
         plt.tight_layout()
         path = f"{self.output_dir}/05_findings_summary_table.png"
         plt.savefig(path, bbox_inches="tight")

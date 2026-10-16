@@ -26,6 +26,12 @@ Everything a reader needs from the thesis: results, charts, the question sets an
 | `visualizations/07_fixes_tradeoff.png` | Bias removed against relevance kept, per fix | `dataset/metadata_visualizers/visualize_mitigation.py` |
 | `visualizations/08_fixes_whole_system.png` | He/she answers citing different cases, per fix, against repeat noise | same |
 
+## The toolkit overview
+
+| File | What it shows | Made by |
+|---|---|---|
+| `bias_audit/phase_g_overview.pdf` | The toolkit in six pages: how it works, what is in the plugin, one session stage by stage, what the scripts measure and how they were validated, why an agent-guided plugin, the test and the limitations | written by hand, `bias_audit/phase_g_overview.html` printed to PDF |
+
 ## llm_queries/: the question sets
 
 | File | What it is | Made by |
