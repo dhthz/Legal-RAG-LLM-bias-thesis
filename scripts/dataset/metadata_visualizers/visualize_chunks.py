@@ -4,7 +4,7 @@ import numpy as np
 from collections import Counter
 
 
-def visualize_chunking_results(chunked_file: str, output_dir: str = "visualizations/chunk_analysis"):
+def visualize_chunking_results(chunked_file: str, output_dir: str = "docs/dataset/visualizations/chunk_analysis"):
 
     import os
     os.makedirs(output_dir, exist_ok=True)

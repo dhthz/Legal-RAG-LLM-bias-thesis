@@ -16,7 +16,7 @@ MSc thesis. The system under audit answers questions on European Court of Human 
 | **The LLM amplifies retrieval** | Given the same cases in a different order, it cites a different case 69% of the time (position bias). |
 | **Emotional tone has no effect** | Neither on retrieval nor on the answer. |
 
-Full results: [`docs/bias_audit/results/`](docs/bias_audit/results/) (tables and `final_results.json`), charts in [`docs/bias_audit/visualizations/`](docs/bias_audit/visualizations/).
+Full results: [`docs/bias_audit/results/`](docs/bias_audit/results/) (tables 01–10 and `final_results.json`), charts in [`docs/bias_audit/visualizations/`](docs/bias_audit/visualizations/); the robustness checks R1–R5 in [table 15](docs/bias_audit/results/tables/15_robustness_checks.csv). Every file is listed in [`docs/README.md`](docs/README.md).
 
 ## Fixes
 
@@ -35,7 +35,9 @@ Five mitigation methods from the literature and two classic baselines, covering 
 
 Changes from the papers: LEACE erases the he/she direction of the query rather than each document's gender (the paper's setup failed here, 114 changes); the content conditional fine-tune uses a stronger anchor to the original model (the paper's setting found a shortcut) [10]; the counterfactual fine-tune uses label-preserving twins rather than the paper's group-level objective.
 
-The fixes that act on the search reduce the effect, the best ones to near zero, without losing relevance. A fix inside the LLM cannot: the bias is already in the cases it is given. Trade-off table: [`11_mitigation_tradeoff.csv`](docs/bias_audit/results/tables/11_mitigation_tradeoff.csv).
+The fixes that act on the search reduce the effect, the best ones to near zero, without losing relevance. A fix inside the LLM cannot: the bias is already in the cases it is given. Trade-off table: [`11_mitigation_tradeoff.csv`](docs/bias_audit/results/tables/11_mitigation_tradeoff.csv); details in tables [12](docs/bias_audit/results/tables/12_mitigation_retrieval.csv) (search), [13](docs/bias_audit/results/tables/13_mitigation_whole_system.csv) (answers) and [14](docs/bias_audit/results/tables/14_mitigation_changed_cases.csv) (changed cases), all with their sources in [`mitigation_results.json`](docs/bias_audit/results/mitigation_results.json).
+
+![Bias removed against relevance kept, per fix](docs/bias_audit/visualizations/07_fixes_tradeoff.png)
 
 ## The audit toolkit
 
@@ -52,18 +54,18 @@ Then, in your RAG project, ask Claude to audit it for gender bias, or run `/rag-
 
 | Path | Contents |
 |---|---|
-| [`src/`](src/) | The RAG pipeline (chunking, embedding, retrieval, prompting, logging) and the fixes as plain functions (`src/mitigation/`) |
-| [`scripts/`](scripts/) | Runnable steps: index building, query construction, the audit statistics and the robustness checks (`scripts/eval/`) |
+| [`src/`](src/) | The RAG pipeline (chunking, embedding, retrieval, prompting, logging) and the fixes as plain functions (`src/mitigation/`); file map in [`src/README.md`](src/README.md) |
+| [`scripts/`](scripts/) | Runnable steps: index building, query construction, the audit statistics and the robustness checks; file map in [`scripts/README.md`](scripts/README.md) |
 | [`toolkit/`](toolkit/) | The Claude Code plugin |
-| [`docs/bias_audit/`](docs/bias_audit/) | Results, charts and the toolkit overview |
-| [`tests/`](tests/) | End-to-end test and the frozen-retrieval tripwire |
+| [`docs/`](docs/) | Results, charts, the question sets and the released metadata; index in [`docs/README.md`](docs/README.md) |
+| [`tests/`](tests/) | End-to-end test and the frozen-retrieval tripwire; see [`tests/README.md`](tests/README.md) |
 | [`FROZEN_BASELINE_MANIFEST.json`](FROZEN_BASELINE_MANIFEST.json) | Every pipeline setting, the index checksum and the prompt variants |
 
 The dataset, the FAISS indices (except the two small LEACE erasers) and the run logs are not in the repository (size, and the dataset's own license); [Reproducing the results](#reproducing-the-results) rebuilds them.
 
 ## Data
 
-The judgments come from the **ECtHR cases** dataset of Chalkidis et al. (2019, 2021), [`AUEB-NLP/ecthr_cases`](https://huggingface.co/datasets/AUEB-NLP/ecthr_cases) on Hugging Face (a version of it is also part of [LexGLUE](https://github.com/coastalcph/lex-glue), Chalkidis et al. 2022), built from the Court's public database [HUDOC](https://hudoc.echr.coe.int). It is licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). The index holds the 9,000 training judgments; the dev and test splits are used for questions and for fitting the fixes, never indexed. Applicant gender was added for the audit: Claude Sonnet 4.5 labelled each judgment from its title and facts (Male, Female, Multiple Applicants, Unknown), the 209 cases it could not settle were labelled by hand, and a hand check of 300 labels confirmed 93.7% (95% CI 90.7–96.8%). Each case also has NRC emotion scores (Mohammad & Turney 2013), used to build and check the emotional question variants. Both are released in [`docs/data/case_metadata.csv`](docs/data/case_metadata.csv) (one row per case: gender, `confidence` = `human` for the hand-labelled cases, NRC scores), with the 300-case hand check in [`docs/data/`](docs/data/) (`gender_validation_key.csv`, `gender_validation_tagged.csv`; no case text). Counts in [`docs/metadata_reports/gender_labels.csv`](docs/metadata_reports/gender_labels.csv), charts in [`visualizations/gender_analysis/`](visualizations/gender_analysis/).
+The judgments come from the **ECtHR cases** dataset of Chalkidis et al. (2019, 2021), [`AUEB-NLP/ecthr_cases`](https://huggingface.co/datasets/AUEB-NLP/ecthr_cases) on Hugging Face (a version of it is also part of [LexGLUE](https://github.com/coastalcph/lex-glue), Chalkidis et al. 2022), built from the Court's public database [HUDOC](https://hudoc.echr.coe.int). It is licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/). The index holds the 9,000 training judgments; the dev and test splits are used for questions and for fitting the fixes, never indexed. Applicant gender was added for the audit: Claude Sonnet 4.5 labelled each judgment from its title and facts (Male, Female, Multiple Applicants, Unknown), the 209 cases it could not settle were labelled by hand, and a hand check of 300 labels confirmed 93.7% (95% CI 90.7–96.8%). Each case also has NRC emotion scores (Mohammad & Turney 2013; the lexicon is free for research use), used to build and check the emotional question variants; tone changed neither the retrieval nor the answer. Summary by applicant gender in [`docs/metadata_reports/nrc_emotion.csv`](docs/metadata_reports/nrc_emotion.csv). Both are released in [`docs/data/case_metadata.csv`](docs/data/case_metadata.csv) (one row per case: gender, `confidence` = `human` for the hand-labelled cases, NRC scores), with the 300-case hand check in [`docs/data/`](docs/data/) (`gender_validation_key.csv`, `gender_validation_tagged.csv`; no case text). Counts in [`docs/metadata_reports/gender_labels.csv`](docs/metadata_reports/gender_labels.csv), charts in [`docs/dataset/visualizations/`](docs/dataset/visualizations/).
 
 ## Running it
 

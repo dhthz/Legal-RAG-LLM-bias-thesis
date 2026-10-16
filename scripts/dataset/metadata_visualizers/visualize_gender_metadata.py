@@ -18,7 +18,7 @@ DATASET_PATH = "dataset/train_with_metadata.jsonl"
 BEFORE_PATH = "dataset/train_with_metadata.jsonl.pre_gender_corrections.bak"
 VALIDATION_PATH = "docs/bias_audit/results/tables/10_gender_label_validation.csv"
 COUNTS_PATH = "docs/metadata_reports/gender_labels.csv"
-OUTPUT_DIR = "visualizations/gender_analysis"
+OUTPUT_DIR = "docs/dataset/visualizations/gender_analysis"
 LABELS = ["Male", "Female", "Multiple Applicants", "Unknown", "Needs Manual Classification"]
 GENDER_COLORS = {"Male": "#3498db", "Female": "#e74c3c", "Multiple Applicants": "#9b59b6", "Unknown": "#95a5a6"}
 
