@@ -59,7 +59,7 @@ Then, in your RAG project, ask Claude to audit it for gender bias, or run `/rag-
 | [`tests/`](tests/) | End-to-end test and the frozen-retrieval tripwire |
 | [`FROZEN_BASELINE_MANIFEST.json`](FROZEN_BASELINE_MANIFEST.json) | Every pipeline setting, the index checksum and the prompt variants |
 
-The dataset, the FAISS indices and the run logs are not in the repository (size, and the dataset's own license).
+The dataset, the FAISS indices (except the two small LEACE erasers) and the run logs are not in the repository (size, and the dataset's own license); [Reproducing the results](#reproducing-the-results) rebuilds them.
 
 ## Data
 
@@ -67,7 +67,7 @@ The judgments come from the **ECtHR cases** dataset of Chalkidis et al. (2019, 2
 
 ## Running it
 
-Python 3.12, CUDA, and Ollama with `mistral` pulled. Download the dataset above into `dataset/` (`train.jsonl`, `dev.jsonl`, `test.jsonl`), then add this work's metadata: `python -m scripts.dataset.case_metadata merge` writes `dataset/train_with_metadata.jsonl`.
+Python 3.12, CUDA, and Ollama with `mistral` pulled (the thesis used model ID `6577803aa9a0`, shown by `ollama list`; `mistral:latest` may point to a newer model). Download the dataset above into `dataset/` (`train.jsonl`, `dev.jsonl`, `test.jsonl`), then add this work's metadata: `python -m scripts.dataset.case_metadata merge` writes `dataset/train_with_metadata.jsonl`.
 
 ```bash
 python -m venv thesis_venv && source thesis_venv/bin/activate
@@ -85,6 +85,29 @@ python -m scripts.eval.bias_statistics --log <run log> --out-dir <stats dir>
 python -m scripts.eval.multi_run_stability && python -m scripts.eval.llm_output_bias
 python -m scripts.eval.export_audit_results
 ```
+
+## Reproducing the results
+
+After the setup under Running it, copy the question sets into `dataset/eval/` and run:
+
+```bash
+cp docs/llm_queries/*.jsonl docs/llm_queries/*.csv dataset/eval/
+
+# Phase E: the audit, 4 runs (then the statistics under Running it)
+python -m scripts.eval.run_bias_audit --log-path logs/bias_audit/stateless/run40_A.jsonl   # and B, C, D
+python -m scripts.eval.run_bias_audit --whole-system
+
+# Phase F: each fix (fixes with their own index or model are built first, scripts/chunking_and_embeddings/)
+python -m scripts.eval.mitigation_eval --arms <fix>
+python -m scripts.eval.run_bias_audit --arms <fix> --whole-system
+
+# Robustness checks, then the Phase F tables and charts
+python -m scripts.eval.robustness_checks --checks r1,r2,r3,r3b,r4,r5
+python -m scripts.eval.export_mitigation_results
+python -m scripts.dataset.metadata_visualizers.visualize_mitigation
+```
+
+Retrieval reproduces exactly; the answers vary within the repeat-run noise reported with each result (temperature 0.1). `retrieval_harness_queries.jsonl` is published without the names removed from each case's facts, so its SHA256 differs from the one in the harness logs; the results do not change.
 
 ## References
 

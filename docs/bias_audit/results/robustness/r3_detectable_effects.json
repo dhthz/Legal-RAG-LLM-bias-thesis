@@ -1,0 +1,105 @@
+{
+  "check": "r3_detectable_effects",
+  "question": "How large an effect could each Phase E null result have missed?",
+  "created": "2026-10-06T20:24:30",
+  "method": {
+    "proportions": "Wilson 95% interval; the upper bound is the largest rate compatible with the data",
+    "chi_square": "smallest Cramer's V detected with the stated power (noncentral chi-square)",
+    "paired_wilcoxon": "smallest mean shift detected with the stated power: (z_{1-alpha/2} + z_power) * SD / sqrt(n * 0.864), the Wilcoxon minimum relative efficiency (conservative)",
+    "alpha": 0.05,
+    "power": 0.8
+  },
+  "inputs": {
+    "logs/bias_audit/stats_v3_40bases/paired_variant_tests.json": "71b41bcb5e2996b7ec27f41421e806820841c558d976876b65d0ccbf1399f7d8",
+    "logs/bias_audit/stats_v3_40bases/master_results.json": "f0a167c9c3dc4bd31a420eb801547f9c2cfcb76f91ab74d9011e2ba6bd160462",
+    "logs/bias_audit/stats_v3_40bases_runB/master_results.json": "fd610eb8499163c9faccdf79be7d0dec622f34b0efa763bf5ff7eebaccf4c39c",
+    "logs/bias_audit/stats_v3_40bases_runC/master_results.json": "16a0500f3a24a17052470c832148ffdb80b1bc36cd084e396a2fa5e3fa8aa442",
+    "logs/bias_audit/stats_v3_40bases_runD/master_results.json": "6daccee36e25a2be3e582125415b132e0a1d43a95dcbd2b08c7bf184e581d923",
+    "logs/bias_audit/stats_multi_run/results.json": "943dee98e08c1c21f91c72e852b5cee6f2c2aa877e203d85b71f3bd28c23b309",
+    "logs/bias_audit/predict/run_A.jsonl": "15d5afbbd84836302185ee47cc9795e1d13439c93fb7fedacb26541afbda5490",
+    "logs/bias_audit/predict/run_B.jsonl": "703c79a5ddf40e61891a28f3ac1d99c1949d6b2eb8f8c8089a0ce62c74f7171e",
+    "logs/bias_audit/predict/run_C.jsonl": "f0153e6bd8b0cfcc18c3ff0f54c53885a605063871fc65ba07bae4b201c2793c",
+    "logs/bias_audit/predict/run_D.jsonl": "f9b8c8193f35636051830b295f6da4c747e576087d315a9de1e7ffdd5ac0540b"
+  },
+  "results": {
+    "tone_retrieval_flip": {
+      "observed": "1/40",
+      "flip_rate_95ci": [
+        0.0044267174077949265,
+        0.1288165948800778
+      ],
+      "pronoun_flip_for_comparison": "15/40",
+      "reading": "upper CI bound = the largest tone flip rate compatible with the data"
+    },
+    "generation_stage_gender": {
+      "per_run": {
+        "A": {
+          "n": 1004,
+          "dof": 3,
+          "observed_cramers_v": 0.055478219119189244,
+          "p_raw": 0.3779344670150481,
+          "mde_cramers_v": 0.10420713403122521
+        },
+        "B": {
+          "n": 1004,
+          "dof": 3,
+          "observed_cramers_v": 0.05388277650705475,
+          "p_raw": 0.40492225080958666,
+          "mde_cramers_v": 0.10420713403122521
+        },
+        "C": {
+          "n": 1004,
+          "dof": 3,
+          "observed_cramers_v": 0.0408233528900464,
+          "p_raw": 0.6429056374907061,
+          "mde_cramers_v": 0.10420713403122521
+        },
+        "D": {
+          "n": 1004,
+          "dof": 3,
+          "observed_cramers_v": 0.038555942031737095,
+          "p_raw": 0.684000808683567,
+          "mde_cramers_v": 0.10420713403122521
+        }
+      },
+      "reading": "V the test detects with 80% power at alpha 0.05 (before Holm)"
+    },
+    "llm_cited_change_identical_input": {
+      "observed": "4/12",
+      "change_rate_95ci": [
+        0.13811783989736132,
+        0.6093824126023861
+      ],
+      "reading": "few he/she bases reach the LLM with identical input under the baseline, so this bound is wide"
+    },
+    "predicted_articles": {
+      "pairs": {
+        "male_vs_female": {
+          "prediction_change_above_noise": {
+            "n_bases": 40,
+            "observed_mean": 0.052569444444444446,
+            "mde_mean_shift": 0.0645721278058057
+          },
+          "jaccard_accuracy_difference": {
+            "n_bases": 40,
+            "observed_mean": 0.00885416666666666,
+            "mde_mean_shift": 0.06954867620479237
+          }
+        },
+        "neutral_vs_emotional": {
+          "prediction_change_above_noise": {
+            "n_bases": 40,
+            "observed_mean": 0.05798611111111111,
+            "mde_mean_shift": 0.05900886429068388
+          },
+          "jaccard_accuracy_difference": {
+            "n_bases": 40,
+            "observed_mean": -0.040625,
+            "mde_mean_shift": 0.0983611780120016
+          }
+        }
+      },
+      "reading": "1 - Jaccard units (change) and Jaccard units (accuracy); a true mean shift at least this large would have been detected with 80% power"
+    }
+  }
+}

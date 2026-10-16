@@ -1,0 +1,1130 @@
+{
+  "check": "r4_large_swap_set",
+  "question": "Does the pronoun flip, and its removal by the arms, hold on a larger, automatically built set of he/she pairs?",
+  "created": "2026-10-09T20:04:11",
+  "method": {
+    "design": "test cases outside the index with a single dominant applicant gender (scripts/eval/run_swap_set_test.py gates); query built as the B.1 harness queries; twin = swap_gender() (two-sided CDA swap, third parties swapped too); retrieval only, each arm on both versions",
+    "tests": "top-1 flip rate with Wilson CI; exact McNemar on 'top-1 case is Female-gendered' (he vs she), Holm over arms; exact McNemar of each arm's per-pair flips against the baseline's",
+    "gender_labels": "current validated case labels (train_with_metadata.jsonl), as in Phase E",
+    "hand_set_reference": "logs/mitigation/<arm>/results.json pronoun_flip (the 40 hand-written bases)"
+  },
+  "inputs": {
+    "logs/robustness/swap_set/pairs.jsonl": "f2ce5c4e1975e7a86e0e5d10be55be04b50d448eff3ca889e030860b7bca64a5",
+    "logs/robustness/swap_set/baseline.jsonl": "a6180f7c64b2919bf53fe68ceab0930f06743827410c96cd2416b9de018628c0",
+    "logs/robustness/swap_set/blind_query.jsonl": "1699efd7aab00f25fa38fa64cca74c33a0e36845c294e766dbaf0b39ec2ac8e7",
+    "logs/robustness/swap_set/pcf.jsonl": "d30f97a82a42066f5c7164a4cf6c2839d5fc01ea9459004f7e66d2ad87ceac42",
+    "logs/robustness/swap_set/leace.jsonl": "34841228a9f9513d532c4c0f164de0d7a1ab012297b3c3ab3cc9672dd3373347",
+    "logs/robustness/swap_set/leace_query.jsonl": "c802ed63b6600e0223666c045287cd8222151d33cc0fbaea4bfee837db878502",
+    "logs/robustness/swap_set/blind_index.jsonl": "2827effcdf81abff81ab34b7193e969706a1a0976e983eb6d4f0519e7e0e81f6",
+    "logs/robustness/swap_set/cda.jsonl": "1b328740d2df7acf7c1211ff781c9618213cdd2d15c97352ebfe4513aba55eeb",
+    "logs/robustness/swap_set/ft_control.jsonl": "300883cde8b1105a86148e2498e939842580b64237bc6e6e5c3018b7e2bdfbbf",
+    "logs/robustness/swap_set/ft_ccd.jsonl": "4c04782b64149b38496394a3b7451cb362685199dedbcb86b487259cfacf81de",
+    "logs/robustness/swap_set/blind_query+blind_index.jsonl": "b96ea1d1a6193c597d3d7b4b995ed779477dcc4e1f9ef7cc0a97b499bf8a7102",
+    "logs/robustness/swap_set/leace_query+blind_index.jsonl": "b88d6d98b803549b6685f39bdf3166434069489bbf6f5e45b32f64260a5627dd"
+  },
+  "results": {
+    "n_pairs": 300,
+    "n_source_female": 67,
+    "arms": {
+      "baseline": {
+        "top1_flip": {
+          "all": {
+            "k": 104,
+            "n": 300,
+            "rate": 0.3466666666666667,
+            "wilson_95ci": [
+              0.29505763866563084,
+              0.40215301320034147
+            ]
+          },
+          "source_male": {
+            "k": 79,
+            "n": 233,
+            "rate": 0.33905579399141633,
+            "wilson_95ci": [
+              0.2813198683524711,
+              0.4020127894238656
+            ]
+          },
+          "source_female": {
+            "k": 25,
+            "n": 67,
+            "rate": 0.373134328358209,
+            "wilson_95ci": [
+              0.26717987071840976,
+              0.49284813542487327
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 84,
+            "n": 249,
+            "rate": 0.3373493975903614,
+            "wilson_95ci": [
+              0.28148902425152583,
+              0.3981523005937528
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 226,
+          "n": 300,
+          "rate": 0.7533333333333333,
+          "wilson_95ci": [
+            0.7015536959202178,
+            0.7987069662142627
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 59,
+          "p_exact": 1.0581813203458523e-16
+        },
+        "identical_query_after_arm": 0,
+        "flipped_pairs": [
+          "s002",
+          "s007",
+          "s008",
+          "s009",
+          "s013",
+          "s020",
+          "s022",
+          "s023",
+          "s027",
+          "s028",
+          "s036",
+          "s037",
+          "s038",
+          "s042",
+          "s049",
+          "s050",
+          "s054",
+          "s057",
+          "s058",
+          "s062",
+          "s063",
+          "s066",
+          "s068",
+          "s072",
+          "s077",
+          "s078",
+          "s079",
+          "s084",
+          "s089",
+          "s091",
+          "s092",
+          "s093",
+          "s099",
+          "s107",
+          "s113",
+          "s119",
+          "s120",
+          "s123",
+          "s127",
+          "s129",
+          "s130",
+          "s134",
+          "s138",
+          "s139",
+          "s141",
+          "s142",
+          "s150",
+          "s153",
+          "s154",
+          "s155",
+          "s161",
+          "s162",
+          "s164",
+          "s166",
+          "s176",
+          "s181",
+          "s184",
+          "s185",
+          "s188",
+          "s192",
+          "s197",
+          "s199",
+          "s202",
+          "s205",
+          "s208",
+          "s209",
+          "s211",
+          "s212",
+          "s214",
+          "s218",
+          "s219",
+          "s220",
+          "s222",
+          "s224",
+          "s225",
+          "s227",
+          "s228",
+          "s229",
+          "s231",
+          "s233",
+          "s240",
+          "s241",
+          "s242",
+          "s245",
+          "s249",
+          "s251",
+          "s253",
+          "s254",
+          "s257",
+          "s262",
+          "s264",
+          "s267",
+          "s272",
+          "s274",
+          "s276",
+          "s278",
+          "s281",
+          "s282",
+          "s285",
+          "s286",
+          "s295",
+          "s297",
+          "s298",
+          "s299"
+        ]
+      },
+      "blind_query": {
+        "top1_flip": {
+          "all": {
+            "k": 0,
+            "n": 300,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.012643429997735661
+            ]
+          },
+          "source_male": {
+            "k": 0,
+            "n": 233,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.016220123491819005
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 1,
+          "n": 300,
+          "rate": 0.0033333333333333335,
+          "wilson_95ci": [
+            0.0005886425761407396,
+            0.018637164554943353
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "identical_query_after_arm": 266,
+        "vs_baseline": {
+          "flips_removed": 104,
+          "flips_added": 0,
+          "p_exact_mcnemar": 9.860761315262648e-32
+        },
+        "flipped_pairs": []
+      },
+      "pcf": {
+        "top1_flip": {
+          "all": {
+            "k": 1,
+            "n": 300,
+            "rate": 0.0033333333333333335,
+            "wilson_95ci": [
+              0.0005886425761407396,
+              0.018637164554943353
+            ]
+          },
+          "source_male": {
+            "k": 1,
+            "n": 233,
+            "rate": 0.004291845493562232,
+            "wilson_95ci": [
+              0.0007579987871743476,
+              0.023906587163942346
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 2,
+          "n": 300,
+          "rate": 0.006666666666666667,
+          "wilson_95ci": [
+            0.0018301100329710784,
+            0.023978074231461442
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 103,
+          "flips_added": 0,
+          "p_exact_mcnemar": 1.9721522630525295e-31
+        },
+        "flipped_pairs": [
+          "s038"
+        ]
+      },
+      "leace": {
+        "top1_flip": {
+          "all": {
+            "k": 114,
+            "n": 300,
+            "rate": 0.38,
+            "wilson_95ci": [
+              0.32691781564606526,
+              0.4361166075533913
+            ]
+          },
+          "source_male": {
+            "k": 92,
+            "n": 233,
+            "rate": 0.3948497854077253,
+            "wilson_95ci": [
+              0.33427692063881,
+              0.4588337491083966
+            ]
+          },
+          "source_female": {
+            "k": 22,
+            "n": 67,
+            "rate": 0.3283582089552239,
+            "wilson_95ci": [
+              0.22791157615605973,
+              0.4474204321554408
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 89,
+            "n": 249,
+            "rate": 0.357429718875502,
+            "wilson_95ci": [
+              0.30048340036953297,
+              0.41870837819855083
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 251,
+          "n": 300,
+          "rate": 0.8366666666666667,
+          "wilson_95ci": [
+            0.7906259121631731,
+            0.8741941783050182
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 2,
+          "top1_female_only_with_she": 43,
+          "p_exact": 5.88897819397971e-11
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 42,
+          "flips_added": 52,
+          "p_exact_mcnemar": 0.35332803247158273
+        },
+        "flipped_pairs": [
+          "s004",
+          "s006",
+          "s007",
+          "s008",
+          "s009",
+          "s011",
+          "s013",
+          "s015",
+          "s017",
+          "s020",
+          "s023",
+          "s030",
+          "s037",
+          "s038",
+          "s040",
+          "s041",
+          "s049",
+          "s050",
+          "s052",
+          "s055",
+          "s057",
+          "s061",
+          "s062",
+          "s065",
+          "s066",
+          "s071",
+          "s075",
+          "s077",
+          "s078",
+          "s084",
+          "s086",
+          "s088",
+          "s089",
+          "s092",
+          "s099",
+          "s102",
+          "s106",
+          "s107",
+          "s113",
+          "s114",
+          "s118",
+          "s119",
+          "s120",
+          "s123",
+          "s127",
+          "s134",
+          "s138",
+          "s145",
+          "s147",
+          "s150",
+          "s153",
+          "s154",
+          "s162",
+          "s164",
+          "s165",
+          "s166",
+          "s167",
+          "s176",
+          "s177",
+          "s179",
+          "s181",
+          "s182",
+          "s184",
+          "s186",
+          "s189",
+          "s194",
+          "s195",
+          "s197",
+          "s200",
+          "s201",
+          "s202",
+          "s204",
+          "s205",
+          "s206",
+          "s208",
+          "s209",
+          "s211",
+          "s212",
+          "s222",
+          "s224",
+          "s225",
+          "s229",
+          "s231",
+          "s234",
+          "s239",
+          "s240",
+          "s241",
+          "s242",
+          "s243",
+          "s245",
+          "s246",
+          "s250",
+          "s251",
+          "s252",
+          "s253",
+          "s259",
+          "s262",
+          "s263",
+          "s264",
+          "s266",
+          "s267",
+          "s270",
+          "s273",
+          "s280",
+          "s281",
+          "s282",
+          "s286",
+          "s287",
+          "s289",
+          "s292",
+          "s293",
+          "s296",
+          "s298",
+          "s299"
+        ]
+      },
+      "leace_query": {
+        "top1_flip": {
+          "all": {
+            "k": 8,
+            "n": 300,
+            "rate": 0.02666666666666667,
+            "wilson_95ci": [
+              0.013572906766976815,
+              0.051729540297546284
+            ]
+          },
+          "source_male": {
+            "k": 6,
+            "n": 233,
+            "rate": 0.02575107296137339,
+            "wilson_95ci": [
+              0.011854044718643295,
+              0.05503285352896187
+            ]
+          },
+          "source_female": {
+            "k": 2,
+            "n": 67,
+            "rate": 0.029850746268656716,
+            "wilson_95ci": [
+              0.008224522347453904,
+              0.10246750041883029
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 7,
+            "n": 249,
+            "rate": 0.028112449799196786,
+            "wilson_95ci": [
+              0.013682878703249371,
+              0.05688145881083059
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 52,
+          "n": 300,
+          "rate": 0.17333333333333334,
+          "wilson_95ci": [
+            0.13469996727082598,
+            0.22022707366102798
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 1,
+          "p_exact": 1.0
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 96,
+          "flips_added": 0,
+          "p_exact_mcnemar": 2.524354896707238e-29
+        },
+        "flipped_pairs": [
+          "s057",
+          "s072",
+          "s119",
+          "s141",
+          "s166",
+          "s224",
+          "s225",
+          "s254"
+        ]
+      },
+      "blind_index": {
+        "top1_flip": {
+          "all": {
+            "k": 41,
+            "n": 300,
+            "rate": 0.13666666666666666,
+            "wilson_95ci": [
+              0.10236459725248649,
+              0.18015629521253473
+            ]
+          },
+          "source_male": {
+            "k": 34,
+            "n": 233,
+            "rate": 0.1459227467811159,
+            "wilson_95ci": [
+              0.10633947767613602,
+              0.19699236943180445
+            ]
+          },
+          "source_female": {
+            "k": 7,
+            "n": 67,
+            "rate": 0.1044776119402985,
+            "wilson_95ci": [
+              0.05153704291423215,
+              0.20031497623835615
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 29,
+            "n": 249,
+            "rate": 0.11646586345381527,
+            "wilson_95ci": [
+              0.08232551467928131,
+              0.16226081921514113
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 172,
+          "n": 300,
+          "rate": 0.5733333333333334,
+          "wilson_95ci": [
+            0.5167848970036207,
+            0.6280273999300449
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 9,
+          "p_exact": 0.021484375
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 66,
+          "flips_added": 3,
+          "p_exact_mcnemar": 1.857035033560328e-16
+        },
+        "flipped_pairs": [
+          "s001",
+          "s002",
+          "s007",
+          "s008",
+          "s013",
+          "s022",
+          "s027",
+          "s036",
+          "s038",
+          "s039",
+          "s063",
+          "s079",
+          "s084",
+          "s089",
+          "s091",
+          "s092",
+          "s107",
+          "s119",
+          "s123",
+          "s142",
+          "s185",
+          "s192",
+          "s199",
+          "s202",
+          "s205",
+          "s208",
+          "s211",
+          "s218",
+          "s219",
+          "s220",
+          "s225",
+          "s229",
+          "s231",
+          "s240",
+          "s262",
+          "s276",
+          "s281",
+          "s282",
+          "s287",
+          "s298",
+          "s299"
+        ]
+      },
+      "cda": {
+        "top1_flip": {
+          "all": {
+            "k": 27,
+            "n": 300,
+            "rate": 0.09,
+            "wilson_95ci": [
+              0.06258980739496589,
+              0.12777780520317736
+            ]
+          },
+          "source_male": {
+            "k": 22,
+            "n": 233,
+            "rate": 0.0944206008583691,
+            "wilson_95ci": [
+              0.06318136666733179,
+              0.13881693092903644
+            ]
+          },
+          "source_female": {
+            "k": 5,
+            "n": 67,
+            "rate": 0.07462686567164178,
+            "wilson_95ci": [
+              0.032295572977927914,
+              0.16309244762013875
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 20,
+            "n": 249,
+            "rate": 0.08032128514056225,
+            "wilson_95ci": [
+              0.05259475573955881,
+              0.12080076145381442
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 113,
+          "n": 300,
+          "rate": 0.37666666666666665,
+          "wilson_95ci": [
+            0.3237194319344521,
+            0.432732614131656
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 9,
+          "p_exact": 0.00390625
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 88,
+          "flips_added": 11,
+          "p_exact_mcnemar": 4.529579978466477e-16
+        },
+        "flipped_pairs": [
+          "s006",
+          "s030",
+          "s068",
+          "s077",
+          "s095",
+          "s099",
+          "s117",
+          "s120",
+          "s129",
+          "s148",
+          "s150",
+          "s154",
+          "s171",
+          "s184",
+          "s190",
+          "s192",
+          "s196",
+          "s197",
+          "s205",
+          "s206",
+          "s209",
+          "s240",
+          "s245",
+          "s247",
+          "s257",
+          "s262",
+          "s291"
+        ]
+      },
+      "ft_control": {
+        "top1_flip": {
+          "all": {
+            "k": 37,
+            "n": 300,
+            "rate": 0.12333333333333334,
+            "wilson_95ci": [
+              0.09081679971281557,
+              0.1653745842188119
+            ]
+          },
+          "source_male": {
+            "k": 33,
+            "n": 233,
+            "rate": 0.14163090128755365,
+            "wilson_95ci": [
+              0.10265870904039426,
+              0.19222867560824852
+            ]
+          },
+          "source_female": {
+            "k": 4,
+            "n": 67,
+            "rate": 0.05970149253731343,
+            "wilson_95ci": [
+              0.023458971433043554,
+              0.14369704988776227
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 30,
+            "n": 249,
+            "rate": 0.12048192771084337,
+            "wilson_95ci": [
+              0.08571098998271487,
+              0.16678543465626855
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 146,
+          "n": 300,
+          "rate": 0.4866666666666667,
+          "wilson_95ci": [
+            0.43063348243848176,
+            0.5430370090281246
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 14,
+          "p_exact": 0.0001220703125
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 83,
+          "flips_added": 16,
+          "p_exact_mcnemar": 4.3895864999965015e-12
+        },
+        "flipped_pairs": [
+          "s007",
+          "s008",
+          "s020",
+          "s055",
+          "s078",
+          "s098",
+          "s099",
+          "s107",
+          "s110",
+          "s120",
+          "s123",
+          "s124",
+          "s132",
+          "s138",
+          "s154",
+          "s155",
+          "s173",
+          "s175",
+          "s182",
+          "s184",
+          "s185",
+          "s186",
+          "s196",
+          "s202",
+          "s206",
+          "s208",
+          "s216",
+          "s218",
+          "s226",
+          "s229",
+          "s237",
+          "s240",
+          "s246",
+          "s251",
+          "s262",
+          "s279",
+          "s286"
+        ]
+      },
+      "ft_ccd": {
+        "top1_flip": {
+          "all": {
+            "k": 15,
+            "n": 300,
+            "rate": 0.05,
+            "wilson_95ci": [
+              0.030531367290852582,
+              0.08084771970710952
+            ]
+          },
+          "source_male": {
+            "k": 11,
+            "n": 233,
+            "rate": 0.04721030042918455,
+            "wilson_95ci": [
+              0.026562747469758,
+              0.08254646307433561
+            ]
+          },
+          "source_female": {
+            "k": 4,
+            "n": 67,
+            "rate": 0.05970149253731343,
+            "wilson_95ci": [
+              0.023458971433043554,
+              0.14369704988776227
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 8,
+            "n": 249,
+            "rate": 0.0321285140562249,
+            "wilson_95ci": [
+              0.01636799626032517,
+              0.062106431998315795
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 59,
+          "n": 300,
+          "rate": 0.19666666666666666,
+          "wilson_95ci": [
+            0.15564395355751642,
+            0.2453597273077765
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 3,
+          "top1_female_only_with_she": 1,
+          "p_exact": 0.625
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 96,
+          "flips_added": 7,
+          "p_exact_mcnemar": 4.207682867061068e-21
+        },
+        "flipped_pairs": [
+          "s022",
+          "s027",
+          "s049",
+          "s071",
+          "s074",
+          "s079",
+          "s119",
+          "s123",
+          "s203",
+          "s223",
+          "s243",
+          "s245",
+          "s262",
+          "s280",
+          "s287"
+        ]
+      },
+      "blind_query+blind_index": {
+        "top1_flip": {
+          "all": {
+            "k": 0,
+            "n": 300,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.012643429997735661
+            ]
+          },
+          "source_male": {
+            "k": 0,
+            "n": 233,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.016220123491819005
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 1,
+          "n": 300,
+          "rate": 0.0033333333333333335,
+          "wilson_95ci": [
+            0.0005886425761407396,
+            0.018637164554943353
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "identical_query_after_arm": 266,
+        "vs_baseline": {
+          "flips_removed": 104,
+          "flips_added": 0,
+          "p_exact_mcnemar": 9.860761315262648e-32
+        },
+        "flipped_pairs": []
+      },
+      "leace_query+blind_index": {
+        "top1_flip": {
+          "all": {
+            "k": 10,
+            "n": 300,
+            "rate": 0.03333333333333333,
+            "wilson_95ci": [
+              0.01820474987365085,
+              0.0602624514575691
+            ]
+          },
+          "source_male": {
+            "k": 9,
+            "n": 233,
+            "rate": 0.03862660944206009,
+            "wilson_95ci": [
+              0.020452181473689404,
+              0.07176810415180883
+            ]
+          },
+          "source_female": {
+            "k": 1,
+            "n": 67,
+            "rate": 0.014925373134328358,
+            "wilson_95ci": [
+              0.002639503757676784,
+              0.0798205197313466
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 6,
+            "n": 249,
+            "rate": 0.024096385542168676,
+            "wilson_95ci": [
+              0.011089167193471368,
+              0.051565079576047564
+            ]
+          }
+        },
+        "top3_order_changed": {
+          "k": 56,
+          "n": 300,
+          "rate": 0.18666666666666668,
+          "wilson_95ci": [
+            0.14663682127589442,
+            0.23461972818935325
+          ]
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 0,
+          "p_exact": 1.0
+        },
+        "identical_query_after_arm": 0,
+        "vs_baseline": {
+          "flips_removed": 97,
+          "flips_added": 3,
+          "p_exact_mcnemar": 2.630866896130179e-25
+        },
+        "flipped_pairs": [
+          "s001",
+          "s036",
+          "s039",
+          "s119",
+          "s123",
+          "s185",
+          "s225",
+          "s281",
+          "s291",
+          "s298"
+        ]
+      }
+    },
+    "mcnemar_holm": {
+      "baseline": 8.465450562766819e-16,
+      "leace": 4.122284735785797e-10,
+      "ft_control": 0.000732421875,
+      "cda": 0.01953125,
+      "blind_index": 0.0859375,
+      "ft_ccd": 1.0,
+      "leace_query": 1.0,
+      "leace_query+blind_index": 1.0
+    },
+    "hand_set": {
+      "baseline": {
+        "top1_flips": 15,
+        "n_pairs": 40,
+        "mcnemar_exact_p": 0.0009765625
+      },
+      "blind_query": {
+        "top1_flips": 0,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "pcf": {
+        "top1_flips": 0,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "leace": {
+        "top1_flips": 12,
+        "n_pairs": 40,
+        "mcnemar_exact_p": 0.2890625
+      },
+      "leace_query": {
+        "top1_flips": 1,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "blind_index": {
+        "top1_flips": 2,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "cda": {
+        "top1_flips": 7,
+        "n_pairs": 40,
+        "mcnemar_exact_p": 0.125
+      },
+      "ft_control": {
+        "top1_flips": 4,
+        "n_pairs": 40,
+        "mcnemar_exact_p": 0.25
+      },
+      "ft_ccd": {
+        "top1_flips": 0,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "blind_query+blind_index": {
+        "top1_flips": 0,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      },
+      "leace_query+blind_index": {
+        "top1_flips": 0,
+        "n_pairs": 40,
+        "mcnemar_exact_p": null
+      }
+    }
+  }
+}

@@ -5,7 +5,9 @@
 *.md
 *.index
 *.pyc
-/faiss_indices
+/faiss_indices/*
+!/faiss_indices/leace_eraser.npz
+!/faiss_indices/leace_query_eraser.npz
 /models
 .env
 /logs

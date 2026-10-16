@@ -1,0 +1,894 @@
+{
+  "check": "r1_topic_control",
+  "question": "Does the association between query gender and retrieved-case gender survive controlling for legal topic (key article) and country, or is it explained by them?",
+  "created": "2026-10-06T20:24:25",
+  "method": {
+    "population": "main-set audit queries with a Male or Female applicant (Phase E scope)",
+    "outcome": "retrieved case labelled Female (current validated labels, as Phase E)",
+    "exposure": "query from a Female-applicant case (vs Male)",
+    "units": "top1 = one retrieved case per query (independent); top3 = all three, as the Phase E chi-square (clustered within query, so p-values are optimistic)",
+    "test": "Cochran-Mantel-Haenszel with continuity correction; Mantel-Haenszel common odds ratio with Robins-Breslow-Greenland 95% CI; crude = one pooled table",
+    "reading": "an odds ratio that stays near the crude value after stratifying means topic/country do not explain the association; one that moves toward 1 means they do"
+  },
+  "inputs": {
+    "logs/mitigation/baseline/retrieval.jsonl": "a2a60e85370365c8621d181a01ffeea6a36f7f337f1e3264bdfcf3c81280dc41",
+    "logs/mitigation/blind_query/retrieval.jsonl": "cb17aa46632482a2357a0b9f469da95cbe5e571a0af731d69bc32b65310ab2e4",
+    "logs/mitigation/leace/retrieval.jsonl": "09702fadb5648ee434592d3dbb6b8dd051c80d1443332e1b2e306d1eb0f3dd27",
+    "logs/mitigation/pcf/retrieval.jsonl": "b574bc933f2c9697783775f7c87d4106fa53e58285b4a5e9bdf138b320c626c9",
+    "dataset/eval/audit_queries_main.jsonl": "6096429f1b54190ae629719f8baf1fa88779e1602098a25db66d33ab08ceb90a"
+  },
+  "results": {
+    "baseline": {
+      "top1": {
+        "crude": {
+          "n_strata": 1,
+          "n": 131,
+          "cmh_statistic": 20.933159738385125,
+          "p": 4.755902827567703e-06,
+          "odds_ratio": 8.211981566820276,
+          "odds_ratio_95ci": [
+            3.225658537916755,
+            20.906317411187917
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 131,
+          "cmh_statistic": 15.680064959461182,
+          "p": 7.501061832526085e-05,
+          "odds_ratio": 5.458144576261911,
+          "odds_ratio_95ci": [
+            2.169677644527474,
+            13.73076884970415
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 22,
+          "n": 122,
+          "cmh_statistic": 17.474800315602735,
+          "p": 2.911412691750546e-05,
+          "odds_ratio": 10.50284090909091,
+          "odds_ratio_95ci": [
+            3.196561759634302,
+            34.50884902480137
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 24,
+          "n": 82,
+          "cmh_statistic": 4.243220609236997,
+          "p": 0.039407345111338615,
+          "odds_ratio": 7.459821428571429,
+          "odds_ratio_95ci": [
+            1.2578808200963452,
+            44.24022916726812
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              0,
+              5
+            ],
+            "table_male_query": [
+              2,
+              4
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              0,
+              7
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              2,
+              1
+            ],
+            "table_male_query": [
+              0,
+              13
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              10,
+              9
+            ],
+            "table_male_query": [
+              2,
+              35
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              5,
+              4
+            ],
+            "table_male_query": [
+              2,
+              2
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              7,
+              6
+            ],
+            "table_male_query": [
+              1,
+              5
+            ]
+          }
+        }
+      },
+      "top3": {
+        "crude": {
+          "n_strata": 1,
+          "n": 392,
+          "cmh_statistic": 27.06633005873879,
+          "p": 1.9659242576544025e-07,
+          "odds_ratio": 3.756377551020408,
+          "odds_ratio_95ci": [
+            2.27001918593249,
+            6.2159705051187695
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 392,
+          "cmh_statistic": 19.510194475687697,
+          "p": 1.000642270582212e-05,
+          "odds_ratio": 3.202771999387958,
+          "odds_ratio_95ci": [
+            1.8822071288019417,
+            5.44985104088559
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 31,
+          "n": 392,
+          "cmh_statistic": 26.131471568311586,
+          "p": 3.1894291961941155e-07,
+          "odds_ratio": 4.754087369240576,
+          "odds_ratio_95ci": [
+            2.6068840333054344,
+            8.669870399150476
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 73,
+          "n": 392,
+          "cmh_statistic": 15.702159468588512,
+          "p": 7.413947753203803e-05,
+          "odds_ratio": 9.049180327868854,
+          "odds_ratio_95ci": [
+            2.994147976987077,
+            27.349237658150003
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              1,
+              14
+            ],
+            "table_male_query": [
+              3,
+              15
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              5,
+              22
+            ],
+            "table_male_query": [
+              0,
+              20
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              4,
+              5
+            ],
+            "table_male_query": [
+              4,
+              35
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              22,
+              35
+            ],
+            "table_male_query": [
+              11,
+              100
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              12,
+              15
+            ],
+            "table_male_query": [
+              6,
+              6
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              18,
+              21
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          }
+        }
+      }
+    },
+    "blind_query": {
+      "top1": {
+        "crude": {
+          "n_strata": 1,
+          "n": 131,
+          "cmh_statistic": 3.0794245828532416,
+          "p": 0.07928857309041115,
+          "odds_ratio": 2.4806201550387597,
+          "odds_ratio_95ci": [
+            0.996202471770901,
+            6.176933432664327
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 131,
+          "cmh_statistic": 1.1939844333566418,
+          "p": 0.27452731973442435,
+          "odds_ratio": 1.8710930155194605,
+          "odds_ratio_95ci": [
+            0.7257954774576288,
+            4.82365787809706
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 22,
+          "n": 122,
+          "cmh_statistic": 3.9974396689698874,
+          "p": 0.04556943660273489,
+          "odds_ratio": 3.630963096309631,
+          "odds_ratio_95ci": [
+            1.1390627680285703,
+            11.574334072546682
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 24,
+          "n": 82,
+          "cmh_statistic": 0.4401793428764917,
+          "p": 0.5070359068979545,
+          "odds_ratio": 3.3080357142857144,
+          "odds_ratio_95ci": [
+            0.4079540454378663,
+            26.82434555893255
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              0,
+              5
+            ],
+            "table_male_query": [
+              2,
+              4
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              0,
+              7
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              0,
+              3
+            ],
+            "table_male_query": [
+              2,
+              11
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              5,
+              14
+            ],
+            "table_male_query": [
+              2,
+              35
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              2,
+              2
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              4,
+              9
+            ],
+            "table_male_query": [
+              1,
+              5
+            ]
+          }
+        }
+      },
+      "top3": {
+        "crude": {
+          "n_strata": 1,
+          "n": 391,
+          "cmh_statistic": 10.67229592932841,
+          "p": 0.001087520495623087,
+          "odds_ratio": 2.454780361757106,
+          "odds_ratio_95ci": [
+            1.4493469040589422,
+            4.157697931111242
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 391,
+          "cmh_statistic": 5.143321826024591,
+          "p": 0.02333595536140427,
+          "odds_ratio": 1.9532993101107372,
+          "odds_ratio_95ci": [
+            1.1160194343728154,
+            3.4187381306878963
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 31,
+          "n": 391,
+          "cmh_statistic": 10.490388136390068,
+          "p": 0.0011999716081046374,
+          "odds_ratio": 2.8592092574734806,
+          "odds_ratio_95ci": [
+            1.5556321203255747,
+            5.255148354940826
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 73,
+          "n": 391,
+          "cmh_statistic": 4.199134827981702,
+          "p": 0.040444608698134224,
+          "odds_ratio": 3.8341854520102245,
+          "odds_ratio_95ci": [
+            1.2569631587027934,
+            11.695631632973635
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              1,
+              14
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              4,
+              23
+            ],
+            "table_male_query": [
+              0,
+              19
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              2,
+              7
+            ],
+            "table_male_query": [
+              4,
+              35
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              14,
+              43
+            ],
+            "table_male_query": [
+              10,
+              101
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              9,
+              18
+            ],
+            "table_male_query": [
+              5,
+              7
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              15,
+              24
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          }
+        }
+      }
+    },
+    "leace": {
+      "top1": {
+        "crude": {
+          "n_strata": 1,
+          "n": 131,
+          "cmh_statistic": 10.140828661520006,
+          "p": 0.0014502095600908375,
+          "odds_ratio": 4.14,
+          "odds_ratio_95ci": [
+            1.7700977278278476,
+            9.682855206549883
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 131,
+          "cmh_statistic": 8.142297320281312,
+          "p": 0.00432444610284591,
+          "odds_ratio": 3.4112460224695296,
+          "odds_ratio_95ci": [
+            1.444182633319402,
+            8.057567760019296
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 22,
+          "n": 122,
+          "cmh_statistic": 8.437402002777134,
+          "p": 0.0036758102015585553,
+          "odds_ratio": 4.696192696192696,
+          "odds_ratio_95ci": [
+            1.714451080544121,
+            12.863724191403705
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 24,
+          "n": 82,
+          "cmh_statistic": 2.9746506354072566,
+          "p": 0.08457838626236297,
+          "odds_ratio": 5.830827067669173,
+          "odds_ratio_95ci": [
+            1.0913385581491377,
+            31.153067981693525
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              0,
+              5
+            ],
+            "table_male_query": [
+              2,
+              4
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              0,
+              7
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              2,
+              1
+            ],
+            "table_male_query": [
+              1,
+              12
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              9,
+              10
+            ],
+            "table_male_query": [
+              4,
+              33
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              2,
+              2
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              6,
+              7
+            ],
+            "table_male_query": [
+              1,
+              5
+            ]
+          }
+        }
+      },
+      "top3": {
+        "crude": {
+          "n_strata": 1,
+          "n": 392,
+          "cmh_statistic": 20.979742949735797,
+          "p": 4.6416529219521715e-06,
+          "odds_ratio": 3.1033549783549783,
+          "odds_ratio_95ci": [
+            1.9142553814278187,
+            5.031100978019522
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 392,
+          "cmh_statistic": 13.969438712905506,
+          "p": 0.0001858064583874506,
+          "odds_ratio": 2.763151345226264,
+          "odds_ratio_95ci": [
+            1.6363053457798182,
+            4.666002819288646
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 31,
+          "n": 392,
+          "cmh_statistic": 21.910023102290026,
+          "p": 2.8573759062875914e-06,
+          "odds_ratio": 3.8681467946282027,
+          "odds_ratio_95ci": [
+            2.1914500884126067,
+            6.827698109077483
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 73,
+          "n": 392,
+          "cmh_statistic": 13.42162015247031,
+          "p": 0.0002487407755270761,
+          "odds_ratio": 5.686893203883495,
+          "odds_ratio_95ci": [
+            2.231592538555111,
+            14.492230886072036
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              3,
+              12
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              5,
+              22
+            ],
+            "table_male_query": [
+              0,
+              20
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              2,
+              7
+            ],
+            "table_male_query": [
+              5,
+              34
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              20,
+              37
+            ],
+            "table_male_query": [
+              16,
+              95
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              14,
+              13
+            ],
+            "table_male_query": [
+              6,
+              6
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              18,
+              21
+            ],
+            "table_male_query": [
+              2,
+              16
+            ]
+          }
+        }
+      }
+    },
+    "pcf": {
+      "top1": {
+        "crude": {
+          "n_strata": 1,
+          "n": 131,
+          "cmh_statistic": 3.904370950348035,
+          "p": 0.04816065402041385,
+          "odds_ratio": 2.708994708994709,
+          "odds_ratio_95ci": [
+            1.0962585033779646,
+            6.694271753193534
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 131,
+          "cmh_statistic": 1.915737898531466,
+          "p": 0.16632727415671306,
+          "odds_ratio": 2.091059453879412,
+          "odds_ratio_95ci": [
+            0.8258136940411495,
+            5.294813674330502
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 22,
+          "n": 122,
+          "cmh_statistic": 4.448515036684107,
+          "p": 0.034931609288465816,
+          "odds_ratio": 3.828982898289829,
+          "odds_ratio_95ci": [
+            1.2106788073300891,
+            12.109826278142375
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 24,
+          "n": 82,
+          "cmh_statistic": 0.7887768193750874,
+          "p": 0.3744702448799545,
+          "odds_ratio": 3.9330357142857144,
+          "odds_ratio_95ci": [
+            0.5071152922310554,
+            30.50345782670452
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              0,
+              5
+            ],
+            "table_male_query": [
+              2,
+              4
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              0,
+              7
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              0,
+              3
+            ],
+            "table_male_query": [
+              2,
+              11
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              6,
+              13
+            ],
+            "table_male_query": [
+              2,
+              35
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              3,
+              6
+            ],
+            "table_male_query": [
+              2,
+              2
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              4,
+              9
+            ],
+            "table_male_query": [
+              1,
+              5
+            ]
+          }
+        }
+      },
+      "top3": {
+        "crude": {
+          "n_strata": 1,
+          "n": 391,
+          "cmh_statistic": 8.244910568034538,
+          "p": 0.004086642234890591,
+          "odds_ratio": 2.1744186046511627,
+          "odds_ratio_95ci": [
+            1.3010867169171636,
+            3.633959371636667
+          ]
+        },
+        "stratified_by_article": {
+          "n_strata": 6,
+          "n": 391,
+          "cmh_statistic": 3.148561361503147,
+          "p": 0.07599393578407646,
+          "odds_ratio": 1.6738100289329851,
+          "odds_ratio_95ci": [
+            0.9717121574825454,
+            2.8831995065441647
+          ]
+        },
+        "stratified_by_country": {
+          "n_strata": 31,
+          "n": 391,
+          "cmh_statistic": 9.286564495762377,
+          "p": 0.002308406825151419,
+          "odds_ratio": 2.6385029134917075,
+          "odds_ratio_95ci": [
+            1.4519055903126676,
+            4.794869357177025
+          ]
+        },
+        "stratified_by_article_x_country": {
+          "n_strata": 73,
+          "n": 391,
+          "cmh_statistic": 4.655274054627259,
+          "p": 0.03095829021430172,
+          "odds_ratio": 4.029398094352777,
+          "odds_ratio_95ci": [
+            1.329888487966308,
+            12.208579252838168
+          ]
+        },
+        "per_article": {
+          "10": {
+            "table_female_query": [
+              1,
+              14
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          },
+          "3": {
+            "table_female_query": [
+              5,
+              22
+            ],
+            "table_male_query": [
+              0,
+              19
+            ]
+          },
+          "5": {
+            "table_female_query": [
+              2,
+              7
+            ],
+            "table_male_query": [
+              4,
+              35
+            ]
+          },
+          "6": {
+            "table_female_query": [
+              14,
+              43
+            ],
+            "table_male_query": [
+              11,
+              100
+            ]
+          },
+          "8": {
+            "table_female_query": [
+              9,
+              18
+            ],
+            "table_male_query": [
+              7,
+              5
+            ]
+          },
+          "P1-1": {
+            "table_female_query": [
+              14,
+              25
+            ],
+            "table_male_query": [
+              4,
+              14
+            ]
+          }
+        }
+      }
+    }
+  }
+}

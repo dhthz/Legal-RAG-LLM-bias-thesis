@@ -1,0 +1,2626 @@
+{
+  "created": "2026-10-16T12:16:49",
+  "script": "scripts/eval/export_mitigation_results.py",
+  "note": "whole-system rates: rows (base x run, 4 runs of 40 bases) where the two versions cite different cases; p vs baseline: Wilcoxon on the per-base differences in runs (non-zero only)",
+  "arms": {
+    "baseline": {
+      "method": "frozen system (no arm)",
+      "source": "",
+      "intervention_point": "",
+      "status": "reference",
+      "needs": "",
+      "retrieval_logs": "logs/mitigation/baseline",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 15,
+          "flip_rate": 0.375,
+          "flip_rate_wilson_95ci": [
+            0.2422277353579172,
+            0.529678399454681
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 11
+          },
+          "mcnemar_exact_p": 0.0009765625,
+          "flipped_bases": [
+            "d024",
+            "d044",
+            "d047",
+            "d055",
+            "d067",
+            "d068",
+            "d070",
+            "d080",
+            "d081",
+            "d084",
+            "d098",
+            "d112",
+            "d155",
+            "d158",
+            "d169"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.3142860873515648,
+          "p": 1.9895643707387112e-08
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.19102457069916268,
+          "p": 1.147915310656529e-23
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 104,
+            "n": 300,
+            "rate": 0.3466666666666667,
+            "wilson_95ci": [
+              0.29505763866563084,
+              0.40215301320034147
+            ]
+          },
+          "source_male": {
+            "k": 79,
+            "n": 233,
+            "rate": 0.33905579399141633,
+            "wilson_95ci": [
+              0.2813198683524711,
+              0.4020127894238656
+            ]
+          },
+          "source_female": {
+            "k": 25,
+            "n": 67,
+            "rate": 0.373134328358209,
+            "wilson_95ci": [
+              0.26717987071840976,
+              0.49284813542487327
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 84,
+            "n": 249,
+            "rate": 0.3373493975903614,
+            "wilson_95ci": [
+              0.28148902425152583,
+              0.3981523005937528
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 59,
+          "p_exact": 1.0581813203458523e-16
+        },
+        "mcnemar_holm": 8.465450562766819e-16,
+        "vs_baseline": null
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 1.0,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 1.0,
+        "audit_article_precision_at_3": 0.6476190476190475
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4583333333333333
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07547169811320754
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 102,
+          "rows": 160,
+          "rate": 0.6375,
+          "wilson_95ci": [
+            0.5606,
+            0.708
+          ]
+        },
+        "he_she_first_cited": {
+          "rows_differ": 58,
+          "rows": 160,
+          "rate": 0.3625,
+          "wilson_95ci": [
+            0.292,
+            0.4394
+          ]
+        },
+        "tone_cited_set": {
+          "rows_differ": 19,
+          "rows": 160,
+          "rate": 0.1187,
+          "wilson_95ci": [
+            0.0774,
+            0.178
+          ]
+        },
+        "tone_first_cited": {
+          "rows_differ": 4,
+          "rows": 160,
+          "rate": 0.025,
+          "wilson_95ci": [
+            0.0098,
+            0.0625
+          ]
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.025,
+          "range": [
+            0.0125,
+            0.0312
+          ]
+        }
+      }
+    },
+    "blind_query": {
+      "method": "rule-based gender-neutral rewrite of the query",
+      "source": "Sun et al. 2021; Garg et al. AIES 2019",
+      "intervention_point": "query text (pre-retrieval)",
+      "status": "done",
+      "needs": "query rewrite per request (spaCy + GPT-2 for her); changes the text the user wrote",
+      "retrieval_logs": "logs/mitigation/blind_query",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 0,
+          "flip_rate": 0.0,
+          "flip_rate_wilson_95ci": [
+            0.0,
+            0.08762453925039232
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": []
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "mcnemar_exact_p": null
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.248521203805988,
+          "p": 2.325032420495439e-05
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.15689376503305846,
+          "p": 5.737664660621916e-16
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 0,
+            "n": 300,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.012643429997735661
+            ]
+          },
+          "source_male": {
+            "k": 0,
+            "n": 233,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.016220123491819005
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "mcnemar_holm": null,
+        "vs_baseline": {
+          "flips_removed": 104,
+          "flips_added": 0,
+          "p_exact_mcnemar": 9.860761315262648e-32
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333334,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.919888888888889,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8438095238095239,
+        "audit_article_precision_at_3": 0.6419047619047618,
+        "article_precision_change": {
+          "mean": -0.005714285714285715,
+          "queries_lower": 16,
+          "queries_higher": 13,
+          "p_wilcoxon": 0.4413845717426309
+        },
+        "changed_cases": {
+          "cases_changed": 83,
+          "left_article_precision": 0.6385542168674698,
+          "entered_article_precision": 0.5975609756097561,
+          "left_same_gender_share": 0.6857142857142857,
+          "entered_same_gender_share": 0.36231884057971014
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.41666666666666663
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.0649895178197065
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.041666666666666664,
+            "queries_lost": 4,
+            "queries_gained": 1,
+            "p_wilcoxon": 0.4795001221869535
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 3,
+          "rows": 160,
+          "rate": 0.0187,
+          "wilson_95ci": [
+            0.0064,
+            0.0537
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 26,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 7.861856342483279e-07
+        },
+        "he_she_first_cited": {
+          "rows_differ": 0,
+          "rows": 160,
+          "rate": 0.0,
+          "wilson_95ci": [
+            0.0,
+            0.0234
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 15,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 0.00016244084518680075
+        },
+        "tone_cited_set": {
+          "rows_differ": 34,
+          "rows": 160,
+          "rate": 0.2125,
+          "wilson_95ci": [
+            0.1562,
+            0.2822
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 0,
+          "bases_higher": 5,
+          "p_wilcoxon_vs_baseline": 0.0625
+        },
+        "tone_first_cited": {
+          "rows_differ": 4,
+          "rows": 160,
+          "rate": 0.025,
+          "wilson_95ci": [
+            0.0098,
+            0.0625
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 0,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": null
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.026,
+          "range": [
+            0.0063,
+            0.0375
+          ]
+        }
+      }
+    },
+    "pcf": {
+      "method": "counterfactual averaging of retrieval scores (he and she version)",
+      "source": "Zhou et al. NeurIPS 2024",
+      "intervention_point": "retrieval scoring",
+      "status": "done",
+      "needs": "gender swap + second retrieval per gendered query; corpus gender prior",
+      "retrieval_logs": "logs/mitigation/pcf",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 0,
+          "flip_rate": 0.0,
+          "flip_rate_wilson_95ci": [
+            0.0,
+            0.08762453925039232
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": []
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 2,
+          "flip_rate": 0.05,
+          "mcnemar_exact_p": null
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.23350219486065965,
+          "p": 9.0394972444445e-05
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.19154742935072838,
+          "p": 8.993634521773312e-24
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 1,
+            "n": 300,
+            "rate": 0.0033333333333333335,
+            "wilson_95ci": [
+              0.0005886425761407396,
+              0.018637164554943353
+            ]
+          },
+          "source_male": {
+            "k": 1,
+            "n": 233,
+            "rate": 0.004291845493562232,
+            "wilson_95ci": [
+              0.0007579987871743476,
+              0.023906587163942346
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "mcnemar_holm": null,
+        "vs_baseline": {
+          "flips_removed": 103,
+          "flips_added": 0,
+          "p_exact_mcnemar": 1.9721522630525295e-31
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.9580000000000001,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8952380952380954,
+        "audit_article_precision_at_3": 0.6419047619047618,
+        "article_precision_change": {
+          "mean": -0.005714285714285714,
+          "queries_lower": 9,
+          "queries_higher": 6,
+          "p_wilcoxon": 0.6599795898660183
+        },
+        "changed_cases": {
+          "cases_changed": 56,
+          "left_article_precision": 0.6785714285714286,
+          "entered_article_precision": 0.6181818181818182,
+          "left_same_gender_share": 0.6470588235294118,
+          "entered_same_gender_share": 0.28
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4375
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07966457023060797
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.020833333333333332,
+            "queries_lost": 1,
+            "queries_gained": 0,
+            "p_wilcoxon": 0.31731050786291415
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 8,
+          "rows": 160,
+          "rate": 0.05,
+          "wilson_95ci": [
+            0.0256,
+            0.0956
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 27,
+          "bases_higher": 1,
+          "p_wilcoxon_vs_baseline": 1.5381766411174195e-06
+        },
+        "he_she_first_cited": {
+          "rows_differ": 1,
+          "rows": 160,
+          "rate": 0.0063,
+          "wilson_95ci": [
+            0.0011,
+            0.0345
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 15,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 0.00022491367198211633
+        },
+        "tone_cited_set": {
+          "rows_differ": 30,
+          "rows": 160,
+          "rate": 0.1875,
+          "wilson_95ci": [
+            0.1346,
+            0.255
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 0,
+          "bases_higher": 4,
+          "p_wilcoxon_vs_baseline": 0.125
+        },
+        "tone_first_cited": {
+          "rows_differ": 4,
+          "rows": 160,
+          "rate": 0.025,
+          "wilson_95ci": [
+            0.0098,
+            0.0625
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 1,
+          "p_wilcoxon_vs_baseline": 1.0
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.025,
+          "range": [
+            0.0187,
+            0.0312
+          ]
+        }
+      }
+    },
+    "blind_index": {
+      "method": "gender-neutral rewrite of every stored chunk (unawareness)",
+      "source": "classic baseline (fairness through unawareness)",
+      "intervention_point": "corpus / index",
+      "status": "done",
+      "needs": "one-off corpus rewrite (2.5 h CPU) + re-embed (36 min GPU); new index",
+      "retrieval_logs": "logs/mitigation/blind_index",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 2,
+          "flip_rate": 0.05,
+          "flip_rate_wilson_95ci": [
+            0.013820377146101098,
+            0.165041708179252
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": [
+            "d047",
+            "d081"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 4,
+          "flip_rate": 0.1,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.1834217129417207,
+          "p": 0.004246671598530942
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.2053700816096282,
+          "p": 2.352922758341084e-27
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 41,
+            "n": 300,
+            "rate": 0.13666666666666666,
+            "wilson_95ci": [
+              0.10236459725248649,
+              0.18015629521253473
+            ]
+          },
+          "source_male": {
+            "k": 34,
+            "n": 233,
+            "rate": 0.1459227467811159,
+            "wilson_95ci": [
+              0.10633947767613602,
+              0.19699236943180445
+            ]
+          },
+          "source_female": {
+            "k": 7,
+            "n": 67,
+            "rate": 0.1044776119402985,
+            "wilson_95ci": [
+              0.05153704291423215,
+              0.20031497623835615
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 29,
+            "n": 249,
+            "rate": 0.11646586345381527,
+            "wilson_95ci": [
+              0.08232551467928131,
+              0.16226081921514113
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 9,
+          "p_exact": 0.021484375
+        },
+        "mcnemar_holm": 0.0859375,
+        "vs_baseline": {
+          "flips_removed": 66,
+          "flips_added": 3,
+          "p_exact_mcnemar": 1.857035033560328e-16
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.9120000000000004,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8666666666666668,
+        "audit_article_precision_at_3": 0.6514285714285714,
+        "article_precision_change": {
+          "mean": 0.0038095238095238113,
+          "queries_lower": 12,
+          "queries_higher": 15,
+          "p_wilcoxon": 0.31725518129963093
+        },
+        "changed_cases": {
+          "cases_changed": 70,
+          "left_article_precision": 0.6285714285714286,
+          "entered_article_precision": 0.6571428571428571,
+          "left_same_gender_share": 0.6935483870967742,
+          "entered_same_gender_share": 0.3548387096774194
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4375
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07337526205450734
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.020833333333333332,
+            "queries_lost": 1,
+            "queries_gained": 0,
+            "p_wilcoxon": 0.31731050786291415
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 50,
+          "rows": 160,
+          "rate": 0.3125,
+          "wilson_95ci": [
+            0.2458,
+            0.388
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 17,
+          "bases_higher": 2,
+          "p_wilcoxon_vs_baseline": 0.0009091459422107014
+        },
+        "he_she_first_cited": {
+          "rows_differ": 9,
+          "rows": 160,
+          "rate": 0.0563,
+          "wilson_95ci": [
+            0.0299,
+            0.1034
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 13,
+          "bases_higher": 1,
+          "p_wilcoxon_vs_baseline": 0.0004866114477413175
+        },
+        "tone_cited_set": {
+          "rows_differ": 36,
+          "rows": 160,
+          "rate": 0.225,
+          "wilson_95ci": [
+            0.1672,
+            0.2957
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 4,
+          "bases_higher": 10,
+          "p_wilcoxon_vs_baseline": 0.1840232786247572
+        },
+        "tone_first_cited": {
+          "rows_differ": 12,
+          "rows": 160,
+          "rate": 0.075,
+          "wilson_95ci": [
+            0.0434,
+            0.1265
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 3,
+          "p_wilcoxon_vs_baseline": 0.625
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.0281,
+          "range": [
+            0.0125,
+            0.0375
+          ]
+        }
+      }
+    },
+    "permutation": {
+      "method": "permutation self-consistency over the 6 case orders (Kemeny)",
+      "source": "Tang et al. NAACL 2024",
+      "intervention_point": "generation",
+      "status": "done",
+      "needs": "6 LLM calls per query (~6x latency); retrieval unchanged",
+      "retrieval_logs": "logs/mitigation/baseline (retrieval unchanged)",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 15,
+          "flip_rate": 0.375,
+          "flip_rate_wilson_95ci": [
+            0.2422277353579172,
+            0.529678399454681
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 11
+          },
+          "mcnemar_exact_p": 0.0009765625,
+          "flipped_bases": [
+            "d024",
+            "d044",
+            "d047",
+            "d055",
+            "d067",
+            "d068",
+            "d070",
+            "d080",
+            "d081",
+            "d084",
+            "d098",
+            "d112",
+            "d155",
+            "d158",
+            "d169"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.3142860873515648,
+          "p": 1.9895643707387112e-08
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.19102457069916268,
+          "p": 1.147915310656529e-23
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 104,
+            "n": 300,
+            "rate": 0.3466666666666667,
+            "wilson_95ci": [
+              0.29505763866563084,
+              0.40215301320034147
+            ]
+          },
+          "source_male": {
+            "k": 79,
+            "n": 233,
+            "rate": 0.33905579399141633,
+            "wilson_95ci": [
+              0.2813198683524711,
+              0.4020127894238656
+            ]
+          },
+          "source_female": {
+            "k": 25,
+            "n": 67,
+            "rate": 0.373134328358209,
+            "wilson_95ci": [
+              0.26717987071840976,
+              0.49284813542487327
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 84,
+            "n": 249,
+            "rate": 0.3373493975903614,
+            "wilson_95ci": [
+              0.28148902425152583,
+              0.3981523005937528
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 59,
+          "p_exact": 1.0581813203458523e-16
+        },
+        "mcnemar_holm": 8.465450562766819e-16,
+        "vs_baseline": null
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 1.0,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 1.0,
+        "audit_article_precision_at_3": 0.6476190476190475
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4583333333333333
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07547169811320754
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 85,
+          "rows": 160,
+          "rate": 0.5312,
+          "wilson_95ci": [
+            0.4541,
+            0.6069
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 11,
+          "bases_higher": 6,
+          "p_wilcoxon_vs_baseline": 0.1693819842448523
+        },
+        "he_she_first_cited": {
+          "rows_differ": 53,
+          "rows": 160,
+          "rate": 0.3312,
+          "wilson_95ci": [
+            0.263,
+            0.4074
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 8,
+          "bases_higher": 8,
+          "p_wilcoxon_vs_baseline": 0.5809083362871519
+        },
+        "tone_cited_set": {
+          "rows_differ": 33,
+          "rows": 160,
+          "rate": 0.2062,
+          "wilson_95ci": [
+            0.1508,
+            0.2755
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 3,
+          "bases_higher": 8,
+          "p_wilcoxon_vs_baseline": 0.2861328125
+        },
+        "tone_first_cited": {
+          "rows_differ": 25,
+          "rows": 160,
+          "rate": 0.1562,
+          "wilson_95ci": [
+            0.1081,
+            0.2205
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 9,
+          "p_wilcoxon_vs_baseline": 0.0546875
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.0479,
+          "range": [
+            0.0312,
+            0.0625
+          ]
+        }
+      }
+    },
+    "leace_case_gender": {
+      "method": "LEACE erasure of each case's gender from chunk + query vectors (first build)",
+      "source": "Belrose et al. NeurIPS 2023",
+      "intervention_point": "embedding (documents + query)",
+      "status": "documented row: fails",
+      "needs": "eraser fit on all chunk vectors; new index",
+      "retrieval_logs": "logs/mitigation/leace",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 12,
+          "flip_rate": 0.3,
+          "flip_rate_wilson_95ci": [
+            0.18074670915695293,
+            0.45430310654320405
+          ],
+          "mcnemar_discordant": {
+            "male_only": 2,
+            "female_only": 6
+          },
+          "mcnemar_exact_p": 0.2890625,
+          "flipped_bases": [
+            "d008",
+            "d030",
+            "d031",
+            "d067",
+            "d068",
+            "d070",
+            "d080",
+            "d081",
+            "d084",
+            "d092",
+            "d098",
+            "d155"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "mcnemar_exact_p": null
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.2598818389914595,
+          "p": 7.58440608795356e-06
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.1820686726893142,
+          "p": 1.6782925331522395e-21
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 114,
+            "n": 300,
+            "rate": 0.38,
+            "wilson_95ci": [
+              0.32691781564606526,
+              0.4361166075533913
+            ]
+          },
+          "source_male": {
+            "k": 92,
+            "n": 233,
+            "rate": 0.3948497854077253,
+            "wilson_95ci": [
+              0.33427692063881,
+              0.4588337491083966
+            ]
+          },
+          "source_female": {
+            "k": 22,
+            "n": 67,
+            "rate": 0.3283582089552239,
+            "wilson_95ci": [
+              0.22791157615605973,
+              0.4474204321554408
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 89,
+            "n": 249,
+            "rate": 0.357429718875502,
+            "wilson_95ci": [
+              0.30048340036953297,
+              0.41870837819855083
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 2,
+          "top1_female_only_with_she": 43,
+          "p_exact": 5.88897819397971e-11
+        },
+        "mcnemar_holm": 4.122284735785797e-10,
+        "vs_baseline": {
+          "flips_removed": 42,
+          "flips_added": 52,
+          "p_exact_mcnemar": 0.35332803247158273
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.94,
+          "hits": 94,
+          "n": 100,
+          "wilson_95ci": [
+            0.8752303146877748,
+            0.9722142547333433
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.97,
+          "bootstrap_95ci": [
+            0.945,
+            0.99
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.7930000000000001,
+        "harness_top1_same": 99,
+        "audit_top3_overlap": 0.7161904761904763,
+        "audit_article_precision_at_3": 0.638095238095238,
+        "article_precision_change": {
+          "mean": -0.009523809523809525,
+          "queries_lower": 22,
+          "queries_higher": 19,
+          "p_wilcoxon": 0.5552475207374064
+        },
+        "changed_cases": {
+          "cases_changed": 149,
+          "left_article_precision": 0.6174496644295302,
+          "entered_article_precision": 0.5838926174496645,
+          "left_same_gender_share": 0.5523809523809524,
+          "entered_same_gender_share": 0.3904761904761905
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.41666666666666663
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07966457023060797
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.041666666666666664,
+            "queries_lost": 3,
+            "queries_gained": 1,
+            "p_wilcoxon": 0.31731050786291415
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      }
+    },
+    "leace_query": {
+      "method": "LEACE erasure of the query-pronoun direction from the query vector",
+      "source": "Belrose et al. NeurIPS 2023; concept as Bolukbasi et al. NeurIPS 2016",
+      "intervention_point": "query embedding",
+      "status": "done",
+      "needs": "rank-1 eraser fit on 412 dev he/she twins; one matrix product per query; no new index",
+      "retrieval_logs": "logs/mitigation/leace_query",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "flip_rate_wilson_95ci": [
+            0.0044267174077949265,
+            0.1288165948800778
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": [
+            "d055"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 1,
+          "flip_rate": 0.025,
+          "mcnemar_exact_p": null
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.2580405844237771,
+          "p": 9.379122184028758e-06
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.18774499203101638,
+          "p": 7.722092695714506e-23
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 8,
+            "n": 300,
+            "rate": 0.02666666666666667,
+            "wilson_95ci": [
+              0.013572906766976815,
+              0.051729540297546284
+            ]
+          },
+          "source_male": {
+            "k": 6,
+            "n": 233,
+            "rate": 0.02575107296137339,
+            "wilson_95ci": [
+              0.011854044718643295,
+              0.05503285352896187
+            ]
+          },
+          "source_female": {
+            "k": 2,
+            "n": 67,
+            "rate": 0.029850746268656716,
+            "wilson_95ci": [
+              0.008224522347453904,
+              0.10246750041883029
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 7,
+            "n": 249,
+            "rate": 0.028112449799196786,
+            "wilson_95ci": [
+              0.013682878703249371,
+              0.05688145881083059
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 1,
+          "p_exact": 1.0
+        },
+        "mcnemar_holm": 1.0,
+        "vs_baseline": {
+          "flips_removed": 96,
+          "flips_added": 0,
+          "p_exact_mcnemar": 2.524354896707238e-29
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.9080000000000001,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8742857142857143,
+        "audit_article_precision_at_3": 0.6323809523809524,
+        "article_precision_change": {
+          "mean": -0.01523809523809524,
+          "queries_lower": 14,
+          "queries_higher": 6,
+          "p_wilcoxon": 0.11841994270812436
+        },
+        "changed_cases": {
+          "cases_changed": 67,
+          "left_article_precision": 0.7164179104477612,
+          "entered_article_precision": 0.5909090909090909,
+          "left_same_gender_share": 0.6491228070175439,
+          "entered_same_gender_share": 0.4107142857142857
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4583333333333333
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.07756813417190775
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": 0.0,
+            "queries_lost": 1,
+            "queries_gained": 1,
+            "p_wilcoxon": 1.0
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 22,
+          "rows": 160,
+          "rate": 0.1375,
+          "wilson_95ci": [
+            0.0926,
+            0.1994
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 24,
+          "bases_higher": 2,
+          "p_wilcoxon_vs_baseline": 5.347089287478819e-05
+        },
+        "he_she_first_cited": {
+          "rows_differ": 5,
+          "rows": 160,
+          "rate": 0.0312,
+          "wilson_95ci": [
+            0.0134,
+            0.0711
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 14,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 0.0003769042540040947
+        },
+        "tone_cited_set": {
+          "rows_differ": 43,
+          "rows": 160,
+          "rate": 0.2687,
+          "wilson_95ci": [
+            0.2061,
+            0.3423
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 4,
+          "bases_higher": 8,
+          "p_wilcoxon_vs_baseline": 0.0322265625
+        },
+        "tone_first_cited": {
+          "rows_differ": 0,
+          "rows": 160,
+          "rate": 0.0,
+          "wilson_95ci": [
+            0.0,
+            0.0234
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 1.0
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.0302,
+          "range": [
+            0.0125,
+            0.0437
+          ]
+        }
+      }
+    },
+    "cda_first_build": {
+      "method": "embedder fine-tune with CDA twins; positive = own case chunk",
+      "source": "Kim et al. ACL Findings 2025 recipe",
+      "intervention_point": "embedder (documents + query)",
+      "status": "documented row: drifts",
+      "needs": "fine-tune sweep (~3 h GPU) + re-embed; new model + index",
+      "retrieval_logs": "archive/arm4_first_build/logs_mitigation/cda",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 2,
+          "flip_rate": 0.05,
+          "flip_rate_wilson_95ci": [
+            0.013820377146101098,
+            0.165041708179252
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 1
+          },
+          "mcnemar_exact_p": 1.0,
+          "flipped_bases": [
+            "d078",
+            "d148"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 4,
+          "flip_rate": 0.1,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.1387705325526209,
+          "p": 0.06918595500063865
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.048991080460863354,
+          "p": 0.07815288640700115
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 22,
+            "n": 300,
+            "rate": 0.07333333333333333,
+            "wilson_95ci": [
+              0.048923631132474436,
+              0.10853209579892667
+            ]
+          },
+          "source_male": {
+            "k": 17,
+            "n": 233,
+            "rate": 0.07296137339055794,
+            "wilson_95ci": [
+              0.04604903652321784,
+              0.11372694877666192
+            ]
+          },
+          "source_female": {
+            "k": 5,
+            "n": 67,
+            "rate": 0.07462686567164178,
+            "wilson_95ci": [
+              0.032295572977927914,
+              0.16309244762013875
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 17,
+            "n": 249,
+            "rate": 0.06827309236947791,
+            "wilson_95ci": [
+              0.043059562181081014,
+              0.10660568277860916
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 6,
+          "p_exact": 0.125
+        },
+        "mcnemar_holm": 0.375,
+        "vs_baseline": {
+          "flips_removed": 94,
+          "flips_added": 12,
+          "p_exact_mcnemar": 6.198097598927681e-17
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 1.0,
+          "bootstrap_95ci": [
+            1.0,
+            1.0
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.38951587301587304,
+        "harness_top1_same": 95,
+        "audit_top3_overlap": 0.22380952380952376,
+        "audit_article_precision_at_3": 0.5019047619047619,
+        "article_precision_change": {
+          "mean": -0.14571428571428574,
+          "queries_lower": 78,
+          "queries_higher": 29,
+          "p_wilcoxon": 5.9720576523648485e-06
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.5416666666666666
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.09853249475890985
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": 0.08333333333333333,
+            "queries_lost": 2,
+            "queries_gained": 5,
+            "p_wilcoxon": 0.2059032107320684
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      }
+    },
+    "cda": {
+      "method": "embedder fine-tune with CDA twins; positive = frozen top chunk of the neutral query",
+      "source": "Kim et al. ACL Findings 2025 recipe",
+      "intervention_point": "embedder (documents + query)",
+      "status": "done: fails the cost bar",
+      "needs": "fine-tune sweep (~6 h GPU) + re-embed; new model + index",
+      "retrieval_logs": "logs/mitigation/cda",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 7,
+          "flip_rate": 0.175,
+          "flip_rate_wilson_95ci": [
+            0.08745302996883067,
+            0.3195029205439244
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 4
+          },
+          "mcnemar_exact_p": 0.125,
+          "flipped_bases": [
+            "d008",
+            "d020",
+            "d031",
+            "d044",
+            "d070",
+            "d159",
+            "d169"
+          ]
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 4,
+          "flip_rate": 0.1,
+          "mcnemar_exact_p": 0.5
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.26167898989904176,
+          "p": 7.014193241049119e-06
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.15873665062255213,
+          "p": 3.5126966871203355e-16
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 27,
+            "n": 300,
+            "rate": 0.09,
+            "wilson_95ci": [
+              0.06258980739496589,
+              0.12777780520317736
+            ]
+          },
+          "source_male": {
+            "k": 22,
+            "n": 233,
+            "rate": 0.0944206008583691,
+            "wilson_95ci": [
+              0.06318136666733179,
+              0.13881693092903644
+            ]
+          },
+          "source_female": {
+            "k": 5,
+            "n": 67,
+            "rate": 0.07462686567164178,
+            "wilson_95ci": [
+              0.032295572977927914,
+              0.16309244762013875
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 20,
+            "n": 249,
+            "rate": 0.08032128514056225,
+            "wilson_95ci": [
+              0.05259475573955881,
+              0.12080076145381442
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 9,
+          "p_exact": 0.00390625
+        },
+        "mcnemar_holm": 0.01953125,
+        "vs_baseline": {
+          "flips_removed": 88,
+          "flips_added": 11,
+          "p_exact_mcnemar": 4.529579978466477e-16
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.97,
+          "hits": 97,
+          "n": 100,
+          "wilson_95ci": [
+            0.9154792191959729,
+            0.9897456617765852
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.985,
+          "bootstrap_95ci": [
+            0.965,
+            1.0
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.6391111111111111,
+        "harness_top1_same": 94,
+        "audit_top3_overlap": 0.5123809523809524,
+        "audit_article_precision_at_3": 0.6057142857142858,
+        "article_precision_change": {
+          "mean": -0.04190476190476191,
+          "queries_lower": 45,
+          "queries_higher": 27,
+          "p_wilcoxon": 0.0008489560044464363
+        },
+        "changed_cases": {
+          "cases_changed": 259,
+          "left_article_precision": 0.6640926640926641,
+          "entered_article_precision": 0.58203125,
+          "left_same_gender_share": 0.6059113300492611,
+          "entered_same_gender_share": 0.525
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4583333333333333
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.06918238993710692
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": 0.0,
+            "queries_lost": 2,
+            "queries_gained": 2,
+            "p_wilcoxon": 1.0
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 66,
+          "rows": 160,
+          "rate": 0.4125,
+          "wilson_95ci": [
+            0.3391,
+            0.49
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 16,
+          "bases_higher": 6,
+          "p_wilcoxon_vs_baseline": 0.03167589429910703
+        },
+        "he_she_first_cited": {
+          "rows_differ": 26,
+          "rows": 160,
+          "rate": 0.1625,
+          "wilson_95ci": [
+            0.1134,
+            0.2275
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 12,
+          "bases_higher": 4,
+          "p_wilcoxon_vs_baseline": 0.032818833869802284
+        },
+        "tone_cited_set": {
+          "rows_differ": 65,
+          "rows": 160,
+          "rate": 0.4062,
+          "wilson_95ci": [
+            0.3332,
+            0.4837
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 4,
+          "bases_higher": 16,
+          "p_wilcoxon_vs_baseline": 0.003971128544914218
+        },
+        "tone_first_cited": {
+          "rows_differ": 20,
+          "rows": 160,
+          "rate": 0.125,
+          "wilson_95ci": [
+            0.0824,
+            0.1852
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 5,
+          "p_wilcoxon_vs_baseline": 0.21875
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.024,
+          "range": [
+            0.0063,
+            0.0375
+          ]
+        }
+      }
+    },
+    "ft_ccd": {
+      "method": "embedder fine-tune with content conditional debiasing (he/she equally close to neutral + anchor on neutral), beta 10",
+      "source": "Deng et al. 2024 (arXiv); anchor as Kaneko & Bollegala EACL 2021",
+      "intervention_point": "embedder (documents + query)",
+      "status": "done",
+      "needs": "triplet build (CPU) + 3 one-epoch runs (~30 min GPU) + checkpoint scoring (~1.5 h) + re-embed (36 min); new model + index",
+      "retrieval_logs": "logs/mitigation/ft_ccd",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 0,
+          "flip_rate": 0.0,
+          "flip_rate_wilson_95ci": [
+            0.0,
+            0.08762453925039232
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": []
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 3,
+          "flip_rate": 0.075,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.24604022562560462,
+          "p": 3.0144340497289975e-05
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.22039849581684476,
+          "p": 1.904117852358273e-31
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 15,
+            "n": 300,
+            "rate": 0.05,
+            "wilson_95ci": [
+              0.030531367290852582,
+              0.08084771970710952
+            ]
+          },
+          "source_male": {
+            "k": 11,
+            "n": 233,
+            "rate": 0.04721030042918455,
+            "wilson_95ci": [
+              0.026562747469758,
+              0.08254646307433561
+            ]
+          },
+          "source_female": {
+            "k": 4,
+            "n": 67,
+            "rate": 0.05970149253731343,
+            "wilson_95ci": [
+              0.023458971433043554,
+              0.14369704988776227
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 8,
+            "n": 249,
+            "rate": 0.0321285140562249,
+            "wilson_95ci": [
+              0.01636799626032517,
+              0.062106431998315795
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 3,
+          "top1_female_only_with_she": 1,
+          "p_exact": 0.625
+        },
+        "mcnemar_holm": 1.0,
+        "vs_baseline": {
+          "flips_removed": 96,
+          "flips_added": 7,
+          "p_exact_mcnemar": 4.207682867061068e-21
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.94,
+          "hits": 94,
+          "n": 100,
+          "wilson_95ci": [
+            0.8752303146877748,
+            0.9722142547333433
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9683333333333333,
+          "bootstrap_95ci": [
+            0.9416666666666668,
+            0.99
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.8536666666666668,
+        "harness_top1_same": 99,
+        "audit_top3_overlap": 0.7809523809523811,
+        "audit_article_precision_at_3": 0.6495238095238095,
+        "article_precision_change": {
+          "mean": 0.0019047619047619056,
+          "queries_lower": 18,
+          "queries_higher": 19,
+          "p_wilcoxon": 0.5076975728831041
+        },
+        "changed_cases": {
+          "cases_changed": 117,
+          "left_article_precision": 0.6410256410256411,
+          "entered_article_precision": 0.6434782608695652,
+          "left_same_gender_share": 0.54,
+          "entered_same_gender_share": 0.41836734693877553
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.43749999999999994
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.08176100628930817
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.020833333333333332,
+            "queries_lost": 2,
+            "queries_gained": 1,
+            "p_wilcoxon": 0.5637028616507731
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 0.9375,
+          "recall@1_wilson_95ci": [
+            0.7167073163197013,
+            0.9888809426916687
+          ],
+          "missed": [
+            "q020"
+          ]
+        }
+      },
+      "whole_system": {
+        "he_she_cited_set": {
+          "rows_differ": 18,
+          "rows": 160,
+          "rate": 0.1125,
+          "wilson_95ci": [
+            0.0724,
+            0.1708
+          ],
+          "baseline_rows_differ": 102,
+          "bases_lower": 24,
+          "bases_higher": 2,
+          "p_wilcoxon_vs_baseline": 4.791302792066097e-06
+        },
+        "he_she_first_cited": {
+          "rows_differ": 2,
+          "rows": 160,
+          "rate": 0.0125,
+          "wilson_95ci": [
+            0.0034,
+            0.0444
+          ],
+          "baseline_rows_differ": 58,
+          "bases_lower": 15,
+          "bases_higher": 0,
+          "p_wilcoxon_vs_baseline": 0.00022414403293170027
+        },
+        "tone_cited_set": {
+          "rows_differ": 56,
+          "rows": 160,
+          "rate": 0.35,
+          "wilson_95ci": [
+            0.2804,
+            0.4266
+          ],
+          "baseline_rows_differ": 19,
+          "bases_lower": 4,
+          "bases_higher": 14,
+          "p_wilcoxon_vs_baseline": 0.02384605145525053
+        },
+        "tone_first_cited": {
+          "rows_differ": 8,
+          "rows": 160,
+          "rate": 0.05,
+          "wilson_95ci": [
+            0.0256,
+            0.0956
+          ],
+          "baseline_rows_differ": 4,
+          "bases_lower": 1,
+          "bases_higher": 2,
+          "p_wilcoxon_vs_baseline": 1.0
+        },
+        "repeat_noise_cited": {
+          "rate_mean": 0.0208,
+          "range": [
+            0.0125,
+            0.025
+          ]
+        }
+      }
+    },
+    "blind_query+blind_index": {
+      "method": "both sides gender-neutral",
+      "source": "combination",
+      "intervention_point": "query text + corpus",
+      "status": "done (retrieval only)",
+      "needs": "both arms' costs; adds nothing over blind_query on flips",
+      "retrieval_logs": "logs/mitigation/blind_query+blind_index",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 0,
+          "flip_rate": 0.0,
+          "flip_rate_wilson_95ci": [
+            0.0,
+            0.08762453925039232
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": []
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 4,
+          "flip_rate": 0.1,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.2358966233716341,
+          "p": 7.131977455980171e-05
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.1746252574372214,
+          "p": 8.782470287070811e-20
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 0,
+            "n": 300,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.012643429997735661
+            ]
+          },
+          "source_male": {
+            "k": 0,
+            "n": 233,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.016220123491819005
+            ]
+          },
+          "source_female": {
+            "k": 0,
+            "n": 67,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.05422802421176257
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 0,
+            "n": 249,
+            "rate": 0.0,
+            "wilson_95ci": [
+              0.0,
+              0.01519370230215281
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 0,
+          "top1_female_only_with_she": 0,
+          "p_exact": null
+        },
+        "mcnemar_holm": null,
+        "vs_baseline": {
+          "flips_removed": 104,
+          "flips_added": 0,
+          "p_exact_mcnemar": 9.860761315262648e-32
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333334,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.8940000000000002,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8476190476190477,
+        "audit_article_precision_at_3": 0.6533333333333333,
+        "article_precision_change": {
+          "mean": 0.005714285714285714,
+          "queries_lower": 11,
+          "queries_higher": 15,
+          "p_wilcoxon": 0.6573713299074393
+        },
+        "changed_cases": {
+          "cases_changed": 80,
+          "left_article_precision": 0.6,
+          "entered_article_precision": 0.6375,
+          "left_same_gender_share": 0.7183098591549296,
+          "entered_same_gender_share": 0.36619718309859156
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.41666666666666663
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.0670859538784067
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.041666666666666664,
+            "queries_lost": 3,
+            "queries_gained": 1,
+            "p_wilcoxon": 0.31731050786291415
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      }
+    },
+    "leace_query+blind_index": {
+      "method": "query-pronoun erasure + neutral corpus",
+      "source": "combination",
+      "intervention_point": "query embedding + corpus",
+      "status": "done (retrieval only)",
+      "needs": "both arms' costs; adds nothing over leace_query on flips",
+      "retrieval_logs": "logs/mitigation/leace_query+blind_index",
+      "retrieval_40_bases": {
+        "pronoun_flip": {
+          "n_pairs": 40,
+          "top1_flips": 0,
+          "flip_rate": 0.0,
+          "flip_rate_wilson_95ci": [
+            0.0,
+            0.08762453925039232
+          ],
+          "mcnemar_discordant": {
+            "male_only": 0,
+            "female_only": 0
+          },
+          "mcnemar_exact_p": null,
+          "flipped_bases": []
+        },
+        "tone_flip": {
+          "n_pairs": 40,
+          "top1_flips": 3,
+          "flip_rate": 0.075,
+          "mcnemar_exact_p": 1.0
+        },
+        "retrieved_gender_by_query_gender": {
+          "cramers_v": 0.20710432933448172,
+          "p": 0.0007877205903407866
+        },
+        "gender_vs_corpus": {
+          "cramers_v": 0.20836451137264744,
+          "p": 3.9406665200195944e-28
+        }
+      },
+      "r4_swap_set_300": {
+        "top1_flip": {
+          "all": {
+            "k": 10,
+            "n": 300,
+            "rate": 0.03333333333333333,
+            "wilson_95ci": [
+              0.01820474987365085,
+              0.0602624514575691
+            ]
+          },
+          "source_male": {
+            "k": 9,
+            "n": 233,
+            "rate": 0.03862660944206009,
+            "wilson_95ci": [
+              0.020452181473689404,
+              0.07176810415180883
+            ]
+          },
+          "source_female": {
+            "k": 1,
+            "n": 67,
+            "rate": 0.014925373134328358,
+            "wilson_95ci": [
+              0.002639503757676784,
+              0.0798205197313466
+            ]
+          },
+          "swap_round_trip_exact": {
+            "k": 6,
+            "n": 249,
+            "rate": 0.024096385542168676,
+            "wilson_95ci": [
+              0.011089167193471368,
+              0.051565079576047564
+            ]
+          }
+        },
+        "mcnemar_top1_female": {
+          "top1_female_only_with_he": 1,
+          "top1_female_only_with_she": 0,
+          "p_exact": 1.0
+        },
+        "mcnemar_holm": 1.0,
+        "vs_baseline": {
+          "flips_removed": 97,
+          "flips_added": 3,
+          "p_exact_mcnemar": 2.630866896130179e-25
+        }
+      },
+      "harness": {
+        "recall@1": {
+          "value": 0.95,
+          "hits": 95,
+          "n": 100,
+          "wilson_95ci": [
+            0.8882480347279118,
+            0.9784566385436864
+          ]
+        },
+        "recall@5": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "recall@10": {
+          "value": 1.0,
+          "hits": 100,
+          "n": 100,
+          "wilson_95ci": [
+            0.9630051925239981,
+            0.9999999999999999
+          ]
+        },
+        "mrr@10": {
+          "value": 0.9733333333333333,
+          "bootstrap_95ci": [
+            0.9483333333333333,
+            0.995
+          ]
+        }
+      },
+      "r5_retrieval_cost": {
+        "harness_top10_overlap": 0.899,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8514285714285714,
+        "audit_article_precision_at_3": 0.6438095238095237,
+        "article_precision_change": {
+          "mean": -0.0038095238095238074,
+          "queries_lower": 14,
+          "queries_higher": 13,
+          "p_wilcoxon": 0.5272480215154045
+        },
+        "changed_cases": {
+          "cases_changed": 79,
+          "left_article_precision": 0.6582278481012658,
+          "entered_article_precision": 0.6282051282051282,
+          "left_same_gender_share": 0.6571428571428571,
+          "entered_same_gender_share": 0.391304347826087
+        }
+      },
+      "r2_gender_relevant": {
+        "audit": {
+          "gender_relevant": {
+            "n_queries": 16,
+            "mean_share_relevant_in_top3": 0.4375
+          },
+          "other": {
+            "n_queries": 159,
+            "mean_share_relevant_in_top3": 0.0670859538784067
+          },
+          "change_vs_baseline_gender_relevant": {
+            "mean": -0.020833333333333332,
+            "queries_lost": 1,
+            "queries_gained": 0,
+            "p_wilcoxon": 0.31731050786291415
+          }
+        },
+        "harness": {
+          "n_queries": 16,
+          "recall@1": 1.0,
+          "recall@1_wilson_95ci": [
+            0.8063865817272802,
+            1.0
+          ],
+          "missed": []
+        }
+      }
+    }
+  },
+  "computed_from": {
+    "archive/arm4_first_build/logs_mitigation/cda/harness.json": "94575aa98abd9f5d286cdf534a83c6197a067decb8fabf4eb1b3754d793be4d3",
+    "archive/arm4_first_build/logs_mitigation/cda/results.json": "3a1c7d37b23871533c0781ef38acd8d25380eb0a59f2066f6c755bdaa8147e91",
+    "archive/arm4_first_build/robustness/r2_gender_relevant.json": "dc42ebe3fb31584ae61b2bffeed8e35a59c75ef9f94de523b39991c1f7d545d6",
+    "archive/arm4_first_build/robustness/r4_large_swap_set.json": "7573b7c9fa878c1e74788e483f0b36aeb7b1fb8a407eb9fd3cf29feffe85e934",
+    "archive/arm4_first_build/robustness/r5_retrieval_cost.json": "8610455d1d9cf69ac234bb7d93f0fa4f7ded1887705d05fe52516b93d762d252",
+    "logs/bias_audit/predict/run_A.jsonl": "15d5afbbd84836302185ee47cc9795e1d13439c93fb7fedacb26541afbda5490",
+    "logs/bias_audit/predict/run_B.jsonl": "703c79a5ddf40e61891a28f3ac1d99c1949d6b2eb8f8c8089a0ce62c74f7171e",
+    "logs/bias_audit/predict/run_C.jsonl": "f0153e6bd8b0cfcc18c3ff0f54c53885a605063871fc65ba07bae4b201c2793c",
+    "logs/bias_audit/predict/run_D.jsonl": "f9b8c8193f35636051830b295f6da4c747e576087d315a9de1e7ffdd5ac0540b",
+    "logs/mitigation/baseline/harness.json": "9ee4d9e3769d83434c4630f68c73265e378e43ee4fc7fdb944e69a08ba4e32ad",
+    "logs/mitigation/baseline/results.json": "c72912d00fca76ab8ba2cd95119f981604b18e008633d4fc102527c7db14b8e8",
+    "logs/mitigation/baseline/whole_system/stability/results.json": "86fe1ead4ea31848d5263ffc2ad3748307e69e2866b400f90b21811e3404ab6a",
+    "logs/mitigation/blind_index/harness.json": "74b4d7e9d7d4f36e8f39829f52541e3bdcfc1b7242a05c090288cb89920859e2",
+    "logs/mitigation/blind_index/predict/run_A.jsonl": "7ce6fc33a331e01e4e598cd871e38f0d002fe2a71ea0913ae0565fe725cdde39",
+    "logs/mitigation/blind_index/predict/run_B.jsonl": "1dd340e55a78c2a30b8af351895b21df05987a324924d67f0e36d67fe6265689",
+    "logs/mitigation/blind_index/predict/run_C.jsonl": "e96f843428cb0d78abb2076c96024eebacd054eaf9d027aeb1f574649d82af3a",
+    "logs/mitigation/blind_index/predict/run_D.jsonl": "e4c8b0ef2fec18178848779d2e23b7dd022716ebf2b627144c5f989c029c4242",
+    "logs/mitigation/blind_index/results.json": "26529614ace15942941d796f50dbd08aed6ced5a68e9ec86256079c509d61df1",
+    "logs/mitigation/blind_index/whole_system/stability/results.json": "6ff9c00323451f138eaa45fa1f1896bb51003a90d0bb9f49ada7ce19214f365f",
+    "logs/mitigation/blind_query+blind_index/harness.json": "4895f3c05ff718dc8cafcd861bee7a6b16be201e1187aab71dd90e74da466c7a",
+    "logs/mitigation/blind_query+blind_index/results.json": "b5db061b2d5a3b5743422e124ba6648043022a23c538d5550f36a8d93dc9fa4b",
+    "logs/mitigation/blind_query/harness.json": "12228d99e0998e4e48d34b33677fa3ea8623d4b280da0a71f27d31eda836d128",
+    "logs/mitigation/blind_query/predict/run_A.jsonl": "33c30624416857694a3640496334bb5f45f98a60a1bcef04892ba1ee3eb0754e",
+    "logs/mitigation/blind_query/predict/run_B.jsonl": "679f92cde8f5582898bf0ce42e38ba4322086113056d77082e274f4f43410673",
+    "logs/mitigation/blind_query/predict/run_C.jsonl": "815a9bf9ddb8b4f17ed525958715fc2e9ad2db50a57f6533dc280345009e874d",
+    "logs/mitigation/blind_query/predict/run_D.jsonl": "62dfff1367fc3bb4fbbe05b42d87cb7f07927e63bc203b68a757ccc5801b2822",
+    "logs/mitigation/blind_query/results.json": "ff2682c38731e505ddaa17b7048e768d73a37953db8102db5d63f457202ee2c7",
+    "logs/mitigation/blind_query/whole_system/stability/results.json": "a3c3ebd2f0c4936160fd49f6fedc50d1fd9d8e86ec774425345fd60be1ad1aaa",
+    "logs/mitigation/cda/harness.json": "4a0d28735d3f2920c35aa2fd65c081cbb762590846441f4064896c26ab74cd8a",
+    "logs/mitigation/cda/predict/run_A.jsonl": "cd780c13548cde4c140aa4b9e14f82be6761c764aa88e0e87f8ee4bd1ebaebad",
+    "logs/mitigation/cda/predict/run_B.jsonl": "36f2df46234d6b5f27c0378d116762ba2d6469aa855aadd72fb3f414e7c7c4fc",
+    "logs/mitigation/cda/predict/run_C.jsonl": "8b9c113dd897c083b0eff7bc2b66822f1a0ad02420072ad78786b88baef892a6",
+    "logs/mitigation/cda/predict/run_D.jsonl": "5584128be870c7ee389c9f305d5ec4304a800d7cda6fa222a3b670c383e3240c",
+    "logs/mitigation/cda/results.json": "4fc344953a2549f3f18e009cd6525cd59ff5f9e1f9f0afe15860b7b2415c7282",
+    "logs/mitigation/cda/whole_system/stability/results.json": "28c31c8969cd747a2d983dda85b1ca7fc516391a0c484b5b03064f4353dc8c13",
+    "logs/mitigation/ft_ccd/harness.json": "0830814e1abfc2807417b30b3dca66a367d3801ad884ccac1de098d802e9fd9d",
+    "logs/mitigation/ft_ccd/predict/run_A.jsonl": "48a6ec3763b1e29714e051a172e8673d44107c5cebd08fff3ed956b993c3a16c",
+    "logs/mitigation/ft_ccd/predict/run_B.jsonl": "53bbdef628338590941c034c74a53fa0b702daf479481ac2d3b23464b66b87c7",
+    "logs/mitigation/ft_ccd/predict/run_C.jsonl": "e921c1c155a286c4bf12b1ed92cf43614e2bd841e54dd60682a4cd2f84f2d132",
+    "logs/mitigation/ft_ccd/predict/run_D.jsonl": "b40ee625ceb329a3d84b3c3a35025179794a7a37c3c8986570553b2ee398ca44",
+    "logs/mitigation/ft_ccd/results.json": "5d84bcdcee8a45cf369c72f9c7d0636978831d10d17c6933f7cca018a463ab11",
+    "logs/mitigation/ft_ccd/whole_system/stability/results.json": "cfa181416ae868dd734a96de70a2652b5afb741296e92f7ab83d2ff16b87a423",
+    "logs/mitigation/leace/harness.json": "30df5a507439d1be149dcc713751baed0ddb368eff26c97d27c78b992ac11aca",
+    "logs/mitigation/leace/results.json": "ab7f8b722f1211c37fc9fc46b395bcff4868aa54e86216a9d434523cd7c6e8f7",
+    "logs/mitigation/leace_query+blind_index/harness.json": "d94a0e720e5cf90934bd035eac228d96d770c84bc7d5e7a66098074d74f56f15",
+    "logs/mitigation/leace_query+blind_index/results.json": "0281c302fab59eedc6a933890f75f06cdacf945648db79fb5c5d345a11f573a6",
+    "logs/mitigation/leace_query/harness.json": "25dfc804c43f8b61911243722c32e3029344142304f2bbf896a6eef8bacbf9ae",
+    "logs/mitigation/leace_query/predict/run_A.jsonl": "fa2b50e89a11099573d9bc4a8cbac03697de2703a0cbe0f3017515053cc0bccb",
+    "logs/mitigation/leace_query/predict/run_B.jsonl": "7f9f27467c037f62a03641d96e88712383cbfea64efe66e107e7c259226fc48c",
+    "logs/mitigation/leace_query/predict/run_C.jsonl": "223d02e99afd4f625c415a9f5918d47e69a97ce7dcc5e59106865ec73d31153f",
+    "logs/mitigation/leace_query/predict/run_D.jsonl": "a1f2b128afc6ad0b3637aba73605eb82ebc14dff4feb578c8e7b41953df80499",
+    "logs/mitigation/leace_query/results.json": "4aa295719f43b8d9a41a4e0df0ac8854eb11506251e6b1b494406d8084ac59fa",
+    "logs/mitigation/leace_query/whole_system/stability/results.json": "4f396ad2786a67d1f66e1debf5adcf89c049ec6653c9db5464198efbf494a9fc",
+    "logs/mitigation/pcf/harness.json": "62ce0eac46f6a35e7c328e0bc01dcf80af7c60b784a68dfdc5753b660a38c1f5",
+    "logs/mitigation/pcf/predict/run_A.jsonl": "9b203292c15177f76c8e6f2cb538aa675c8a1d0912b9c9fc92929c582e0fd548",
+    "logs/mitigation/pcf/predict/run_B.jsonl": "d61e574e36534fc960f02ab1fd15845d3d949c8789f01408c815c1b1baaaf23b",
+    "logs/mitigation/pcf/predict/run_C.jsonl": "e099a010f50311aaf018b38eff3ac151c0ab7938ef4897310f9286cd19614b9c",
+    "logs/mitigation/pcf/predict/run_D.jsonl": "fee086548ac3ecb5d1ab7c7abba4d87d6a2a35d6ad7bd73eef12d9acccf472f6",
+    "logs/mitigation/pcf/results.json": "c1c70b18ff76c9f654da3fdaf6cf45f8f91cb614462df694ee85a0b91c4f38ca",
+    "logs/mitigation/pcf/whole_system/stability/results.json": "1d8e921831f1f812c59707d83150f8688c035dbad6c71e28985cd07bdfd0263c",
+    "logs/mitigation/permutation/predict/run_A.jsonl": "21c173bb5f2406438d56bfc883c3674d59439a5c8572729d1356350e0a2c2e17",
+    "logs/mitigation/permutation/predict/run_B.jsonl": "24217ab1a2adcc8a79a1dd97ee2f7049b47c04c63bc7fa6b3de00ca828af66b9",
+    "logs/mitigation/permutation/predict/run_C.jsonl": "87fe1cbeafe3ecdda85d194264685b40a81974735197c017ff139bc30b617255",
+    "logs/mitigation/permutation/predict/run_D.jsonl": "d88c049d7ca39eef2b772e8b15f895cf1ff678e5b0e9211642b2c80ff31323cb",
+    "logs/mitigation/permutation/whole_system/stability/results.json": "5b9ce7bd6af407f888cc166ca3c8cb67b39c96c1bad4145c02c6002d63bbe302",
+    "logs/robustness/r1_topic_control.json": "d658677fd6e67e45bc5de6e97c227439de24ab0ba0269d5edf0dd359237725b7",
+    "logs/robustness/r2_gender_relevant.json": "0ae4a74cff6b85588d7d8d50c75c4c4fdc4ca783618158bd5736d09ffe4d5613",
+    "logs/robustness/r3_detectable_effects.json": "e06b009affa4c17eb688ff77fba531132c0b28f7b98f55cff9325d9e1613aa07",
+    "logs/robustness/r3b_llm_pronoun_fixed_cases.json": "b3cc8ec645f053200bb163d100c09f4b8dfa002c0f7a9a1ecb38fdc1b4ee4745",
+    "logs/robustness/r4_large_swap_set.json": "e4435daf46ac8f8b5e0c1e237398b896d1a485ac43c57a3fda31fab9f58ca92d",
+    "logs/robustness/r5_retrieval_cost.json": "6d9846bcb134a366b5c6ed1c9f1a5037eec673616cdf6573bde7aa7debac9c62"
+  }
+}

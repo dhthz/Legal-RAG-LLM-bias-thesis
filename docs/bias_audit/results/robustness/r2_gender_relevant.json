@@ -1,0 +1,1922 @@
+{
+  "check": "r2_gender_relevant",
+  "question": "Where gender is legally relevant, do the mitigation arms lose the relevant precedents?",
+  "created": "2026-10-09T20:04:16",
+  "method": {
+    "gender_relevant_query": "source case alleges or was found to violate Article 14, or the query text mentions a sex/gender-related topic (regex: \\b(pregnan\\w*|maternity|abortion|rape[sd]?|sexual\\w*|sex discrimination|domestic violence|gender|transsexual\\w*|female genital)\\b)",
+    "gender_relevant_case": "retrieved case alleges/violates Article 14, or its facts match the same regex",
+    "audit_measure": "share of the top-3 retrieved cases that are gender-relevant, per query; paired against the baseline (Wilcoxon); queries without the topic are the control",
+    "harness_measure": "recall@1 of the B.1 harness on its gender-relevant queries (ground truth = source case)",
+    "note": "small subsets; descriptive, read with the per-query list"
+  },
+  "inputs": {
+    "logs/mitigation/baseline/retrieval.jsonl": "a2a60e85370365c8621d181a01ffeea6a36f7f337f1e3264bdfcf3c81280dc41",
+    "logs/mitigation/blind_index/retrieval.jsonl": "9287e716bb12ec7625760ee63de8b9d9ddd2e6ee09a2f438e0cfef4fcb0292fb",
+    "logs/mitigation/blind_query/retrieval.jsonl": "cb17aa46632482a2357a0b9f469da95cbe5e571a0af731d69bc32b65310ab2e4",
+    "logs/mitigation/blind_query+blind_index/retrieval.jsonl": "6d662557652f6f0c0d539b770cb92d61e03924f1b3d47630d92d9b7b3b5026c9",
+    "logs/mitigation/cda/retrieval.jsonl": "cf3c0cf13b7e834057d77e97a93114efdb11629f6ebcaababd3da9fe068144e7",
+    "logs/mitigation/ft_ccd/retrieval.jsonl": "843707c31ffc00f0e18f4e7db4a7e62750df2509de54dc6ac1fb06b2abbe7d28",
+    "logs/mitigation/ft_control/retrieval.jsonl": "9afa8cb347cc4bb802f22cc8dd005741dfc6d0752f9480eb41605dc1055e125b",
+    "logs/mitigation/leace/retrieval.jsonl": "09702fadb5648ee434592d3dbb6b8dd051c80d1443332e1b2e306d1eb0f3dd27",
+    "logs/mitigation/leace_query/retrieval.jsonl": "52eae91c719247cfbe762c2dce6a913b34e7fa41a21352c4a7074714236fd80d",
+    "logs/mitigation/leace_query+blind_index/retrieval.jsonl": "665d5225f92e9e1fdf04b637bb3ff90c7a5d4d5eadf4c231e82c9fd8b59fed89",
+    "logs/mitigation/pcf/retrieval.jsonl": "b574bc933f2c9697783775f7c87d4106fa53e58285b4a5e9bdf138b320c626c9",
+    "logs/mitigation/baseline/harness.json": "9ee4d9e3769d83434c4630f68c73265e378e43ee4fc7fdb944e69a08ba4e32ad",
+    "logs/mitigation/blind_index/harness.json": "74b4d7e9d7d4f36e8f39829f52541e3bdcfc1b7242a05c090288cb89920859e2",
+    "logs/mitigation/blind_query/harness.json": "12228d99e0998e4e48d34b33677fa3ea8623d4b280da0a71f27d31eda836d128",
+    "logs/mitigation/blind_query+blind_index/harness.json": "4895f3c05ff718dc8cafcd861bee7a6b16be201e1187aab71dd90e74da466c7a",
+    "logs/mitigation/cda/harness.json": "4a0d28735d3f2920c35aa2fd65c081cbb762590846441f4064896c26ab74cd8a",
+    "logs/mitigation/ft_ccd/harness.json": "0830814e1abfc2807417b30b3dca66a367d3801ad884ccac1de098d802e9fd9d",
+    "logs/mitigation/ft_control/harness.json": "363ae5f7d346acfdb600dbb62daba994f6da6400349c842d5d250c03cb3b6e40",
+    "logs/mitigation/leace/harness.json": "30df5a507439d1be149dcc713751baed0ddb368eff26c97d27c78b992ac11aca",
+    "logs/mitigation/leace_query/harness.json": "25dfc804c43f8b61911243722c32e3029344142304f2bbf896a6eef8bacbf9ae",
+    "logs/mitigation/leace_query+blind_index/harness.json": "d94a0e720e5cf90934bd035eac228d96d770c84bc7d5e7a66098074d74f56f15",
+    "logs/mitigation/pcf/harness.json": "62ce0eac46f6a35e7c328e0bc01dcf80af7c60b784a68dfdc5753b660a38c1f5",
+    "dataset/eval/audit_queries_main.jsonl": "6096429f1b54190ae629719f8baf1fa88779e1602098a25db66d33ab08ceb90a",
+    "dataset/eval/retrieval_harness_queries.jsonl": "837d0e4fbf2b065eddd91a909c5654d2144e0d72630362cf44a928dc19f2e6ba"
+  },
+  "results": {
+    "audit": {
+      "baseline": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4583333333333333
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.07547169811320754
+        }
+      },
+      "blind_index": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4375
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.07337526205450734
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.020833333333333332,
+          "queries_lost": 1,
+          "queries_gained": 0,
+          "p_wilcoxon": 0.31731050786291415
+        }
+      },
+      "blind_query": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.41666666666666663
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.0649895178197065
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.041666666666666664,
+          "queries_lost": 4,
+          "queries_gained": 1,
+          "p_wilcoxon": 0.4795001221869535
+        }
+      },
+      "blind_query+blind_index": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.41666666666666663
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.0670859538784067
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.041666666666666664,
+          "queries_lost": 3,
+          "queries_gained": 1,
+          "p_wilcoxon": 0.31731050786291415
+        }
+      },
+      "cda": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4583333333333333
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.06918238993710692
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": 0.0,
+          "queries_lost": 2,
+          "queries_gained": 2,
+          "p_wilcoxon": 1.0
+        }
+      },
+      "ft_ccd": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.43749999999999994
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.08176100628930817
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.020833333333333332,
+          "queries_lost": 2,
+          "queries_gained": 1,
+          "p_wilcoxon": 0.5637028616507731
+        }
+      },
+      "ft_control": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.47916666666666663
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.0649895178197065
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": 0.02083333333333333,
+          "queries_lost": 3,
+          "queries_gained": 4,
+          "p_wilcoxon": 0.7054569861112734
+        }
+      },
+      "leace": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.41666666666666663
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.07966457023060797
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.041666666666666664,
+          "queries_lost": 3,
+          "queries_gained": 1,
+          "p_wilcoxon": 0.31731050786291415
+        }
+      },
+      "leace_query": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4583333333333333
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.07756813417190775
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": 0.0,
+          "queries_lost": 1,
+          "queries_gained": 1,
+          "p_wilcoxon": 1.0
+        }
+      },
+      "leace_query+blind_index": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4375
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.0670859538784067
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.020833333333333332,
+          "queries_lost": 1,
+          "queries_gained": 0,
+          "p_wilcoxon": 0.31731050786291415
+        }
+      },
+      "pcf": {
+        "gender_relevant": {
+          "n_queries": 16,
+          "mean_share_relevant_in_top3": 0.4375
+        },
+        "other": {
+          "n_queries": 159,
+          "mean_share_relevant_in_top3": 0.07966457023060797
+        },
+        "change_vs_baseline_gender_relevant": {
+          "mean": -0.020833333333333332,
+          "queries_lost": 1,
+          "queries_gained": 0,
+          "p_wilcoxon": 0.31731050786291415
+        }
+      }
+    },
+    "harness": {
+      "baseline": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "blind_index": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "blind_query": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "blind_query+blind_index": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "cda": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "ft_ccd": {
+        "n_queries": 16,
+        "recall@1": 0.9375,
+        "recall@1_wilson_95ci": [
+          0.7167073163197013,
+          0.9888809426916687
+        ],
+        "missed": [
+          "q020"
+        ]
+      },
+      "ft_control": {
+        "n_queries": 16,
+        "recall@1": 0.9375,
+        "recall@1_wilson_95ci": [
+          0.7167073163197013,
+          0.9888809426916687
+        ],
+        "missed": [
+          "q020"
+        ]
+      },
+      "leace": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "leace_query": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "leace_query+blind_index": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      },
+      "pcf": {
+        "n_queries": 16,
+        "recall@1": 1.0,
+        "recall@1_wilson_95ci": [
+          0.8063865817272802,
+          1.0
+        ],
+        "missed": []
+      }
+    },
+    "queries": [
+      {
+        "query_id": "d004",
+        "gender": "Female",
+        "article": "10",
+        "article_14": false,
+        "keywords": [
+          "sexual"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-90356"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-90356"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-98401",
+              "001-90356",
+              "001-150649"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-98401",
+              "001-90356",
+              "001-150649"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-158506",
+              "001-150649",
+              "001-160318"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-158506"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-160318",
+              "001-158506",
+              "001-150649"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-90356",
+              "001-98401",
+              "001-102142"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-90356"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-90356"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-98401",
+              "001-150649",
+              "001-90356"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d010",
+        "gender": "Male",
+        "article": "10",
+        "article_14": false,
+        "keywords": [
+          "abortion",
+          "pregnancy",
+          "pregnant"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-111044"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-61075",
+              "001-82899",
+              "001-111044"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-94072"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-61075",
+              "001-82899",
+              "001-61229"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-94072"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-111044"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-61075",
+              "001-61423",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d018",
+        "gender": "Female",
+        "article": "3",
+        "article_14": false,
+        "keywords": [
+          "rape",
+          "sexual"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-111938",
+              "001-90937",
+              "001-157766"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_index": {
+            "top3": [
+              "001-111938",
+              "001-90937",
+              "001-157766"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query": {
+            "top3": [
+              "001-111938",
+              "001-157766",
+              "001-112206"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-111938",
+              "001-157766",
+              "001-90937"
+            ],
+            "relevant_in_top3": 2
+          },
+          "cda": {
+            "top3": [
+              "001-157766",
+              "001-111938",
+              "001-121774"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-111938",
+              "001-90937",
+              "001-157766"
+            ],
+            "relevant_in_top3": 2
+          },
+          "ft_control": {
+            "top3": [
+              "001-157766",
+              "001-71625",
+              "001-121774"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-111938",
+              "001-84684",
+              "001-139172"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query": {
+            "top3": [
+              "001-111938",
+              "001-157766",
+              "001-90937"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-111938",
+              "001-157766",
+              "001-90937"
+            ],
+            "relevant_in_top3": 2
+          },
+          "pcf": {
+            "top3": [
+              "001-111938",
+              "001-157766",
+              "001-90937"
+            ],
+            "relevant_in_top3": 2
+          }
+        }
+      },
+      {
+        "query_id": "d021",
+        "gender": "Female",
+        "article": "3",
+        "article_14": false,
+        "keywords": [
+          "rape",
+          "raped",
+          "rapes",
+          "sexual",
+          "sexually"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_index": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          },
+          "cda": {
+            "top3": [
+              "001-157965",
+              "001-93456",
+              "001-88014"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-84836"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_control": {
+            "top3": [
+              "001-157965",
+              "001-93456",
+              "001-88014"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query": {
+            "top3": [
+              "001-157965",
+              "001-93456",
+              "001-110486"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-157965",
+              "001-93456",
+              "001-110486"
+            ],
+            "relevant_in_top3": 3
+          },
+          "pcf": {
+            "top3": [
+              "001-157965",
+              "001-110486",
+              "001-93456"
+            ],
+            "relevant_in_top3": 3
+          }
+        }
+      },
+      {
+        "query_id": "d023",
+        "gender": "Female",
+        "article": "3",
+        "article_14": false,
+        "keywords": [
+          "rape",
+          "raped",
+          "sexual"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-110804",
+              "001-139168",
+              "001-60934"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_index": {
+            "top3": [
+              "001-110804",
+              "001-112442",
+              "001-139168"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query": {
+            "top3": [
+              "001-112442",
+              "001-110804",
+              "001-121955"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-112442",
+              "001-110804",
+              "001-105478"
+            ],
+            "relevant_in_top3": 2
+          },
+          "cda": {
+            "top3": [
+              "001-110804",
+              "001-112321",
+              "001-112442"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-139272",
+              "001-79050",
+              "001-60934"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_control": {
+            "top3": [
+              "001-112321",
+              "001-139272",
+              "001-110804"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace": {
+            "top3": [
+              "001-110804",
+              "001-91444",
+              "001-103086"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace_query": {
+            "top3": [
+              "001-110804",
+              "001-139168",
+              "001-112442"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-110804",
+              "001-112442",
+              "001-139272"
+            ],
+            "relevant_in_top3": 3
+          },
+          "pcf": {
+            "top3": [
+              "001-110804",
+              "001-139272",
+              "001-139168"
+            ],
+            "relevant_in_top3": 3
+          }
+        }
+      },
+      {
+        "query_id": "d025",
+        "gender": "Male",
+        "article": "3",
+        "article_14": false,
+        "keywords": [
+          "rape"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-110499",
+              "001-159913",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-110499",
+              "001-159913",
+              "001-110440"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-110499",
+              "001-159913",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace": {
+            "top3": [
+              "001-110499",
+              "001-159913",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-159913",
+              "001-110499",
+              "001-158352"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d026",
+        "gender": "Male",
+        "article": "3",
+        "article_14": true,
+        "keywords": [],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-105402",
+              "001-116412",
+              "001-150315"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-105402",
+              "001-116412",
+              "001-98814"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-71594",
+              "001-61931",
+              "001-150315"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-61931",
+              "001-105402",
+              "001-116412"
+            ],
+            "relevant_in_top3": 1
+          },
+          "cda": {
+            "top3": [
+              "001-86022",
+              "001-105402",
+              "001-116412"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-105402",
+              "001-79050",
+              "001-116412"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_control": {
+            "top3": [
+              "001-61931",
+              "001-105402",
+              "001-86022"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-105402",
+              "001-98814",
+              "001-116412"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-105402",
+              "001-116412",
+              "001-61931"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-105402",
+              "001-98814",
+              "001-116412"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-105402",
+              "001-116412",
+              "001-150315"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d038",
+        "gender": "Multiple Applicants",
+        "article": "3",
+        "article_14": false,
+        "keywords": [
+          "gender"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-107669"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_index": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-70138"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-108607"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-70138"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-107669",
+              "001-116186",
+              "001-118338"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-107669",
+              "001-116186",
+              "001-118338"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_control": {
+            "top3": [
+              "001-118338",
+              "001-107669",
+              "001-108607"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-101985"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace_query": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-70138"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-70138"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-116186",
+              "001-118338",
+              "001-70138"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d039",
+        "gender": "Multiple Applicants",
+        "article": "3",
+        "article_14": true,
+        "keywords": [],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-119968",
+              "001-79050",
+              "001-69670"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_index": {
+            "top3": [
+              "001-79050",
+              "001-119968",
+              "001-69670"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query": {
+            "top3": [
+              "001-119968",
+              "001-69670",
+              "001-79050"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-79050",
+              "001-119968",
+              "001-69670"
+            ],
+            "relevant_in_top3": 3
+          },
+          "cda": {
+            "top3": [
+              "001-159914",
+              "001-85308",
+              "001-81904"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-119968",
+              "001-69670",
+              "001-79050"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_control": {
+            "top3": [
+              "001-159914",
+              "001-69670",
+              "001-119968"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace": {
+            "top3": [
+              "001-79050",
+              "001-122375",
+              "001-112210"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace_query": {
+            "top3": [
+              "001-119968",
+              "001-69670",
+              "001-79050"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-79050",
+              "001-119968",
+              "001-69670"
+            ],
+            "relevant_in_top3": 3
+          },
+          "pcf": {
+            "top3": [
+              "001-119968",
+              "001-79050",
+              "001-69670"
+            ],
+            "relevant_in_top3": 3
+          }
+        }
+      },
+      {
+        "query_id": "d071",
+        "gender": "Female",
+        "article": "6",
+        "article_14": true,
+        "keywords": [],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-148271",
+              "001-94417",
+              "001-94426"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_index": {
+            "top3": [
+              "001-148271",
+              "001-94417",
+              "001-94426"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_query": {
+            "top3": [
+              "001-148271",
+              "001-94431",
+              "001-94426"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-148271",
+              "001-94426",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          },
+          "cda": {
+            "top3": [
+              "001-148271",
+              "001-79507",
+              "001-94426"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-148271",
+              "001-101233",
+              "001-94426"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_control": {
+            "top3": [
+              "001-148271",
+              "001-79507",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-148271",
+              "001-140022",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace_query": {
+            "top3": [
+              "001-148271",
+              "001-94426",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-148271",
+              "001-94426",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          },
+          "pcf": {
+            "top3": [
+              "001-148271",
+              "001-94426",
+              "001-101233"
+            ],
+            "relevant_in_top3": 1
+          }
+        }
+      },
+      {
+        "query_id": "d075",
+        "gender": "Female",
+        "article": "6",
+        "article_14": false,
+        "keywords": [
+          "maternity"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_index": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_query": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-150217",
+              "001-103319",
+              "001-94646"
+            ],
+            "relevant_in_top3": 1
+          },
+          "cda": {
+            "top3": [
+              "001-155974",
+              "001-113521",
+              "001-60333"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-60706"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-155974",
+              "001-158950",
+              "001-114666"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-147622"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "pcf": {
+            "top3": [
+              "001-150217",
+              "001-94646",
+              "001-103319"
+            ],
+            "relevant_in_top3": 1
+          }
+        }
+      },
+      {
+        "query_id": "d100",
+        "gender": "Male",
+        "article": "6",
+        "article_14": false,
+        "keywords": [
+          "maternity",
+          "sexual",
+          "sexually"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-139172"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_index": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-139172"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query": {
+            "top3": [
+              "001-122173",
+              "001-108429",
+              "001-122431"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-108429"
+            ],
+            "relevant_in_top3": 2
+          },
+          "cda": {
+            "top3": [
+              "001-108680",
+              "001-155820",
+              "001-146383"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-122173",
+              "001-108429",
+              "001-122431"
+            ],
+            "relevant_in_top3": 2
+          },
+          "ft_control": {
+            "top3": [
+              "001-108680",
+              "001-108429",
+              "001-80213"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace": {
+            "top3": [
+              "001-122173",
+              "001-139172",
+              "001-122431"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-155820"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-139172"
+            ],
+            "relevant_in_top3": 3
+          },
+          "pcf": {
+            "top3": [
+              "001-122173",
+              "001-122431",
+              "001-139172"
+            ],
+            "relevant_in_top3": 3
+          }
+        }
+      },
+      {
+        "query_id": "d107",
+        "gender": "Male",
+        "article": "6",
+        "article_14": true,
+        "keywords": [],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-112101"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-159762",
+              "001-148286"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-148286",
+              "001-159762",
+              "001-145784"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      },
+      {
+        "query_id": "d143",
+        "gender": "Female",
+        "article": "8",
+        "article_14": true,
+        "keywords": [
+          "gender",
+          "sexual"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-61142",
+              "001-82243",
+              "001-153134"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_index": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query": {
+            "top3": [
+              "001-82243",
+              "001-153134",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "cda": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "ft_control": {
+            "top3": [
+              "001-61142",
+              "001-153134",
+              "001-82243"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace": {
+            "top3": [
+              "001-61142",
+              "001-82243",
+              "001-153134"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          },
+          "pcf": {
+            "top3": [
+              "001-153134",
+              "001-82243",
+              "001-61142"
+            ],
+            "relevant_in_top3": 3
+          }
+        }
+      },
+      {
+        "query_id": "d145",
+        "gender": "Male",
+        "article": "8",
+        "article_14": false,
+        "keywords": [
+          "rape",
+          "raped",
+          "sexual"
+        ],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_index": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "cda": {
+            "top3": [
+              "001-147272",
+              "001-112091",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-147272",
+              "001-112091",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "ft_control": {
+            "top3": [
+              "001-147272",
+              "001-112091",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace_query": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          },
+          "pcf": {
+            "top3": [
+              "001-112091",
+              "001-147272",
+              "001-155005"
+            ],
+            "relevant_in_top3": 2
+          }
+        }
+      },
+      {
+        "query_id": "d157",
+        "gender": "Female",
+        "article": "P1-1",
+        "article_14": true,
+        "keywords": [],
+        "relevant": true,
+        "arms": {
+          "baseline": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-94458"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_index": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-76319"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query": {
+            "top3": [
+              "001-60690",
+              "001-94458",
+              "001-76317"
+            ],
+            "relevant_in_top3": 0
+          },
+          "blind_query+blind_index": {
+            "top3": [
+              "001-60690",
+              "001-94458",
+              "001-76317"
+            ],
+            "relevant_in_top3": 0
+          },
+          "cda": {
+            "top3": [
+              "001-94458",
+              "001-78866",
+              "001-76319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "ft_ccd": {
+            "top3": [
+              "001-60690",
+              "001-94458",
+              "001-76317"
+            ],
+            "relevant_in_top3": 0
+          },
+          "ft_control": {
+            "top3": [
+              "001-94458",
+              "001-78866",
+              "001-76319"
+            ],
+            "relevant_in_top3": 1
+          },
+          "leace": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-76319"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-94458"
+            ],
+            "relevant_in_top3": 0
+          },
+          "leace_query+blind_index": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-94458"
+            ],
+            "relevant_in_top3": 0
+          },
+          "pcf": {
+            "top3": [
+              "001-60690",
+              "001-76317",
+              "001-94458"
+            ],
+            "relevant_in_top3": 0
+          }
+        }
+      }
+    ]
+  }
+}

@@ -98,14 +98,20 @@ def llm_section(res):
         own_bias |= bool(same["n_pairs"] and same["p_wilcoxon_vs_repeat_noise"] is not None
                          and same["p_wilcoxon_vs_repeat_noise"] < ALPHA)
         order = split["different order"]
+        # Reordered documents change the citations far more than identical ones, or significantly more than repeat noise
         amplifies = bool(order["n_pairs"] and same["n_pairs"]
-                         and order["wording_change_rate"] > 2 * max(same["wording_change_rate"], nf["cited_rate_mean"] if nf else 0))
+                         and (order["wording_change_rate"] > 2 * max(same["wording_change_rate"], nf["cited_rate_mean"] if nf else 0)
+                              or (order["p_wilcoxon_vs_repeat_noise"] is not None and order["p_wilcoxon_vs_repeat_noise"] < ALPHA
+                                  and order["wording_change_rate"] > same["wording_change_rate"])))
     lines.append("")
     same_question = res.get("same_question_twins", {}).get(name, 0)
     if same_question:
         lines += [f"{same_question} twin pairs got the same question text in this setting (the fix rewrote both into "
                   "one question), so they are left out of this split: nothing in the wording differs.", ""]
-    if not name or not res["input_similarity_split"][name]["identical input"]["n_pairs"]:
+    if not nf:
+        lines.append("**Not measurable:** a single run gives no repeat noise to compare with, so the LLM's own effect "
+                     "cannot be judged. Run every question at least twice.")
+    elif not name or not res["input_similarity_split"][name]["identical input"]["n_pairs"]:
         lines.append("**Not measurable:** no twins got identical input, so the LLM's own effect cannot be separated.")
     elif own_bias:
         lines.append("**The LLM adds a bias of its own:** with the same documents in the same order, its citations "
@@ -117,7 +123,7 @@ def llm_section(res):
                      "(upper end of the 95% interval), so an effect up to that size cannot be ruled out.")
     if amplifies:
         lines.append("It does react to the **order** of the documents: when the search reorders the same documents, the "
-                     "citations change far more often. So a small difference in the search becomes a bigger one in the answer.")
+                     "citations change more often. So a small difference in the search becomes a bigger one in the answer.")
     gens = {r: g for r, g in res["cited_vs_not_cited_per_run"].items() if g}
     sig = [r for r, g in gens.items() if g["p_raw"] < ALPHA]
     unreliable = [r for r, g in gens.items() if g["min_expected"] < MIN_EXPECTED]
@@ -129,7 +135,7 @@ def llm_section(res):
               + (f" The runs with no significant difference detect a Cramér's V of "
                  f"{max(g['mde_cramers_v'] for r, g in gens.items() if r not in sig):.3f} or more with {POWER:.0%} power."
                  if len(sig) < len(gens) else "")]
-    return lines, own_bias
+    return lines, own_bias, amplifies
 
 
 def comparison_section(results):
@@ -199,18 +205,29 @@ def charts_section(figures_dir, report_path):
     return lines
 
 
+# The LLM's own effect needs twins with identical input and a repeat-noise level (two runs or more) to compare with
 def llm_measurable(res):
     name = main_pair(res)
-    return bool(name and res["input_similarity_split"][name]["identical input"]["n_pairs"])
+    return bool(name and res["input_similarity_split"][name]["identical input"]["n_pairs"] and res["noise_floor_twin_rows"])
 
 
 # The LLM test with fixed documents: the he and she questions get the same documents, so only the wording differs
 def fixed_documents_section(res):
-    llm, _ = llm_section(res)
+    llm = llm_section(res)[0]
     return ["# The LLM with fixed documents", "",
             "Each twin pair's he and she questions were answered with the same documents in the same order (found once "
             "with the neutral version of the question), so the pronoun is the only difference the LLM sees. This "
             "measures the LLM's own effect even when the search changes the documents for every twin.", ""] + llm[2:] + [""]
+
+
+# The search part of the summary when the flip test shows no lean: say how many pairs still change the top document
+def no_lean(res):
+    name = main_pair(res)
+    flips = res["flip_tests"][name]["top1_flips"] if name else 0
+    if not flips:
+        return "is not detected at the search"
+    return (f"shows no significant lean at the search, although the top document still changes in {flips} of "
+            f"{res['flip_tests'][name]['n_pairs']} pairs")
 
 
 def build(results):
@@ -230,17 +247,19 @@ def build(results):
                   f"for {res['retrieval_identical_across_runs']['identical_queries']}/{res['retrieval_identical_across_runs']['of']} "
                   "questions.", ""]
         ret, ret_found = retrieval_section(res, groups, holm)
-        llm, llm_found = llm_section(res)
+        llm, llm_found, amplifies = llm_section(res)
         measured, note = llm_measurable(res), ""
         if arms == BASELINE and fixed_measured:
             llm_found, measured = llm_section(fixed)[1], True
             note = " (the LLM part comes from the test with fixed documents, at the end)"
-        where = ("enters at the search" if ret_found and not llm_found else "enters at the LLM" if llm_found and not ret_found
-                 else "enters at both the search and the LLM" if ret_found
-                 else "is not detected: swapping the wording changes neither the search nor the LLM significantly")
+        search = "enters at the search" if ret_found else no_lean(res)
+        where = ("enters at the LLM" if llm_found and not ret_found else "enters at both the search and the LLM" if llm_found
+                 else search if ret_found else f"{search}, and the LLM adds no bias of its own")
         if not measured:
-            where = "enters at the search" if ret_found else "is not detected at the search"
+            where = search
             note = " (the LLM's own effect could not be measured in this setting)"
+        if amplifies and not llm_found:
+            where += "; the LLM does enlarge search differences through the order of the documents (section 2)"
         lines += [f"**In short: the effect of the {results['twin_pairs'][0][0]}/{results['twin_pairs'][0][1]} wording "
                   f"{where}{note}.**", ""] + ret + [""] + llm + [""]
     if fixed:

@@ -1,0 +1,223 @@
+{
+  "check": "r3b_llm_pronoun_fixed_cases",
+  "question": "With the retrieved cases held identical, does the LLM's answer change with the applicant's pronoun?",
+  "created": "2026-10-06T22:47:28",
+  "method": {
+    "design": "per base, the frozen system retrieves once with the hand-written neutral variant; the same cases in the same order are answered with the neutral, male and female wording (scripts/eval/run_fixed_case_test.py)",
+    "noise": "the same query across the 4 runs (all pairs of runs)",
+    "tests": "Wilcoxon of per-base change minus repeat noise (cited case set; predicted articles, 1 - Jaccard); exact McNemar on the key-article hit (majority over runs); Holm-Bonferroni over the family",
+    "identical_cases_in_every_row": true
+  },
+  "inputs": {
+    "logs/robustness/fixed_cases/run_A.jsonl": "9c2d942b7cd1e850cd1f95cbb45120a68ab814435b8e3d8498586d041974fad2",
+    "logs/robustness/fixed_cases/run_B.jsonl": "b9de1c248db35ee45ac446dcbb3a14266ff92c9fcdfbd6d7f1261aedd539ce51",
+    "logs/robustness/fixed_cases/run_C.jsonl": "c6a7d1570f6646f72316adc054901cda977e8983a245f3180553f1107359aa34",
+    "logs/robustness/fixed_cases/run_D.jsonl": "b998e787ee27fd85678a072a5fc075a0fa1550a7afc7ff3c254144a2f6efde36"
+  },
+  "results": {
+    "pairs": {
+      "male_vs_female": {
+        "cited_case": {
+          "rows_differ": 4,
+          "rows": 160,
+          "change_rate": 0.025,
+          "change_wilson_95ci": [
+            0.009763834597428894,
+            0.06251085022010217
+          ],
+          "repeat_noise": 0.0125,
+          "p_wilcoxon_change_above_noise": 0.31731050786291415
+        },
+        "predicted_articles_change": {
+          "n_bases": 40,
+          "mean_change_between_wordings": 0.30833333333333335,
+          "mean_change_same_query_repeat": 0.2837152777777778,
+          "identical_prediction_rate": 0.4779874213836478,
+          "p_wilcoxon_change_above_noise": 0.07624918861795264
+        },
+        "predicted_articles_accuracy": {
+          "jaccard": {
+            "n_bases": 40,
+            "mean_male": 0.578125,
+            "mean_female": 0.5494791666666666,
+            "p": 0.23395823837480756
+          },
+          "exact": {
+            "male_correct": 9,
+            "female_correct": 10,
+            "n_bases": 40,
+            "male_wilson_95ci": [
+              0.1231595325467853,
+              0.3750339640409305
+            ],
+            "female_wilson_95ci": [
+              0.14186967895549518,
+              0.40194259066970106
+            ],
+            "only_male": 2,
+            "only_female": 3,
+            "p": 1.0
+          },
+          "key_hit": {
+            "male_correct": 29,
+            "female_correct": 31,
+            "n_bases": 40,
+            "male_wilson_95ci": [
+              0.5716474916687543,
+              0.8389214656685692
+            ],
+            "female_wilson_95ci": [
+              0.6249660359590695,
+              0.8768404674532148
+            ],
+            "only_male": 1,
+            "only_female": 3,
+            "p": 0.625
+          }
+        }
+      },
+      "neutral_vs_male": {
+        "cited_case": {
+          "rows_differ": 7,
+          "rows": 160,
+          "change_rate": 0.04375,
+          "change_wilson_95ci": [
+            0.02135133953480136,
+            0.08754408140835349
+          ],
+          "repeat_noise": 0.02291666666666666,
+          "p_wilcoxon_change_above_noise": 0.10247043485974937
+        },
+        "predicted_articles_change": {
+          "n_bases": 40,
+          "mean_change_between_wordings": 0.271875,
+          "mean_change_same_query_repeat": 0.2664930555555555,
+          "identical_prediction_rate": 0.5283018867924528,
+          "p_wilcoxon_change_above_noise": 0.5153880284030687
+        },
+        "predicted_articles_accuracy": {
+          "jaccard": {
+            "n_bases": 40,
+            "mean_neutral": 0.6,
+            "mean_male": 0.578125,
+            "p": 0.43188785071303915
+          },
+          "exact": {
+            "neutral_correct": 13,
+            "male_correct": 9,
+            "n_bases": 40,
+            "neutral_wilson_95ci": [
+              0.20084316962661725,
+              0.4798254191110201
+            ],
+            "male_wilson_95ci": [
+              0.1231595325467853,
+              0.3750339640409305
+            ],
+            "only_neutral": 4,
+            "only_male": 0,
+            "p": 0.125
+          },
+          "key_hit": {
+            "neutral_correct": 32,
+            "male_correct": 29,
+            "n_bases": 40,
+            "neutral_wilson_95ci": [
+              0.6524239261814333,
+              0.8950013502683314
+            ],
+            "male_wilson_95ci": [
+              0.5716474916687543,
+              0.8389214656685692
+            ],
+            "only_neutral": 4,
+            "only_male": 1,
+            "p": 0.375
+          }
+        }
+      },
+      "neutral_vs_female": {
+        "cited_case": {
+          "rows_differ": 5,
+          "rows": 160,
+          "change_rate": 0.03125,
+          "change_wilson_95ci": [
+            0.013420318754525096,
+            0.07106127810488057
+          ],
+          "repeat_noise": 0.02291666666666666,
+          "p_wilcoxon_change_above_noise": 0.15729920705028502
+        },
+        "predicted_articles_change": {
+          "n_bases": 40,
+          "mean_change_between_wordings": 0.2854166666666667,
+          "mean_change_same_query_repeat": 0.2675694444444444,
+          "identical_prediction_rate": 0.5375,
+          "p_wilcoxon_change_above_noise": 0.18068627590158493
+        },
+        "predicted_articles_accuracy": {
+          "jaccard": {
+            "n_bases": 40,
+            "mean_neutral": 0.6,
+            "mean_female": 0.5494791666666666,
+            "p": 0.01036425097585218
+          },
+          "exact": {
+            "neutral_correct": 13,
+            "female_correct": 10,
+            "n_bases": 40,
+            "neutral_wilson_95ci": [
+              0.20084316962661725,
+              0.4798254191110201
+            ],
+            "female_wilson_95ci": [
+              0.14186967895549518,
+              0.40194259066970106
+            ],
+            "only_neutral": 4,
+            "only_female": 1,
+            "p": 0.375
+          },
+          "key_hit": {
+            "neutral_correct": 32,
+            "female_correct": 31,
+            "n_bases": 40,
+            "neutral_wilson_95ci": [
+              0.6524239261814333,
+              0.8950013502683314
+            ],
+            "female_wilson_95ci": [
+              0.6249660359590695,
+              0.8768404674532148
+            ],
+            "only_neutral": 2,
+            "only_female": 1,
+            "p": 1.0
+          }
+        }
+      }
+    },
+    "p_raw": {
+      "male_vs_female_cited": 0.31731050786291415,
+      "male_vs_female_articles_change": 0.07624918861795264,
+      "male_vs_female_key_hit": 0.625,
+      "neutral_vs_male_cited": 0.10247043485974937,
+      "neutral_vs_male_articles_change": 0.5153880284030687,
+      "neutral_vs_male_key_hit": 0.375,
+      "neutral_vs_female_cited": 0.15729920705028502,
+      "neutral_vs_female_articles_change": 0.18068627590158493,
+      "neutral_vs_female_key_hit": 1.0
+    },
+    "p_holm": {
+      "male_vs_female_articles_change": 0.6862426975615737,
+      "neutral_vs_male_cited": 0.8197634788779949,
+      "neutral_vs_female_cited": 1.0,
+      "neutral_vs_female_articles_change": 1.0,
+      "male_vs_female_cited": 1.0,
+      "neutral_vs_male_key_hit": 1.0,
+      "neutral_vs_male_articles_change": 1.0,
+      "male_vs_female_key_hit": 1.0,
+      "neutral_vs_female_key_hit": 1.0
+    }
+  }
+}

@@ -1,0 +1,242 @@
+{
+  "check": "r5_retrieval_cost",
+  "question": "Is 'no retrieval cost' (harness recall@1 0.95 for every arm) real, or is the harness too easy to show one?",
+  "created": "2026-10-09T20:04:18",
+  "method": {
+    "harness_margin": "baseline similarity of the source case minus the best other case, per harness query",
+    "overlap": "share of each arm's top-10 harness cases / top-3 audit cases also in the baseline's",
+    "article_precision_at_3": "share of the top-3 retrieved cases sharing a violated article with the main query's source case (175/175 main queries whose source has violated articles); paired Wilcoxon against the baseline",
+    "changed_cases": "per main query, the top-3 cases the arm dropped (left) and the ones it brought in (entered); pooled article precision of each, and the share whose gender label matches the query's (Male/Female queries); left more gender-matched than entered = the change removed gender-driven retrievals",
+    "note": "precision is a topical relevance proxy, not a relevance judgement"
+  },
+  "inputs": {
+    "logs/mitigation/baseline/retrieval.jsonl": "a2a60e85370365c8621d181a01ffeea6a36f7f337f1e3264bdfcf3c81280dc41",
+    "logs/mitigation/blind_index/retrieval.jsonl": "9287e716bb12ec7625760ee63de8b9d9ddd2e6ee09a2f438e0cfef4fcb0292fb",
+    "logs/mitigation/blind_query/retrieval.jsonl": "cb17aa46632482a2357a0b9f469da95cbe5e571a0af731d69bc32b65310ab2e4",
+    "logs/mitigation/blind_query+blind_index/retrieval.jsonl": "6d662557652f6f0c0d539b770cb92d61e03924f1b3d47630d92d9b7b3b5026c9",
+    "logs/mitigation/cda/retrieval.jsonl": "cf3c0cf13b7e834057d77e97a93114efdb11629f6ebcaababd3da9fe068144e7",
+    "logs/mitigation/ft_ccd/retrieval.jsonl": "843707c31ffc00f0e18f4e7db4a7e62750df2509de54dc6ac1fb06b2abbe7d28",
+    "logs/mitigation/ft_control/retrieval.jsonl": "9afa8cb347cc4bb802f22cc8dd005741dfc6d0752f9480eb41605dc1055e125b",
+    "logs/mitigation/leace/retrieval.jsonl": "09702fadb5648ee434592d3dbb6b8dd051c80d1443332e1b2e306d1eb0f3dd27",
+    "logs/mitigation/leace_query/retrieval.jsonl": "52eae91c719247cfbe762c2dce6a913b34e7fa41a21352c4a7074714236fd80d",
+    "logs/mitigation/leace_query+blind_index/retrieval.jsonl": "665d5225f92e9e1fdf04b637bb3ff90c7a5d4d5eadf4c231e82c9fd8b59fed89",
+    "logs/mitigation/pcf/retrieval.jsonl": "b574bc933f2c9697783775f7c87d4106fa53e58285b4a5e9bdf138b320c626c9",
+    "logs/mitigation/baseline/harness.json": "9ee4d9e3769d83434c4630f68c73265e378e43ee4fc7fdb944e69a08ba4e32ad",
+    "logs/mitigation/blind_index/harness.json": "74b4d7e9d7d4f36e8f39829f52541e3bdcfc1b7242a05c090288cb89920859e2",
+    "logs/mitigation/blind_query/harness.json": "12228d99e0998e4e48d34b33677fa3ea8623d4b280da0a71f27d31eda836d128",
+    "logs/mitigation/blind_query+blind_index/harness.json": "4895f3c05ff718dc8cafcd861bee7a6b16be201e1187aab71dd90e74da466c7a",
+    "logs/mitigation/cda/harness.json": "4a0d28735d3f2920c35aa2fd65c081cbb762590846441f4064896c26ab74cd8a",
+    "logs/mitigation/ft_ccd/harness.json": "0830814e1abfc2807417b30b3dca66a367d3801ad884ccac1de098d802e9fd9d",
+    "logs/mitigation/ft_control/harness.json": "363ae5f7d346acfdb600dbb62daba994f6da6400349c842d5d250c03cb3b6e40",
+    "logs/mitigation/leace/harness.json": "30df5a507439d1be149dcc713751baed0ddb368eff26c97d27c78b992ac11aca",
+    "logs/mitigation/leace_query/harness.json": "25dfc804c43f8b61911243722c32e3029344142304f2bbf896a6eef8bacbf9ae",
+    "logs/mitigation/leace_query+blind_index/harness.json": "d94a0e720e5cf90934bd035eac228d96d770c84bc7d5e7a66098074d74f56f15",
+    "logs/mitigation/pcf/harness.json": "62ce0eac46f6a35e7c328e0bc01dcf80af7c60b784a68dfdc5753b660a38c1f5",
+    "dataset/eval/audit_queries_main.jsonl": "6096429f1b54190ae629719f8baf1fa88779e1602098a25db66d33ab08ceb90a"
+  },
+  "results": {
+    "harness_margin": {
+      "median": 0.03741663694381714,
+      "below_0.01": 12,
+      "n": 94
+    },
+    "arms": {
+      "baseline": {
+        "harness_top10_overlap": 1.0,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 1.0,
+        "audit_article_precision_at_3": 0.6476190476190475
+      },
+      "blind_index": {
+        "harness_top10_overlap": 0.9120000000000004,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8666666666666668,
+        "audit_article_precision_at_3": 0.6514285714285714,
+        "article_precision_change": {
+          "mean": 0.0038095238095238113,
+          "queries_lower": 12,
+          "queries_higher": 15,
+          "p_wilcoxon": 0.31725518129963093
+        },
+        "changed_cases": {
+          "cases_changed": 70,
+          "left_article_precision": 0.6285714285714286,
+          "entered_article_precision": 0.6571428571428571,
+          "left_same_gender_share": 0.6935483870967742,
+          "entered_same_gender_share": 0.3548387096774194
+        }
+      },
+      "blind_query": {
+        "harness_top10_overlap": 0.919888888888889,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8438095238095239,
+        "audit_article_precision_at_3": 0.6419047619047618,
+        "article_precision_change": {
+          "mean": -0.005714285714285715,
+          "queries_lower": 16,
+          "queries_higher": 13,
+          "p_wilcoxon": 0.4413845717426309
+        },
+        "changed_cases": {
+          "cases_changed": 83,
+          "left_article_precision": 0.6385542168674698,
+          "entered_article_precision": 0.5975609756097561,
+          "left_same_gender_share": 0.6857142857142857,
+          "entered_same_gender_share": 0.36231884057971014
+        }
+      },
+      "blind_query+blind_index": {
+        "harness_top10_overlap": 0.8940000000000002,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8476190476190477,
+        "audit_article_precision_at_3": 0.6533333333333333,
+        "article_precision_change": {
+          "mean": 0.005714285714285714,
+          "queries_lower": 11,
+          "queries_higher": 15,
+          "p_wilcoxon": 0.6573713299074393
+        },
+        "changed_cases": {
+          "cases_changed": 80,
+          "left_article_precision": 0.6,
+          "entered_article_precision": 0.6375,
+          "left_same_gender_share": 0.7183098591549296,
+          "entered_same_gender_share": 0.36619718309859156
+        }
+      },
+      "cda": {
+        "harness_top10_overlap": 0.6391111111111111,
+        "harness_top1_same": 94,
+        "audit_top3_overlap": 0.5123809523809524,
+        "audit_article_precision_at_3": 0.6057142857142858,
+        "article_precision_change": {
+          "mean": -0.04190476190476191,
+          "queries_lower": 45,
+          "queries_higher": 27,
+          "p_wilcoxon": 0.0008489560044464363
+        },
+        "changed_cases": {
+          "cases_changed": 259,
+          "left_article_precision": 0.6640926640926641,
+          "entered_article_precision": 0.58203125,
+          "left_same_gender_share": 0.6059113300492611,
+          "entered_same_gender_share": 0.525
+        }
+      },
+      "ft_ccd": {
+        "harness_top10_overlap": 0.8536666666666668,
+        "harness_top1_same": 99,
+        "audit_top3_overlap": 0.7809523809523811,
+        "audit_article_precision_at_3": 0.6495238095238095,
+        "article_precision_change": {
+          "mean": 0.0019047619047619056,
+          "queries_lower": 18,
+          "queries_higher": 19,
+          "p_wilcoxon": 0.5076975728831041
+        },
+        "changed_cases": {
+          "cases_changed": 117,
+          "left_article_precision": 0.6410256410256411,
+          "entered_article_precision": 0.6434782608695652,
+          "left_same_gender_share": 0.54,
+          "entered_same_gender_share": 0.41836734693877553
+        }
+      },
+      "ft_control": {
+        "harness_top10_overlap": 0.6548888888888889,
+        "harness_top1_same": 95,
+        "audit_top3_overlap": 0.5266666666666666,
+        "audit_article_precision_at_3": 0.6076190476190475,
+        "article_precision_change": {
+          "mean": -0.04,
+          "queries_lower": 42,
+          "queries_higher": 24,
+          "p_wilcoxon": 0.008081893639704985
+        },
+        "changed_cases": {
+          "cases_changed": 253,
+          "left_article_precision": 0.6798418972332015,
+          "entered_article_precision": 0.592741935483871,
+          "left_same_gender_share": 0.6138613861386139,
+          "entered_same_gender_share": 0.494949494949495
+        }
+      },
+      "leace": {
+        "harness_top10_overlap": 0.7930000000000001,
+        "harness_top1_same": 99,
+        "audit_top3_overlap": 0.7161904761904763,
+        "audit_article_precision_at_3": 0.638095238095238,
+        "article_precision_change": {
+          "mean": -0.009523809523809525,
+          "queries_lower": 22,
+          "queries_higher": 19,
+          "p_wilcoxon": 0.5552475207374064
+        },
+        "changed_cases": {
+          "cases_changed": 149,
+          "left_article_precision": 0.6174496644295302,
+          "entered_article_precision": 0.5838926174496645,
+          "left_same_gender_share": 0.5523809523809524,
+          "entered_same_gender_share": 0.3904761904761905
+        }
+      },
+      "leace_query": {
+        "harness_top10_overlap": 0.9080000000000001,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8742857142857143,
+        "audit_article_precision_at_3": 0.6323809523809524,
+        "article_precision_change": {
+          "mean": -0.01523809523809524,
+          "queries_lower": 14,
+          "queries_higher": 6,
+          "p_wilcoxon": 0.11841994270812436
+        },
+        "changed_cases": {
+          "cases_changed": 67,
+          "left_article_precision": 0.7164179104477612,
+          "entered_article_precision": 0.5909090909090909,
+          "left_same_gender_share": 0.6491228070175439,
+          "entered_same_gender_share": 0.4107142857142857
+        }
+      },
+      "leace_query+blind_index": {
+        "harness_top10_overlap": 0.899,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8514285714285714,
+        "audit_article_precision_at_3": 0.6438095238095237,
+        "article_precision_change": {
+          "mean": -0.0038095238095238074,
+          "queries_lower": 14,
+          "queries_higher": 13,
+          "p_wilcoxon": 0.5272480215154045
+        },
+        "changed_cases": {
+          "cases_changed": 79,
+          "left_article_precision": 0.6582278481012658,
+          "entered_article_precision": 0.6282051282051282,
+          "left_same_gender_share": 0.6571428571428571,
+          "entered_same_gender_share": 0.391304347826087
+        }
+      },
+      "pcf": {
+        "harness_top10_overlap": 0.9580000000000001,
+        "harness_top1_same": 100,
+        "audit_top3_overlap": 0.8952380952380954,
+        "audit_article_precision_at_3": 0.6419047619047618,
+        "article_precision_change": {
+          "mean": -0.005714285714285714,
+          "queries_lower": 9,
+          "queries_higher": 6,
+          "p_wilcoxon": 0.6599795898660183
+        },
+        "changed_cases": {
+          "cases_changed": 56,
+          "left_article_precision": 0.6785714285714286,
+          "entered_article_precision": 0.6181818181818182,
+          "left_same_gender_share": 0.6470588235294118,
+          "entered_same_gender_share": 0.28
+        }
+      }
+    }
+  }
+}
