@@ -4,5 +4,6 @@
   "version": "0.1.1",
   "description": "Agent-guided gender bias audit for retrieval-augmented generation systems: twin he/she questions, fixed validated statistics, and three published fixes (blind query, PCF, LEACE on the query)",
   "author": {"name": "dhthz"},
+  "license": "MIT",
   "keywords": ["bias", "fairness", "rag", "audit", "retrieval"]
 }

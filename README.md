@@ -132,6 +132,10 @@ Dataset:
 
 Built with: [FAISS](https://github.com/facebookresearch/faiss), [nomic-embed-text-v1](https://huggingface.co/nomic-ai/nomic-embed-text-v1), [Mistral 7B](https://mistral.ai/news/announcing-mistral-7b) through [Ollama](https://ollama.com), [spaCy](https://spacy.io), GPT-2 (for the rewrite), and the LEACE authors' [concept-erasure](https://github.com/EleutherAI/concept-erasure) library.
 
+## License
+
+The code (`src/`, `scripts/`, `tests/`, `toolkit/`) is licensed under the [MIT License](LICENSE). Everything in [`docs/`](docs/) (data, question sets, results, charts and reports) is licensed [CC BY-NC-SA 4.0](docs/LICENSE), because it is derived from the ECtHR cases dataset, which carries that license with a ShareAlike term.
+
 ## Status
 
 - Audit and fixes: complete.

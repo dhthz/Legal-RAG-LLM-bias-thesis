@@ -45,3 +45,7 @@ The fixes are implemented from their papers; the statistics are standard tests (
 - PCF: Zhou et al., *Counterfactual Fairness by Combining Factual and Counterfactual Predictions*, NeurIPS 2024, [arXiv:2409.01977](https://arxiv.org/abs/2409.01977).
 - LEACE: Belrose et al., *LEACE: Perfect Linear Concept Erasure in Closed Form*, NeurIPS 2023, [arXiv:2306.03819](https://arxiv.org/abs/2306.03819), with the authors' [concept-erasure](https://github.com/EleutherAI/concept-erasure) library. Here it erases the he/she direction of the query, a concept defined by twin pairs as in Bolukbasi et al., NeurIPS 2016.
 - Twin questions: counterfactual data augmentation (Zhao et al., NAACL 2018; Garg et al., AIES 2019).
+
+## License
+
+MIT, see [LICENSE](LICENSE).

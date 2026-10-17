@@ -1,0 +1,17 @@
+The contents of this docs/ folder (data, question sets, results, charts and
+reports) are licensed under the Creative Commons Attribution-NonCommercial-
+ShareAlike 4.0 International License (CC BY-NC-SA 4.0).
+
+Copyright (c) 2026 Dimitrios Theopoulos
+
+Full license text: https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode
+
+They are derived from the ECtHR cases dataset of Chalkidis et al. (2019, 2021),
+https://huggingface.co/datasets/AUEB-NLP/ecthr_cases, which is itself licensed
+CC BY-NC-SA 4.0, so the same license applies under its ShareAlike term. The
+NRC emotion scores in data/ were computed with the NRC Emotion Lexicon
+(Mohammad and Turney 2013), which is free for research use. The lexicon itself
+is not included.
+
+The code in this repository, including the toolkit, is licensed separately
+under the MIT License (see ../LICENSE).
