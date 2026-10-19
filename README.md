@@ -48,7 +48,7 @@ The audit is packaged as a Claude Code plugin. Claude adapts it to your codebase
 /plugin install rag-bias-audit@rag-bias-audit
 ```
 
-Then, in your RAG project, ask Claude to audit it for gender bias, or run `/rag-bias-audit:bias-audit`. Details: [`toolkit/README.md`](toolkit/README.md), and a six-page overview of how it works and why it is built this way: [`docs/bias_audit/phase_g_overview.pdf`](docs/bias_audit/phase_g_overview.pdf).
+Then, in your RAG project, ask Claude to audit it for gender bias, or run `/rag-bias-audit:bias-audit`. Details: [`toolkit/README.md`](toolkit/README.md), and a six-page overview of how it works and why it is built this way: [`docs/bias_audit/toolkit plugin review.pdf`](<docs/bias_audit/toolkit plugin review.pdf>).
 
 ## Repository
 
